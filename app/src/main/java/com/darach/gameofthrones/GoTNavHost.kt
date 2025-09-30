@@ -19,6 +19,7 @@ import com.darach.gameofthrones.feature.comparison.ComparisonSelectionCallbacks
 import com.darach.gameofthrones.feature.comparison.ComparisonSelectionScreen
 import com.darach.gameofthrones.feature.comparison.ui.ComparisonViewModel
 import com.darach.gameofthrones.feature.favorites.FavoritesScreen
+import com.darach.gameofthrones.feature.settings.SettingsScreen
 import com.darach.gameofthrones.navigation.CharacterDetailRoute
 import com.darach.gameofthrones.navigation.CharactersRoute
 import com.darach.gameofthrones.navigation.ComparisonRoute
@@ -59,7 +60,7 @@ fun GoTNavHost(
         }
 
         composable<SettingsRoute> {
-            Text("Settings Screen - Coming Soon!")
+            SettingsScreen()
         }
 
         composable<CharacterDetailRoute> { backStackEntry ->
