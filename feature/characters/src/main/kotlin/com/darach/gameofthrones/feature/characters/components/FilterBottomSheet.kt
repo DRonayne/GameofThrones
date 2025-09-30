@@ -10,74 +10,93 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterChips(
-    currentFilter: CharacterFilter,
+fun FilterBottomSheet(
+    state: FilterBottomSheetState,
     onFilterChange: (CharacterFilter) -> Unit,
-    modifier: Modifier = Modifier,
-    availableCultures: List<String> = emptyList(),
-    availableSeasons: List<Int> = emptyList()
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
     ) {
-        FilterHeader(currentFilter = currentFilter, onFilterChange = onFilterChange)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 32.dp)
+        ) {
+            FilterHeader(currentFilter = state.currentFilter, onFilterChange = onFilterChange)
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Status filters
-        FilterSection(title = "Status") {
-            FavoritesFilterChip(currentFilter = currentFilter, onFilterChange = onFilterChange)
-            DeathFilterChips(currentFilter = currentFilter, onFilterChange = onFilterChange)
-            AppearancesFilterChip(currentFilter = currentFilter, onFilterChange = onFilterChange)
-        }
-
-        // Gender filters
-        FilterSection(title = "Gender") {
-            GenderFilterChips(currentFilter = currentFilter, onFilterChange = onFilterChange)
-        }
-
-        // Culture filters
-        if (availableCultures.isNotEmpty()) {
-            FilterSection(title = "Culture") {
-                CultureFilterChips(
-                    currentFilter = currentFilter,
-                    onFilterChange = onFilterChange,
-                    availableCultures = availableCultures
+            // Status filters
+            FilterSection(title = "Status") {
+                FavoritesFilterChip(
+                    currentFilter = state.currentFilter,
+                    onFilterChange = onFilterChange
+                )
+                DeathFilterChips(
+                    currentFilter = state.currentFilter,
+                    onFilterChange = onFilterChange
+                )
+                AppearancesFilterChip(
+                    currentFilter = state.currentFilter,
+                    onFilterChange = onFilterChange
                 )
             }
-        }
 
-        // Season filters
-        if (availableSeasons.isNotEmpty()) {
-            FilterSection(title = "Seasons") {
-                SeasonFilterChips(
-                    currentFilter = currentFilter,
-                    onFilterChange = onFilterChange,
-                    availableSeasons = availableSeasons
+            // Gender filters
+            FilterSection(title = "Gender") {
+                GenderFilterChips(
+                    currentFilter = state.currentFilter,
+                    onFilterChange = onFilterChange
                 )
+            }
+
+            // Culture filters
+            if (state.availableCultures.isNotEmpty()) {
+                FilterSection(title = "Culture") {
+                    CultureFilterChips(
+                        currentFilter = state.currentFilter,
+                        onFilterChange = onFilterChange,
+                        availableCultures = state.availableCultures
+                    )
+                }
+            }
+
+            // Season filters
+            if (state.availableSeasons.isNotEmpty()) {
+                FilterSection(title = "Seasons") {
+                    SeasonFilterChips(
+                        currentFilter = state.currentFilter,
+                        onFilterChange = onFilterChange,
+                        availableSeasons = state.availableSeasons
+                    )
+                }
             }
         }
     }
@@ -91,15 +110,15 @@ private fun FilterSection(title: String, content: @Composable FlowRowScope.() ->
             text = title,
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(bottom = 8.dp)
         )
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             content = content
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -131,7 +150,7 @@ private fun FilterHeader(
         ) {
             Text(
                 text = "Filters",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -173,13 +192,7 @@ private fun DeathFilterChips(
         onClick = {
             onFilterChange(
                 currentFilter.copy(
-                    isDead = if (currentFilter.isDead ==
-                        true
-                    ) {
-                        null
-                    } else {
-                        true
-                    }
+                    isDead = if (currentFilter.isDead == true) null else true
                 )
             )
         },
@@ -191,13 +204,7 @@ private fun DeathFilterChips(
         onClick = {
             onFilterChange(
                 currentFilter.copy(
-                    isDead = if (currentFilter.isDead ==
-                        false
-                    ) {
-                        null
-                    } else {
-                        false
-                    }
+                    isDead = if (currentFilter.isDead == false) null else false
                 )
             )
         },
@@ -215,13 +222,7 @@ private fun AppearancesFilterChip(
         onClick = {
             onFilterChange(
                 currentFilter.copy(
-                    hasAppearances = if (currentFilter.hasAppearances ==
-                        true
-                    ) {
-                        null
-                    } else {
-                        true
-                    }
+                    hasAppearances = if (currentFilter.hasAppearances == true) null else true
                 )
             )
         },
@@ -239,13 +240,7 @@ private fun GenderFilterChips(
         onClick = {
             onFilterChange(
                 currentFilter.copy(
-                    gender = if (currentFilter.gender ==
-                        "Male"
-                    ) {
-                        null
-                    } else {
-                        "Male"
-                    }
+                    gender = if (currentFilter.gender == "Male") null else "Male"
                 )
             )
         },
@@ -257,13 +252,7 @@ private fun GenderFilterChips(
         onClick = {
             onFilterChange(
                 currentFilter.copy(
-                    gender = if (currentFilter.gender ==
-                        "Female"
-                    ) {
-                        null
-                    } else {
-                        "Female"
-                    }
+                    gender = if (currentFilter.gender == "Female") null else "Female"
                 )
             )
         },
@@ -334,13 +323,3 @@ private fun SelectableFilterChip(selected: Boolean, onClick: () -> Unit, label: 
 }
 
 private const val MAX_CULTURE_CHIPS = 10
-
-// Previews
-@androidx.compose.ui.tooling.preview.Preview(name = "Filter Chips", showBackground = true)
-@Composable
-private fun FilterChipsPreview() {
-    FilterChips(
-        currentFilter = CharacterFilter(onlyFavorites = true, isDead = false),
-        onFilterChange = {}
-    )
-}

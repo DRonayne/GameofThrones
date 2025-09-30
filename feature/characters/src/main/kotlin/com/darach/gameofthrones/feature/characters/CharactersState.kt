@@ -14,5 +14,7 @@ data class CharactersState(
     val searchHistory: List<String> = emptyList(),
     val filter: CharacterFilter = CharacterFilter(),
     val sortOption: SortOption = SortOption.NAME_ASC,
-    val isEmpty: Boolean = false
+    val isEmpty: Boolean = false,
+    val availableCultures: List<String> = emptyList(),
+    val availableSeasons: List<Int> = emptyList()
 )

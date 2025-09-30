@@ -136,15 +136,9 @@ private val darkScheme = darkColorScheme(
 @Composable
 fun GameOfThronesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
         darkTheme -> darkScheme
         else -> lightScheme
     }
@@ -159,7 +153,7 @@ fun GameOfThronesTheme(
 @Composable
 @Preview(name = "Light Theme", showBackground = true)
 private fun ThemeShowcasePreview() {
-    GameOfThronesTheme(dynamicColor = false) {
+    GameOfThronesTheme {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())

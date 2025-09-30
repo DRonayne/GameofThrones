@@ -88,5 +88,9 @@ private fun getSortOptionLabel(sortOption: SortOption): String = when (sortOptio
     SortOption.NAME_DESC -> "Name (Z-A)"
     SortOption.CULTURE_ASC -> "Culture (A-Z)"
     SortOption.CULTURE_DESC -> "Culture (Z-A)"
+    SortOption.DEATH_DATE_ASC -> "Death Date (Oldest First)"
+    SortOption.DEATH_DATE_DESC -> "Death Date (Newest First)"
+    SortOption.SEASONS_COUNT_ASC -> "Seasons Count (Fewest First)"
+    SortOption.SEASONS_COUNT_DESC -> "Seasons Count (Most First)"
     SortOption.FAVORITE_FIRST -> "Favorites First"
 }

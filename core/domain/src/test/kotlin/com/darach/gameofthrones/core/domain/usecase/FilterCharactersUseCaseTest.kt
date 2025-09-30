@@ -184,6 +184,114 @@ class FilterCharactersUseCaseTest {
         assertEquals(3, result.size)
     }
 
+    @Test
+    fun `invoke with seasons filter should return characters in specified seasons`() {
+        // Given
+        val characters = listOf(
+            createTestCharacter("1", "Jon Snow").copy(tvSeriesSeasons = listOf(1, 2, 3)),
+            createTestCharacter("2", "Arya Stark").copy(tvSeriesSeasons = listOf(1, 2)),
+            createTestCharacter("3", "Daenerys").copy(tvSeriesSeasons = listOf(2, 3, 4))
+        )
+        val filter = CharacterFilter(seasons = listOf(1))
+
+        // When
+        val result = useCase.invoke(characters, filter)
+
+        // Then
+        assertEquals(2, result.size)
+        assertEquals("Jon Snow", result[0].name)
+        assertEquals("Arya Stark", result[1].name)
+    }
+
+    @Test
+    fun `invoke with multiple seasons filter should return characters in any specified season`() {
+        // Given
+        val characters = listOf(
+            createTestCharacter("1", "Jon Snow").copy(tvSeriesSeasons = listOf(1, 2)),
+            createTestCharacter("2", "Arya Stark").copy(tvSeriesSeasons = listOf(3, 4)),
+            createTestCharacter("3", "Daenerys").copy(tvSeriesSeasons = listOf(5, 6))
+        )
+        val filter = CharacterFilter(seasons = listOf(1, 4))
+
+        // When
+        val result = useCase.invoke(characters, filter)
+
+        // Then
+        assertEquals(2, result.size)
+        assertEquals("Jon Snow", result[0].name)
+        assertEquals("Arya Stark", result[1].name)
+    }
+
+    @Test
+    fun `invoke with empty seasons list should return all characters`() {
+        // Given
+        val characters = listOf(
+            createTestCharacter("1", "Jon Snow").copy(tvSeriesSeasons = listOf(1)),
+            createTestCharacter("2", "Arya Stark").copy(tvSeriesSeasons = listOf(2)),
+            createTestCharacter("3", "Tyrion")
+        )
+        val filter = CharacterFilter(seasons = emptyList())
+
+        // When
+        val result = useCase.invoke(characters, filter)
+
+        // Then
+        assertEquals(3, result.size)
+    }
+
+    @Test
+    fun `isActive should return true when any filter is set`() {
+        // Given
+        val filter = CharacterFilter(culture = "Northmen")
+
+        // When
+        val result = filter.isActive()
+
+        // Then
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun `isActive should return false when no filters are set`() {
+        // Given
+        val filter = CharacterFilter()
+
+        // When
+        val result = filter.isActive()
+
+        // Then
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun `activeFilterCount should return correct count of active filters`() {
+        // Given
+        val filter = CharacterFilter(
+            culture = "Northmen",
+            isDead = true,
+            gender = "Male",
+            seasons = listOf(1, 2)
+        )
+
+        // When
+        val result = filter.activeFilterCount()
+
+        // Then
+        assertEquals(4, result)
+    }
+
+    @Test
+    fun `activeFilterCount should return zero when no filters are active`() {
+        // Given
+        val filter = CharacterFilter()
+
+        // When
+        val result = filter.activeFilterCount()
+
+        // Then
+        assertEquals(0, result)
+    }
+
     private fun createTestCharacter(
         id: String,
         name: String,

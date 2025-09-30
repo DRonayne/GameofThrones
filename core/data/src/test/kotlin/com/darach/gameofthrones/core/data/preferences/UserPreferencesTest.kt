@@ -75,6 +75,11 @@ class UserPreferencesTest {
             SortOption.NAME_DESC,
             SortOption.CULTURE_ASC,
             SortOption.CULTURE_DESC,
+            SortOption.DEATH_DATE_ASC,
+            SortOption.DEATH_DATE_DESC,
+            SortOption.SEASONS_COUNT_ASC,
+            SortOption.SEASONS_COUNT_DESC,
+            SortOption.FAVORITE_FIRST,
             SortOption.RECENT
         )
     }

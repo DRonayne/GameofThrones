@@ -72,7 +72,9 @@ class CharactersViewModel @Inject constructor(
                                 characters = characters,
                                 filteredCharacters = applyFiltersAndSort(characters),
                                 isLoading = false,
-                                isEmpty = characters.isEmpty()
+                                isEmpty = characters.isEmpty(),
+                                availableCultures = extractUniqueCultures(characters),
+                                availableSeasons = extractUniqueSeasons(characters)
                             )
                         }
                     },
@@ -214,6 +216,21 @@ class CharactersViewModel @Inject constructor(
         }
         return currentHistory
     }
+
+    private fun extractUniqueCultures(
+        characters: List<com.darach.gameofthrones.core.domain.model.Character>
+    ): List<String> = characters
+        .map { it.culture }
+        .filter { it.isNotBlank() }
+        .distinct()
+        .sorted()
+
+    private fun extractUniqueSeasons(
+        characters: List<com.darach.gameofthrones.core.domain.model.Character>
+    ): List<Int> = characters
+        .flatMap { it.tvSeriesSeasons }
+        .distinct()
+        .sorted()
 
     companion object {
         private const val SEARCH_DEBOUNCE_MS = 300L

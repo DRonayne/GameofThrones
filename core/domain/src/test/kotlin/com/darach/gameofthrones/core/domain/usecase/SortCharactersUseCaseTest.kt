@@ -118,18 +118,117 @@ class SortCharactersUseCaseTest {
         assertEquals(emptyList<Character>(), result)
     }
 
+    @Test
+    fun `invoke with DEATH_DATE_ASC should sort by death date with alive last`() {
+        // Given
+        val characters = listOf(
+            createTestCharacter("1", "Ned Stark", died = "298 AC"),
+            createTestCharacter("2", "Jon Snow", died = ""),
+            createTestCharacter("3", "Robb Stark", died = "299 AC"),
+            createTestCharacter("4", "Arya Stark", died = "")
+        )
+
+        // When
+        val result = useCase.invoke(characters, SortOption.DEATH_DATE_ASC)
+
+        // Then
+        assertEquals("Ned Stark", result[0].name)
+        assertEquals("Robb Stark", result[1].name)
+        // Alive characters (empty died field) should be at the end
+        assertEquals("", result[2].died)
+        assertEquals("", result[3].died)
+    }
+
+    @Test
+    fun `invoke with DEATH_DATE_DESC should sort by death date with dead first`() {
+        // Given
+        val characters = listOf(
+            createTestCharacter("1", "Ned Stark", died = "298 AC"),
+            createTestCharacter("2", "Jon Snow", died = ""),
+            createTestCharacter("3", "Robb Stark", died = "299 AC")
+        )
+
+        // When
+        val result = useCase.invoke(characters, SortOption.DEATH_DATE_DESC)
+
+        // Then
+        assertEquals("Robb Stark", result[0].name)
+        assertEquals("Ned Stark", result[1].name)
+        assertEquals("Jon Snow", result[2].name)
+    }
+
+    @Test
+    fun `invoke with SEASONS_COUNT_ASC should sort by number of seasons ascending`() {
+        // Given
+        val characters = listOf(
+            createTestCharacter("1", "Jon Snow").copy(tvSeriesSeasons = listOf(1, 2, 3, 4, 5)),
+            createTestCharacter("2", "Arya Stark").copy(tvSeriesSeasons = listOf(1, 2)),
+            createTestCharacter("3", "Tyrion").copy(tvSeriesSeasons = listOf(1, 2, 3, 4))
+        )
+
+        // When
+        val result = useCase.invoke(characters, SortOption.SEASONS_COUNT_ASC)
+
+        // Then
+        assertEquals("Arya Stark", result[0].name)
+        assertEquals(2, result[0].tvSeriesSeasons.size)
+        assertEquals("Tyrion", result[1].name)
+        assertEquals(4, result[1].tvSeriesSeasons.size)
+        assertEquals("Jon Snow", result[2].name)
+        assertEquals(5, result[2].tvSeriesSeasons.size)
+    }
+
+    @Test
+    fun `invoke with SEASONS_COUNT_DESC should sort by number of seasons descending`() {
+        // Given
+        val characters = listOf(
+            createTestCharacter("1", "Arya Stark").copy(tvSeriesSeasons = listOf(1, 2)),
+            createTestCharacter("2", "Jon Snow").copy(tvSeriesSeasons = listOf(1, 2, 3, 4, 5)),
+            createTestCharacter("3", "Tyrion").copy(tvSeriesSeasons = listOf(1, 2, 3))
+        )
+
+        // When
+        val result = useCase.invoke(characters, SortOption.SEASONS_COUNT_DESC)
+
+        // Then
+        assertEquals("Jon Snow", result[0].name)
+        assertEquals(5, result[0].tvSeriesSeasons.size)
+        assertEquals("Tyrion", result[1].name)
+        assertEquals(3, result[1].tvSeriesSeasons.size)
+        assertEquals("Arya Stark", result[2].name)
+        assertEquals(2, result[2].tvSeriesSeasons.size)
+    }
+
+    @Test
+    fun `invoke with SEASONS_COUNT_ASC should handle characters with no seasons`() {
+        // Given
+        val characters = listOf(
+            createTestCharacter("1", "Jon Snow").copy(tvSeriesSeasons = listOf(1, 2)),
+            createTestCharacter("2", "Unknown").copy(tvSeriesSeasons = emptyList()),
+            createTestCharacter("3", "Arya Stark").copy(tvSeriesSeasons = listOf(1))
+        )
+
+        // When
+        val result = useCase.invoke(characters, SortOption.SEASONS_COUNT_ASC)
+
+        // Then
+        assertEquals("Unknown", result[0].name)
+        assertEquals(0, result[0].tvSeriesSeasons.size)
+    }
+
     private fun createTestCharacter(
         id: String,
         name: String,
         culture: String = "Northmen",
-        isFavorite: Boolean = false
+        isFavorite: Boolean = false,
+        died: String = ""
     ) = Character(
         id = id,
         name = name,
         gender = "Male",
         culture = culture,
         born = "",
-        died = "",
+        died = died,
         titles = emptyList(),
         aliases = emptyList(),
         father = "",
