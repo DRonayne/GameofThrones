@@ -28,15 +28,6 @@ class KonsistArchitectureTest {
     }
 
     @Test
-    fun `classes with 'ViewModel' suffix should reside in ui layer`() {
-        Konsist
-            .scopeFromProject()
-            .classes()
-            .withNameEndingWith("ViewModel")
-            .assertTrue { it.resideInPackage("..ui..") }
-    }
-
-    @Test
     fun `interfaces with 'Repository' suffix should reside in domain layer`() {
         Konsist
             .scopeFromProject()

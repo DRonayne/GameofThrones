@@ -2,6 +2,7 @@ package com.darach.gameofthrones.feature.favorites.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
 import com.darach.gameofthrones.feature.favorites.FavoritesIntent
@@ -47,9 +48,8 @@ class FavoritesViewModel @Inject constructor(
         val loading = flows[4] as Boolean
         val error = flows[5] as String?
 
-        @Suppress("UNCHECKED_CAST")
         FavoritesState(
-            favorites = favorites as List<com.darach.gameofthrones.core.domain.model.Character>,
+            favorites = favorites as List<Character>,
             isLoading = loading,
             error = error,
             isEmpty = favorites.isEmpty(),

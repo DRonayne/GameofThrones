@@ -51,7 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
@@ -59,7 +59,7 @@ import com.darach.gameofthrones.feature.characterdetail.ui.CharacterDetailViewMo
 
 @Composable
 fun CharacterDetailScreen(
-    @Suppress("UNUSED_PARAMETER") characterId: String,
+    @Suppress("UnusedParameter") characterId: String,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CharacterDetailViewModel = hiltViewModel()
