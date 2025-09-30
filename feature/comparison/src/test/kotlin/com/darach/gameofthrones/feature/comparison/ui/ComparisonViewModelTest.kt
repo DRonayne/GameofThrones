@@ -1,5 +1,6 @@
 package com.darach.gameofthrones.feature.comparison.ui
 
+import com.darach.gameofthrones.core.common.analytics.AnalyticsService
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
 import com.darach.gameofthrones.feature.comparison.ComparisonDiffCalculator
@@ -30,6 +31,7 @@ class ComparisonViewModelTest {
     private lateinit var viewModel: ComparisonViewModel
     private lateinit var diffCalculator: ComparisonDiffCalculator
     private lateinit var getFavoritesUseCase: GetFavoritesUseCase
+    private lateinit var analyticsService: AnalyticsService
 
     private val testCharacter1 = Character(
         id = "1",
@@ -67,8 +69,9 @@ class ComparisonViewModelTest {
         Dispatchers.setMain(testDispatcher)
         diffCalculator = ComparisonDiffCalculator()
         getFavoritesUseCase = mockk()
+        analyticsService = mockk(relaxed = true)
         every { getFavoritesUseCase() } returns flowOf(emptyList())
-        viewModel = ComparisonViewModel(diffCalculator, getFavoritesUseCase)
+        viewModel = ComparisonViewModel(diffCalculator, getFavoritesUseCase, analyticsService)
     }
 
     @After

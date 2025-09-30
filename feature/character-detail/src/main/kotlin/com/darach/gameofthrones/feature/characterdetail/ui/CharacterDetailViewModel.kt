@@ -4,6 +4,10 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
+import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
+import com.darach.gameofthrones.core.common.analytics.AnalyticsService
+import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.domain.usecase.GetCharacterByIdUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
 import com.darach.gameofthrones.feature.characterdetail.CharacterDetailIntent
@@ -23,7 +27,9 @@ import kotlinx.coroutines.launch
 class CharacterDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getCharacterByIdUseCase: GetCharacterByIdUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val analyticsService: AnalyticsService,
+    private val crashReportingService: CrashReportingService
 ) : ViewModel() {
 
     private val characterId: String = savedStateHandle.get<String>("characterId") ?: ""
@@ -64,6 +70,14 @@ class CharacterDetailViewModel @Inject constructor(
                             error = null
                         )
                     }
+                    analyticsService.logEvent(
+                        AnalyticsEvents.CHARACTER_VIEWED,
+                        mapOf(
+                            AnalyticsParams.CHARACTER_ID to character.id,
+                            AnalyticsParams.CHARACTER_NAME to
+                                (character.name.takeIf { it.isNotBlank() } ?: "Unknown")
+                        )
+                    )
                 } else {
                     _state.update {
                         it.copy(
@@ -81,14 +95,30 @@ class CharacterDetailViewModel @Inject constructor(
                     )
                 }
                 Log.e(TAG, "Failed to load character", error)
+                crashReportingService.logException(error)
             }
             .launchIn(viewModelScope)
     }
 
     private fun toggleFavorite() {
         val currentCharacter = _state.value.character ?: return
+        val wasFavorite = currentCharacter.isFavorite
         viewModelScope.launch {
-            toggleFavoriteUseCase(currentCharacter.id, !currentCharacter.isFavorite)
+            toggleFavoriteUseCase(currentCharacter.id, !wasFavorite)
+            val eventName = if (!wasFavorite) {
+                AnalyticsEvents.CHARACTER_FAVORITED
+            } else {
+                AnalyticsEvents.CHARACTER_UNFAVORITED
+            }
+            analyticsService.logEvent(
+                eventName,
+                mapOf(
+                    AnalyticsParams.CHARACTER_ID to currentCharacter.id,
+                    AnalyticsParams.CHARACTER_NAME to (
+                        currentCharacter.name.takeIf { it.isNotBlank() } ?: "Unknown"
+                        )
+                )
+            )
         }
     }
 

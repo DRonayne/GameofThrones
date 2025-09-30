@@ -1,6 +1,8 @@
 package com.darach.gameofthrones.feature.characters
 
 import app.cash.turbine.test
+import com.darach.gameofthrones.core.common.analytics.AnalyticsService
+import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
@@ -44,6 +46,8 @@ class CharactersViewModelTest {
     private lateinit var sortCharactersUseCase: SortCharactersUseCase
     private lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
     private lateinit var refreshCharactersUseCase: RefreshCharactersUseCase
+    private lateinit var analyticsService: AnalyticsService
+    private lateinit var crashReportingService: CrashReportingService
     private lateinit var networkMonitor: NetworkMonitor
 
     private val testDispatcher = StandardTestDispatcher()
@@ -104,6 +108,8 @@ class CharactersViewModelTest {
         sortCharactersUseCase = mockk()
         toggleFavoriteUseCase = mockk()
         refreshCharactersUseCase = mockk()
+        analyticsService = mockk(relaxed = true)
+        crashReportingService = mockk(relaxed = true)
         networkMonitor = mockk(relaxed = true)
 
         every { filterCharactersUseCase(any(), any()) } answers { firstArg() }
@@ -579,6 +585,8 @@ class CharactersViewModelTest {
         sortCharactersUseCase = sortCharactersUseCase,
         toggleFavoriteUseCase = toggleFavoriteUseCase,
         refreshCharactersUseCase = refreshCharactersUseCase,
+        analyticsService = analyticsService,
+        crashReportingService = crashReportingService,
         networkMonitor = networkMonitor
     )
 }

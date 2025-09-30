@@ -13,4 +13,5 @@ sealed interface SettingsIntent {
     data object ClearSearchHistory : SettingsIntent
     data object SyncData : SettingsIntent
     data object ClearAllData : SettingsIntent
+    data object TriggerTestCrash : SettingsIntent
 }

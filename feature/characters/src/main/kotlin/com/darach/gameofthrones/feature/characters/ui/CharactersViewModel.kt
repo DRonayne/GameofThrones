@@ -3,6 +3,10 @@ package com.darach.gameofthrones.feature.characters.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
+import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
+import com.darach.gameofthrones.core.common.analytics.AnalyticsService
+import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
@@ -40,6 +44,8 @@ class CharactersViewModel @Inject constructor(
     private val sortCharactersUseCase: SortCharactersUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val refreshCharactersUseCase: RefreshCharactersUseCase,
+    private val analyticsService: AnalyticsService,
+    private val crashReportingService: CrashReportingService,
     networkMonitor: NetworkMonitor
 ) : ViewModel() {
 
@@ -183,15 +189,26 @@ class CharactersViewModel @Inject constructor(
             isRefreshing.value = true
             errorMessage.value = null
 
+            analyticsService.logEvent(AnalyticsEvents.DATA_REFRESH)
+            crashReportingService.log("Refreshing characters data")
+
             refreshCharactersUseCase()
                 .fold(
                     onSuccess = {
                         isRefreshing.value = false
+                        analyticsService.logEvent(AnalyticsEvents.DATA_SYNC_SUCCESS)
                     },
                     onFailure = { error ->
                         isRefreshing.value = false
                         errorMessage.value = error.message ?: "Failed to refresh"
                         Log.e(TAG, "Failed to refresh characters", error)
+                        analyticsService.logEvent(
+                            AnalyticsEvents.DATA_SYNC_FAILED,
+                            mapOf(
+                                AnalyticsParams.ERROR_MESSAGE to (error.message ?: "Unknown error")
+                            )
+                        )
+                        crashReportingService.logException(error)
                     }
                 )
         }
@@ -230,6 +247,15 @@ class CharactersViewModel @Inject constructor(
         searchQueryStateFlow.value = query
         viewModelScope.launch {
             searchQuerySharedFlow.emit(query)
+            if (query.isNotBlank()) {
+                analyticsService.logEvent(
+                    AnalyticsEvents.SEARCH_QUERY,
+                    mapOf(
+                        AnalyticsParams.SEARCH_TERM to query,
+                        AnalyticsParams.SEARCH_RESULTS_COUNT to searchResultCharacters.value.size
+                    )
+                )
+            }
         }
     }
 
@@ -237,24 +263,51 @@ class CharactersViewModel @Inject constructor(
         searchQueryStateFlow.value = ""
         isSearchActive.value = false
         searchResultCharacters.value = emptyList()
+        analyticsService.logEvent(AnalyticsEvents.SEARCH_CLEARED)
     }
 
     private fun filterCharacters(
         filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter
     ) {
         filterFlow.value = filter
+        analyticsService.logEvent(
+            AnalyticsEvents.FILTER_APPLIED,
+            mapOf(
+                AnalyticsParams.FILTER_TYPE to "character_filter",
+                AnalyticsParams.FILTER_VALUE to filter.toString()
+            )
+        )
     }
 
     private fun sortCharacters(
         sortOption: com.darach.gameofthrones.core.domain.usecase.SortOption
     ) {
         sortOptionFlow.value = sortOption
+        analyticsService.logEvent(
+            AnalyticsEvents.SORT_APPLIED,
+            mapOf(AnalyticsParams.SORT_TYPE to sortOption.name)
+        )
     }
 
     private fun toggleFavorite(characterId: String) {
         viewModelScope.launch {
             val character = baseCharacters.value.find { it.id == characterId } ?: return@launch
-            toggleFavoriteUseCase(characterId, !character.isFavorite)
+            val wasFavorite = character.isFavorite
+            toggleFavoriteUseCase(characterId, !wasFavorite)
+
+            val eventName = if (!wasFavorite) {
+                AnalyticsEvents.CHARACTER_FAVORITED
+            } else {
+                AnalyticsEvents.CHARACTER_UNFAVORITED
+            }
+            analyticsService.logEvent(
+                eventName,
+                mapOf(
+                    AnalyticsParams.CHARACTER_ID to characterId,
+                    AnalyticsParams.CHARACTER_NAME to
+                        (character.name.takeIf { it.isNotBlank() } ?: "Unknown")
+                )
+            )
         }
     }
 

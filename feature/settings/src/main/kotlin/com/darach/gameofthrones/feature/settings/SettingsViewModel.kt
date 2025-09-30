@@ -6,6 +6,11 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
+import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
+import com.darach.gameofthrones.core.common.analytics.AnalyticsService
+import com.darach.gameofthrones.core.common.analytics.UserProperties
+import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
 import com.darach.gameofthrones.core.data.preferences.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +30,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val preferencesDataSource: PreferencesDataSource,
+    private val analyticsService: AnalyticsService,
+    private val crashReportingService: CrashReportingService,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -64,6 +71,7 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.ClearSearchHistory -> clearSearchHistory()
             is SettingsIntent.SyncData -> syncData()
             is SettingsIntent.ClearAllData -> clearAllData()
+            is SettingsIntent.TriggerTestCrash -> triggerTestCrash()
         }
     }
 
@@ -71,8 +79,14 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 preferencesDataSource.updateThemePreferences(themeMode = themeMode)
+                analyticsService.logEvent(
+                    AnalyticsEvents.THEME_CHANGED,
+                    mapOf(AnalyticsParams.THEME_MODE to themeMode.name)
+                )
+                analyticsService.setUserProperty(UserProperties.THEME_PREFERENCE, themeMode.name)
             }.onFailure { error ->
                 message.value = "Failed to update theme: ${error.message}"
+                crashReportingService.logException(error)
             }
         }
     }
@@ -81,8 +95,17 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 preferencesDataSource.updateThemePreferences(useDynamicColors = enabled)
+                analyticsService.logEvent(
+                    AnalyticsEvents.DYNAMIC_COLORS_TOGGLED,
+                    mapOf(AnalyticsParams.DYNAMIC_COLORS_ENABLED to enabled)
+                )
+                analyticsService.setUserProperty(
+                    UserProperties.DYNAMIC_COLORS_PREFERENCE,
+                    enabled.toString()
+                )
             }.onFailure { error ->
                 message.value = "Failed to update dynamic colors: ${error.message}"
+                crashReportingService.logException(error)
             }
         }
     }
@@ -152,6 +175,11 @@ class SettingsViewModel @Inject constructor(
                 isLoading.value = false
             }
         }
+    }
+
+    private fun triggerTestCrash() {
+        crashReportingService.log("Test crash triggered from Settings screen")
+        crashReportingService.forceCrash()
     }
 
     fun dismissMessage() {

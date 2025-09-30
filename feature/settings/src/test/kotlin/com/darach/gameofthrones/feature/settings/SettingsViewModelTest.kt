@@ -6,6 +6,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import app.cash.turbine.test
+import com.darach.gameofthrones.core.common.analytics.AnalyticsService
+import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
 import com.darach.gameofthrones.core.data.preferences.ThemeMode
 import com.darach.gameofthrones.core.data.preferences.UserPreferences
@@ -35,6 +37,8 @@ class SettingsViewModelTest {
 
     private lateinit var viewModel: SettingsViewModel
     private lateinit var preferencesDataSource: PreferencesDataSource
+    private lateinit var analyticsService: AnalyticsService
+    private lateinit var crashReportingService: CrashReportingService
     private lateinit var context: Context
     private lateinit var packageManager: PackageManager
 
@@ -56,6 +60,8 @@ class SettingsViewModelTest {
         every { android.util.Log.w(any(), any<String>(), any<Throwable>()) } returns 0
 
         preferencesDataSource = mockk(relaxed = true)
+        analyticsService = mockk(relaxed = true)
+        crashReportingService = mockk(relaxed = true)
         context = mockk(relaxed = true)
         packageManager = mockk(relaxed = true)
 
@@ -86,7 +92,12 @@ class SettingsViewModelTest {
 
         every { preferencesDataSource.userPreferences } returns flowOf(defaultPreferences)
 
-        viewModel = SettingsViewModel(preferencesDataSource, context)
+        viewModel = SettingsViewModel(
+            preferencesDataSource,
+            analyticsService,
+            crashReportingService,
+            context
+        )
     }
 
     @After
@@ -267,7 +278,12 @@ class SettingsViewModelTest {
     fun `handles package info retrieval error gracefully`() = runTest {
         every { context.packageManager } throws RuntimeException("Test error")
 
-        val errorViewModel = SettingsViewModel(preferencesDataSource, context)
+        val errorViewModel = SettingsViewModel(
+            preferencesDataSource,
+            analyticsService,
+            crashReportingService,
+            context
+        )
         testDispatcher.scheduler.advanceUntilIdle()
 
         errorViewModel.state.test {

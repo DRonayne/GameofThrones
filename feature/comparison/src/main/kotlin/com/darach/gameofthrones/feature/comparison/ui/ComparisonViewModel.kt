@@ -2,6 +2,9 @@ package com.darach.gameofthrones.feature.comparison.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
+import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
+import com.darach.gameofthrones.core.common.analytics.AnalyticsService
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
 import com.darach.gameofthrones.feature.comparison.ComparisonDiffCalculator
@@ -22,7 +25,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ComparisonViewModel @Inject constructor(
     private val diffCalculator: ComparisonDiffCalculator,
-    private val getFavoritesUseCase: GetFavoritesUseCase
+    private val getFavoritesUseCase: GetFavoritesUseCase,
+    private val analyticsService: AnalyticsService
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ComparisonState())
@@ -76,9 +80,25 @@ class ComparisonViewModel @Inject constructor(
             val isSelected = currentSelection.any { it.id == character.id }
 
             val newSelection = if (isSelected) {
+                analyticsService.logEvent(
+                    AnalyticsEvents.COMPARISON_CHARACTER_REMOVED,
+                    mapOf(
+                        AnalyticsParams.CHARACTER_ID to character.id,
+                        AnalyticsParams.CHARACTER_NAME to
+                            (character.name.takeIf { it.isNotBlank() } ?: "Unknown")
+                    )
+                )
                 currentSelection.filter { it.id != character.id }
             } else {
                 if (currentSelection.size < ComparisonState.MAX_SELECTION_SIZE) {
+                    analyticsService.logEvent(
+                        AnalyticsEvents.COMPARISON_CHARACTER_ADDED,
+                        mapOf(
+                            AnalyticsParams.CHARACTER_ID to character.id,
+                            AnalyticsParams.CHARACTER_NAME to
+                                (character.name.takeIf { it.isNotBlank() } ?: "Unknown")
+                        )
+                    )
                     currentSelection + character
                 } else {
                     currentSelection
@@ -91,6 +111,7 @@ class ComparisonViewModel @Inject constructor(
 
     private fun clearSelection() {
         _state.update { it.copy(selectedCharacters = emptyList()) }
+        analyticsService.logEvent(AnalyticsEvents.COMPARISON_CLEARED)
     }
 
     private fun startComparison() {
@@ -114,6 +135,10 @@ class ComparisonViewModel @Inject constructor(
                         isLoading = false
                     )
                 }
+                analyticsService.logEvent(
+                    AnalyticsEvents.COMPARISON_STARTED,
+                    mapOf(AnalyticsParams.COMPARISON_COUNT to selectedCharacters.size)
+                )
             } catch (e: IllegalArgumentException) {
                 _state.update {
                     it.copy(
@@ -132,6 +157,7 @@ class ComparisonViewModel @Inject constructor(
                 selectedCharacters = emptyList()
             )
         }
+        analyticsService.logEvent(AnalyticsEvents.COMPARISON_CLEARED)
     }
 
     private fun switchCharacter(oldCharacter: Character, newCharacter: Character) {
