@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,25 +35,31 @@ fun CharactersSearchBar(
     var isActive by remember { mutableStateOf(false) }
 
     SearchBar(
-        query = query,
-        onQueryChange = callbacks.onQueryChange,
-        onSearch = { searchQuery ->
-            callbacks.onSearch(searchQuery)
-            isActive = false
-        },
-        active = isActive,
-        onActiveChange = { isActive = it },
-        placeholder = { Text("Search characters, cultures, aliases...") },
-        leadingIcon = { SearchLeadingIcon() },
-        trailingIcon = {
-            SearchTrailingIcon(
+        inputField = {
+            SearchBarDefaults.InputField(
                 query = query,
-                onClear = {
-                    callbacks.onClearSearch()
+                onQueryChange = callbacks.onQueryChange,
+                onSearch = { searchQuery ->
+                    callbacks.onSearch(searchQuery)
                     isActive = false
+                },
+                expanded = isActive,
+                onExpandedChange = { isActive = it },
+                placeholder = { Text("Search characters, cultures, aliases...") },
+                leadingIcon = { SearchLeadingIcon() },
+                trailingIcon = {
+                    SearchTrailingIcon(
+                        query = query,
+                        onClear = {
+                            callbacks.onClearSearch()
+                            isActive = false
+                        }
+                    )
                 }
             )
         },
+        expanded = isActive,
+        onExpandedChange = { isActive = it },
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
