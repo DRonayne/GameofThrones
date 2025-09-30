@@ -20,6 +20,8 @@ kotlinxCoroutines = "1.10.2"
 # Compose
 composeBom = "2025.09.01"
 composeCompiler = "1.5.15"
+uiTextGoogleFonts = "1.9.2"
+material3 = "1.4.0"
 
 # Adaptive & Window
 adaptive = "1.1.0"
@@ -38,7 +40,7 @@ kotlinxSerializationJson = "1.8.1"
 coil = "3.0.4"
 
 # Room
-room = "2.7.2"
+room = "2.8.1"
 
 # DataStore
 datastore = "1.1.7"
@@ -86,10 +88,12 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-compose-material3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive", version.ref = "adaptive" }
 androidx-compose-material3-adaptive-layout = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout", version.ref = "adaptive" }
 androidx-compose-material3-adaptive-navigation = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "adaptive" }
+androidx-compose-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 # Window
 androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }

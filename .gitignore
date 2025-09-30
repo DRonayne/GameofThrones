@@ -35,3 +35,15 @@ gradle-app.setting
 
 # Kover
 **/kover/
+.idea/.name
+.idea/AndroidProjectSystem.xml
+.idea/androidTestResultsUserPreferences.xml
+.idea/appInsightsSettings.xml
+.idea/compiler.xml
+.idea/deploymentTargetSelector.xml
+.idea/gradle.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/kotlinc.xml
+.idea/migrations.xml
+.idea/runConfigurations.xml
+.idea/vcs.xml
