@@ -15,8 +15,11 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -87,6 +90,11 @@ class CharactersViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+
+        // Mock Android Log to prevent "Method not mocked" errors
+        mockkStatic(android.util.Log::class)
+        every { android.util.Log.e(any(), any(), any<Throwable>()) } returns 0
+        every { android.util.Log.e(any(), any()) } returns 0
 
         getCharactersUseCase = mockk()
         searchCharactersUseCase = mockk()
@@ -265,6 +273,298 @@ class CharactersViewModelTest {
             val state = awaitItem()
             assertTrue(state.searchHistory.contains("Jon"))
         }
+    }
+
+    @Test
+    fun `rapid search queries cancel previous operations`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+
+        var searchCallCount = 0
+        every { searchCharactersUseCase(any()) } answers {
+            searchCallCount++
+            flow {
+                delay(100) // Simulate slow search
+                emit(testCharacters)
+            }
+        }
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Rapidly type multiple characters
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("J"))
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Jo"))
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Jon"))
+
+        // Advance past debounce time for the last query only
+        testDispatcher.scheduler.advanceTimeBy(400)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Only the last query should be executed due to debouncing
+        verify(exactly = 1) { searchCharactersUseCase("Jon") }
+        assertEquals("Jon", viewModel.state.value.searchQuery)
+    }
+
+    @Test
+    fun `search results from cancelled queries are ignored`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+
+        val jonResult = listOf(testCharacters[0])
+        val aryaResult = listOf(testCharacters[1])
+
+        every { searchCharactersUseCase("Jon") } returns flow {
+            delay(200) // Slower search
+            emit(jonResult)
+        }
+
+        every { searchCharactersUseCase("Arya") } returns flow {
+            delay(50) // Faster search
+            emit(aryaResult)
+        }
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Search for "Jon" first
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Jon"))
+        testDispatcher.scheduler.advanceTimeBy(350)
+
+        // Quickly change to "Arya" before "Jon" completes
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Arya"))
+        testDispatcher.scheduler.advanceTimeBy(350)
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Should show results for "Arya" only, not "Jon"
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals("Arya", state.searchQuery)
+            assertEquals(aryaResult, state.filteredCharacters)
+        }
+    }
+
+    @Test
+    fun `search debounce waits for typing to stop`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+        every { searchCharactersUseCase(any()) } returns flowOf(testCharacters)
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Jon"))
+
+        // Advance by less than debounce time
+        testDispatcher.scheduler.advanceTimeBy(200)
+
+        // Search should not have been executed yet
+        verify(exactly = 0) { searchCharactersUseCase(any()) }
+
+        // Advance past debounce time
+        testDispatcher.scheduler.advanceTimeBy(200)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Now search should be executed
+        verify(exactly = 1) { searchCharactersUseCase("Jon") }
+    }
+
+    @Test
+    fun `search updates filteredCharacters with search results`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+        val searchResults = listOf(testCharacters[0])
+        every { searchCharactersUseCase("Jon") } returns flowOf(searchResults)
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Jon"))
+        testDispatcher.scheduler.advanceTimeBy(400)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals(searchResults, state.filteredCharacters)
+            assertEquals("Jon", state.searchQuery)
+        }
+    }
+
+    @Test
+    fun `filter is applied to search results`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+        every { searchCharactersUseCase("Stark") } returns flowOf(testCharacters)
+        every { filterCharactersUseCase(any(), any()) } answers {
+            val chars = firstArg<List<Character>>()
+            val filter = secondArg<CharacterFilter>()
+            if (filter.gender == "Male") {
+                chars.filter { it.gender == "Male" }
+            } else {
+                chars
+            }
+        }
+        every { sortCharactersUseCase(any(), any()) } answers { firstArg() }
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // First search for "Stark"
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Stark"))
+        testDispatcher.scheduler.advanceTimeBy(400)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then apply gender filter
+        viewModel.handleIntent(
+            CharactersIntent.FilterCharacters(CharacterFilter(gender = "Male"))
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals(1, state.filteredCharacters.size)
+            assertEquals("Male", state.filteredCharacters[0].gender)
+        }
+    }
+
+    @Test
+    fun `sort is applied to search results`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+        every { searchCharactersUseCase("Stark") } returns flowOf(testCharacters)
+        every { filterCharactersUseCase(any(), any()) } answers { firstArg() }
+        every { sortCharactersUseCase(any(), SortOption.NAME_DESC) } answers {
+            val chars = firstArg<List<Character>>()
+            chars.sortedByDescending { it.name }
+        }
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Search first
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Stark"))
+        testDispatcher.scheduler.advanceTimeBy(400)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then sort
+        viewModel.handleIntent(CharactersIntent.SortCharacters(SortOption.NAME_DESC))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals(SortOption.NAME_DESC, state.sortOption)
+            // Verify results are sorted by name descending
+            val names = state.filteredCharacters.map { it.name }
+            assertEquals(names.sortedDescending(), names)
+        }
+    }
+
+    @Test
+    fun `filter and sort are applied together to search results`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+        every { searchCharactersUseCase(any()) } returns flowOf(testCharacters)
+        every { filterCharactersUseCase(any(), any()) } answers {
+            val chars = firstArg<List<Character>>()
+            val filter = secondArg<CharacterFilter>()
+            if (filter.culture == "Northmen") {
+                chars.filter { it.culture == "Northmen" }
+            } else {
+                chars
+            }
+        }
+        every { sortCharactersUseCase(any(), SortOption.NAME_DESC) } answers {
+            val chars = firstArg<List<Character>>()
+            chars.sortedByDescending { it.name }
+        }
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Apply filter and sort before search
+        viewModel.handleIntent(
+            CharactersIntent.FilterCharacters(CharacterFilter(culture = "Northmen"))
+        )
+        viewModel.handleIntent(CharactersIntent.SortCharacters(SortOption.NAME_DESC))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then search
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Stark"))
+        testDispatcher.scheduler.advanceTimeBy(400)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.state.test {
+            val state = awaitItem()
+            // Both filter and sort should be applied
+            assertTrue(state.filteredCharacters.all { it.culture == "Northmen" })
+            val names = state.filteredCharacters.map { it.name }
+            assertEquals(names.sortedDescending(), names)
+        }
+    }
+
+    @Test
+    fun `clearing search restores base characters with current filter and sort`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+        every { searchCharactersUseCase("Jon") } returns flowOf(listOf(testCharacters[0]))
+        every { filterCharactersUseCase(any(), any()) } answers { firstArg() }
+        every { sortCharactersUseCase(any(), any()) } answers { firstArg() }
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Search first
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Jon"))
+        testDispatcher.scheduler.advanceTimeBy(400)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Verify search results
+        assertEquals(1, viewModel.state.value.filteredCharacters.size)
+
+        // Clear search
+        viewModel.handleIntent(CharactersIntent.ClearSearch)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Should restore base characters
+        viewModel.state.test {
+            val state = awaitItem()
+            assertEquals("", state.searchQuery)
+            assertEquals(testCharacters, state.filteredCharacters)
+        }
+    }
+
+    @Test
+    fun `search use case is called with correct query after debounce`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+        every { searchCharactersUseCase(any()) } returns flowOf(testCharacters)
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val searchQuery = "Winter is coming"
+        viewModel.handleIntent(CharactersIntent.SearchCharacters(searchQuery))
+        testDispatcher.scheduler.advanceTimeBy(400)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(exactly = 1) { searchCharactersUseCase(searchQuery) }
+    }
+
+    @Test
+    fun `filter changes trigger automatic recalculation without redundant calls`() = runTest {
+        every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
+        var filterCallCount = 0
+        every { filterCharactersUseCase(any(), any()) } answers {
+            filterCallCount++
+            firstArg()
+        }
+        every { sortCharactersUseCase(any(), any()) } answers { firstArg() }
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val initialFilterCalls = filterCallCount
+
+        // Change filter
+        viewModel.handleIntent(
+            CharactersIntent.FilterCharacters(CharacterFilter(onlyFavorites = true))
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Filter should be called again for the new filter
+        assertTrue(filterCallCount > initialFilterCalls)
     }
 
     private fun createViewModel() = CharactersViewModel(

@@ -1,7 +1,9 @@
 package com.darach.gameofthrones.feature.characters.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.RefreshCharactersUseCase
@@ -15,15 +17,17 @@ import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
@@ -37,10 +41,90 @@ class CharactersViewModel @Inject constructor(
     private val refreshCharactersUseCase: RefreshCharactersUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(CharactersState())
-    val state: StateFlow<CharactersState> = _state.asStateFlow()
+    private val baseCharacters = MutableStateFlow<List<Character>>(emptyList())
+    private val searchResultCharacters = MutableStateFlow<List<Character>>(emptyList())
+    private val filterFlow =
+        MutableStateFlow(com.darach.gameofthrones.core.domain.usecase.CharacterFilter())
+    private val sortOptionFlow =
+        MutableStateFlow(com.darach.gameofthrones.core.domain.usecase.SortOption.NAME_ASC)
+    private val searchQueryStateFlow = MutableStateFlow("")
+    private val isSearchActive = MutableStateFlow(false)
+    private val isLoading = MutableStateFlow(false)
+    private val isRefreshing = MutableStateFlow(false)
+    private val errorMessage = MutableStateFlow<String?>(null)
+    private val searchHistory = MutableStateFlow<List<String>>(emptyList())
+    private val searchQuerySharedFlow = MutableSharedFlow<String>(replay = 1)
 
-    private val searchQueryFlow = MutableSharedFlow<String>(replay = 1)
+    private val filteredCharacters = combine(
+        baseCharacters,
+        searchResultCharacters,
+        isSearchActive,
+        filterFlow,
+        sortOptionFlow
+    ) { baseChars, searchChars, searchActive, filter, sortOption ->
+        val sourceChars = if (searchActive && searchChars.isNotEmpty()) searchChars else baseChars
+        val filtered = filterCharactersUseCase(sourceChars, filter)
+        sortCharactersUseCase(filtered, sortOption)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = emptyList()
+    )
+
+    val state: StateFlow<CharactersState> = combine(
+        combine(
+            baseCharacters,
+            filteredCharacters,
+            filterFlow,
+            sortOptionFlow,
+            searchQueryStateFlow
+        ) {
+                baseChars,
+                filtered,
+                filter,
+                sortOption,
+                searchQuery
+            ->
+            Quintet(baseChars, filtered, filter, sortOption, searchQuery)
+        },
+        combine(searchHistory, isLoading, isRefreshing, errorMessage) {
+                history,
+                loading,
+                refreshing,
+                error
+            ->
+            Quartet(history, loading, refreshing, error)
+        }
+    ) { data1, data2 ->
+        CharactersState(
+            characters = data1.first,
+            filteredCharacters = data1.second,
+            filter = data1.third,
+            sortOption = data1.fourth,
+            searchQuery = data1.fifth,
+            searchHistory = data2.first,
+            isLoading = data2.second,
+            isRefreshing = data2.third,
+            error = data2.fourth,
+            isEmpty = data1.first.isEmpty(),
+            availableCultures = extractUniqueCultures(data1.first),
+            availableSeasons = extractUniqueSeasons(data1.first)
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = CharactersState()
+    )
+
+    private data class Quintet<A, B, C, D, E>(
+        val first: A,
+        val second: B,
+        val third: C,
+        val fourth: D,
+        val fifth: E
+    )
+
+    private data class Quartet<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
     init {
         loadCharacters()
@@ -61,153 +145,113 @@ class CharactersViewModel @Inject constructor(
     }
 
     private fun loadCharacters() {
-        _state.update { it.copy(isLoading = true, error = null) }
+        isLoading.value = true
+        errorMessage.value = null
 
         getCharactersUseCase(forceRefresh = false)
             .onEach { result ->
                 result.fold(
                     onSuccess = { characters ->
-                        _state.update {
-                            it.copy(
-                                characters = characters,
-                                filteredCharacters = applyFiltersAndSort(characters),
-                                isLoading = false,
-                                isEmpty = characters.isEmpty(),
-                                availableCultures = extractUniqueCultures(characters),
-                                availableSeasons = extractUniqueSeasons(characters)
-                            )
-                        }
+                        baseCharacters.value = characters
+                        isLoading.value = false
                     },
                     onFailure = { error ->
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                error = error.message ?: "Unknown error occurred"
-                            )
-                        }
+                        isLoading.value = false
+                        errorMessage.value = error.message ?: "Unknown error occurred"
+                        Log.e(TAG, "Failed to load characters", error)
                     }
                 )
             }
             .catch { error ->
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        error = error.message ?: "Unknown error occurred"
-                    )
-                }
+                isLoading.value = false
+                errorMessage.value = error.message ?: "Unknown error occurred"
+                Log.e(TAG, "Error in characters flow", error)
             }
             .launchIn(viewModelScope)
     }
 
     private fun refreshCharacters() {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = true, error = null) }
+            isRefreshing.value = true
+            errorMessage.value = null
 
             refreshCharactersUseCase()
                 .fold(
                     onSuccess = {
-                        _state.update { it.copy(isRefreshing = false) }
+                        isRefreshing.value = false
                     },
                     onFailure = { error ->
-                        _state.update {
-                            it.copy(
-                                isRefreshing = false,
-                                error = error.message ?: "Failed to refresh"
-                            )
-                        }
+                        isRefreshing.value = false
+                        errorMessage.value = error.message ?: "Failed to refresh"
+                        Log.e(TAG, "Failed to refresh characters", error)
                     }
                 )
         }
     }
 
     private fun setupSearchDebounce() {
-        searchQueryFlow
+        searchQuerySharedFlow
             .debounce(SEARCH_DEBOUNCE_MS)
             .distinctUntilChanged()
-            .map { query ->
+            .flatMapLatest { query ->
                 if (query.isBlank()) {
-                    _state.value.characters
+                    isSearchActive.value = false
+                    flowOf(baseCharacters.value)
                 } else {
-                    emptyList()
+                    isSearchActive.value = true
+                    searchCharactersUseCase(query)
                 }
             }
-            .onEach { characters ->
-                val currentState = _state.value
-                val query = currentState.searchQuery
-
-                if (query.isNotBlank()) {
-                    searchCharactersUseCase(query)
-                        .collect { searchResults ->
-                            _state.update {
-                                it.copy(
-                                    filteredCharacters = applyFiltersAndSort(searchResults),
-                                    searchHistory = addToSearchHistory(query)
-                                )
-                            }
-                        }
-                } else {
-                    _state.update {
-                        it.copy(filteredCharacters = applyFiltersAndSort(characters))
+            .onEach { searchResults ->
+                val query = searchQueryStateFlow.value
+                if (isSearchActive.value) {
+                    searchResultCharacters.value = searchResults
+                    if (query.isNotBlank()) {
+                        searchHistory.value = addToSearchHistory(query)
                     }
                 }
+            }
+            .catch { error ->
+                errorMessage.value = error.message ?: "Search failed"
+                Log.e(TAG, "Search error", error)
             }
             .launchIn(viewModelScope)
     }
 
     private fun searchCharacters(query: String) {
-        _state.update { it.copy(searchQuery = query) }
+        searchQueryStateFlow.value = query
         viewModelScope.launch {
-            searchQueryFlow.emit(query)
+            searchQuerySharedFlow.emit(query)
         }
     }
 
     private fun clearSearch() {
-        _state.update {
-            it.copy(
-                searchQuery = "",
-                filteredCharacters = applyFiltersAndSort(it.characters)
-            )
-        }
+        searchQueryStateFlow.value = ""
+        isSearchActive.value = false
+        searchResultCharacters.value = emptyList()
     }
 
     private fun filterCharacters(
         filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter
     ) {
-        _state.update {
-            it.copy(
-                filter = filter,
-                filteredCharacters = applyFiltersAndSort(it.characters)
-            )
-        }
+        filterFlow.value = filter
     }
 
     private fun sortCharacters(
         sortOption: com.darach.gameofthrones.core.domain.usecase.SortOption
     ) {
-        _state.update {
-            it.copy(
-                sortOption = sortOption,
-                filteredCharacters = applyFiltersAndSort(it.characters)
-            )
-        }
+        sortOptionFlow.value = sortOption
     }
 
     private fun toggleFavorite(characterId: String) {
         viewModelScope.launch {
-            val character = _state.value.characters.find { it.id == characterId } ?: return@launch
+            val character = baseCharacters.value.find { it.id == characterId } ?: return@launch
             toggleFavoriteUseCase(characterId, !character.isFavorite)
         }
     }
 
-    private fun applyFiltersAndSort(
-        characters: List<com.darach.gameofthrones.core.domain.model.Character>
-    ): List<com.darach.gameofthrones.core.domain.model.Character> {
-        val filtered = filterCharactersUseCase(characters, _state.value.filter)
-        return sortCharactersUseCase(filtered, _state.value.sortOption)
-    }
-
     private fun addToSearchHistory(query: String): List<String> {
-        val currentHistory = _state.value.searchHistory.toMutableList()
+        val currentHistory = searchHistory.value.toMutableList()
         if (query.isNotBlank() && !currentHistory.contains(query)) {
             currentHistory.add(0, query)
             if (currentHistory.size > MAX_SEARCH_HISTORY) {
@@ -217,22 +261,16 @@ class CharactersViewModel @Inject constructor(
         return currentHistory
     }
 
-    private fun extractUniqueCultures(
-        characters: List<com.darach.gameofthrones.core.domain.model.Character>
-    ): List<String> = characters
-        .map { it.culture }
-        .filter { it.isNotBlank() }
-        .distinct()
-        .sorted()
+    private fun extractUniqueCultures(characters: List<Character>): List<String> =
+        characters.mapNotNull {
+            it.culture.takeIf { culture -> culture.isNotBlank() }
+        }.distinct().sorted()
 
-    private fun extractUniqueSeasons(
-        characters: List<com.darach.gameofthrones.core.domain.model.Character>
-    ): List<Int> = characters
-        .flatMap { it.tvSeriesSeasons }
-        .distinct()
-        .sorted()
+    private fun extractUniqueSeasons(characters: List<Character>): List<Int> =
+        characters.flatMap { it.tvSeriesSeasons }.distinct().sorted()
 
     companion object {
+        private const val TAG = "CharactersViewModel"
         private const val SEARCH_DEBOUNCE_MS = 300L
         private const val MAX_SEARCH_HISTORY = 10
     }
