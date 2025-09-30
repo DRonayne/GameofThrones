@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
 import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
-import com.darach.gameofthrones.core.common.analytics.AnalyticsService
-import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
@@ -17,6 +15,7 @@ import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
 import com.darach.gameofthrones.core.network.util.NetworkMonitor
 import com.darach.gameofthrones.feature.characters.CharactersIntent
 import com.darach.gameofthrones.feature.characters.CharactersState
+import com.darach.gameofthrones.feature.characters.di.CharactersServiceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
@@ -44,10 +43,13 @@ class CharactersViewModel @Inject constructor(
     private val sortCharactersUseCase: SortCharactersUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val refreshCharactersUseCase: RefreshCharactersUseCase,
-    private val analyticsService: AnalyticsService,
-    private val crashReportingService: CrashReportingService,
+    private val serviceProvider: CharactersServiceProvider,
     networkMonitor: NetworkMonitor
 ) : ViewModel() {
+
+    val performanceMonitor = serviceProvider.performanceMonitor
+    private val analyticsService = serviceProvider.analyticsService
+    private val crashReportingService = serviceProvider.crashReportingService
 
     val isOnline: StateFlow<Boolean> = networkMonitor.isOnline.stateIn(
         scope = viewModelScope,

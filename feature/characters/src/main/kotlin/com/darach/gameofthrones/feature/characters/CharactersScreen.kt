@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.darach.gameofthrones.core.ui.performance.TrackScreenLoadTime
 import com.darach.gameofthrones.feature.characters.components.CharacterCard
 import com.darach.gameofthrones.feature.characters.components.CharactersSearchBar
 import com.darach.gameofthrones.feature.characters.components.FilterBottomSheet
@@ -57,6 +58,13 @@ fun CharactersScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
     var showFilterSheet by remember { mutableStateOf(false) }
+
+    // Track screen load time - when characters are loaded, the screen is ready
+    TrackScreenLoadTime(
+        screenName = "characters",
+        performanceMonitor = viewModel.performanceMonitor,
+        key = if (!state.isLoading && state.characters.isNotEmpty()) state.characters else null
+    )
 
     Scaffold(
         modifier = modifier

@@ -4,6 +4,7 @@ import com.darach.gameofthrones.core.network.BuildConfig
 import com.darach.gameofthrones.core.network.api.GoTApiService
 import com.darach.gameofthrones.core.network.interceptor.AuthorizationInterceptor
 import com.darach.gameofthrones.core.network.interceptor.NetworkConnectivityInterceptor
+import com.darach.gameofthrones.core.network.interceptor.PerformanceMonitoringInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,6 +57,7 @@ object NetworkModule {
     fun provideOkHttpClient(
         authorizationInterceptor: AuthorizationInterceptor,
         networkConnectivityInterceptor: NetworkConnectivityInterceptor,
+        performanceMonitoringInterceptor: PerformanceMonitoringInterceptor,
         loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
@@ -63,6 +65,7 @@ object NetworkModule {
         .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
         .addInterceptor(networkConnectivityInterceptor)
         .addInterceptor(authorizationInterceptor)
+        .addInterceptor(performanceMonitoringInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
 

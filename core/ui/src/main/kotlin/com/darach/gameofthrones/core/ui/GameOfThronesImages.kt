@@ -5,8 +5,10 @@ package com.darach.gameofthrones.core.ui
  */
 object GameOfThronesImages {
     val peopleImages = mapOf(
-        "Aidan Gillen" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3240.jpg",
-        "Alfie Allen" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3235.jpg",
+        "Aidan Gillen" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3240.jpg",
+        "Alfie Allen" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3235.jpg",
         "Arya Stark" to
             "https://static.tvmaze.com/uploads/images/medium_portrait/64/162189.jpg",
         "Bran Stark" to
@@ -25,78 +27,151 @@ object GameOfThronesImages {
             "https://static.tvmaze.com/uploads/images/medium_portrait/9/23151.jpg",
         "Daenerys Targaryen" to
             "https://static.tvmaze.com/uploads/images/medium_portrait/567/1418483.jpg",
-        "Davos Seaworth" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/594.jpg",
-        "Dean Charles Chapman" to "https://static.tvmaze.com/uploads/images/medium_portrait/2/5727.jpg",
-        "Ellaria Sand" to "https://static.tvmaze.com/uploads/images/medium_portrait/9/23152.jpg",
-        "Emilia Clarke" to "https://static.tvmaze.com/uploads/images/medium_portrait/460/1150100.jpg",
-        "Gendry" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/589.jpg",
-        "Gilly" to "https://static.tvmaze.com/uploads/images/medium_portrait/192/482446.jpg",
-        "Grey Worm" to "https://static.tvmaze.com/uploads/images/medium_portrait/172/431759.jpg",
-        "Gwendoline Christie" to "https://static.tvmaze.com/uploads/images/medium_portrait/418/1046433.jpg",
-        "Hannah Murray" to "https://static.tvmaze.com/uploads/images/medium_portrait/7/18055.jpg",
-        "Harry Lloyd" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3329.jpg",
-        "High Sparrow" to "https://static.tvmaze.com/uploads/images/medium_portrait/11/28572.jpg",
-        "Iain Glen" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3233.jpg",
-        "Indira Varma" to "https://static.tvmaze.com/uploads/images/medium_portrait/525/1313489.jpg",
-        "Isaac Hempstead-Wright" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3238.jpg",
-        "Iwan Rheon" to "https://static.tvmaze.com/uploads/images/medium_portrait/447/1118762.jpg",
-        "Jack Gleeson" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3237.jpg",
-        "Jacob Anderson" to "https://static.tvmaze.com/uploads/images/medium_portrait/520/1300143.jpg",
-        "James Cosmo" to "https://static.tvmaze.com/uploads/images/medium_portrait/181/453032.jpg",
-        "Jaqen H'ghar" to "https://static.tvmaze.com/uploads/images/medium_portrait/211/529595.jpg",
-        "Jerome Flynn" to "https://static.tvmaze.com/uploads/images/medium_portrait/428/1070572.jpg",
-        "Joe Dempsie" to "https://static.tvmaze.com/uploads/images/medium_portrait/557/1394747.jpg",
-        "John Bradley" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3242.jpg",
-        "Jon Snow" to "https://static.tvmaze.com/uploads/images/medium_portrait/63/158800.jpg",
-        "Jonathan Pryce" to "https://static.tvmaze.com/uploads/images/medium_portrait/92/231635.jpg",
-        "King Robert Baratheon" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/598.jpg",
-        "Kit Harington" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3229.jpg",
-        "Kristofer Hivju" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3330.jpg",
-        "Lady Catelyn Stark" to "https://static.tvmaze.com/uploads/images/medium_portrait/63/158823.jpg",
-        "Lena Headey" to "https://static.tvmaze.com/uploads/images/medium_portrait/458/1145115.jpg",
-        "Liam Cunningham" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3260.jpg",
-        "Lord Commander Jeor Mormont" to "https://static.tvmaze.com/uploads/images/medium_portrait/211/529534.jpg",
-        "Lord Eddard Stark" to "https://static.tvmaze.com/uploads/images/medium_portrait/211/529531.jpg",
-        "Lord Roose Bolton" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/609.jpg",
-        "Lord Tywin Lannister" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/602.jpg",
-        "Lord Varys" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/596.jpg",
-        "Maisie Williams" to "https://static.tvmaze.com/uploads/images/medium_portrait/282/706106.jpg",
-        "Mark Addy" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3324.jpg",
-        "Melisandre" to "https://static.tvmaze.com/uploads/images/medium_portrait/172/431775.jpg",
-        "Michael McElhatton" to "https://static.tvmaze.com/uploads/images/medium_portrait/3/8123.jpg",
-        "Michiel Huisman" to "https://static.tvmaze.com/uploads/images/medium_portrait/8/20724.jpg",
-        "Michelle Fairley" to "https://static.tvmaze.com/uploads/images/medium_portrait/186/466394.jpg",
-        "Missandei" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/611.jpg",
-        "Natalie Dormer" to "https://static.tvmaze.com/uploads/images/medium_portrait/512/1281914.jpg",
-        "Nathalie Emmanuel" to "https://static.tvmaze.com/uploads/images/medium_portrait/93/234475.jpg",
-        "Nikolaj Coster-Waldau" to "https://static.tvmaze.com/uploads/images/medium_portrait/62/155678.jpg",
-        "Peter Dinklage" to "https://static.tvmaze.com/uploads/images/medium_portrait/74/186607.jpg",
-        "Petyr \"Littlefinger\" Baelish" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/1463.jpg",
-        "Prince Joffrey Baratheon" to "https://static.tvmaze.com/uploads/images/medium_portrait/63/158821.jpg",
-        "Queen Cersei Lannister" to "https://static.tvmaze.com/uploads/images/medium_portrait/63/158806.jpg",
-        "Queen Margaery Tyrell" to "https://static.tvmaze.com/uploads/images/medium_portrait/211/529552.jpg",
-        "Ramsay Snow" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3331.jpg",
-        "Richard Madden" to "https://static.tvmaze.com/uploads/images/medium_portrait/173/434079.jpg",
-        "Robb Stark" to "https://static.tvmaze.com/uploads/images/medium_portrait/63/158825.jpg",
-        "Rory McCann" to "https://static.tvmaze.com/uploads/images/medium_portrait/394/987171.jpg",
-        "Rose Leslie" to "https://static.tvmaze.com/uploads/images/medium_portrait/107/267661.jpg",
-        "Samwell Tarly" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/591.jpg",
-        "Sandor Clegane" to "https://static.tvmaze.com/uploads/images/medium_portrait/63/158819.jpg",
-        "Sansa Stark" to "https://static.tvmaze.com/uploads/images/medium_portrait/63/158812.jpg",
-        "Sean Bean" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3294.jpg",
-        "Ser Jaime Lannister" to "https://static.tvmaze.com/uploads/images/medium_portrait/64/162190.jpg",
-        "Ser Jorah Mormont" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/1457.jpg",
-        "Shae" to "https://static.tvmaze.com/uploads/images/medium_portrait/211/529553.jpg",
-        "Sibel Kekilli" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3244.jpg",
-        "Sophie Turner" to "https://static.tvmaze.com/uploads/images/medium_portrait/82/205626.jpg",
-        "Stannis Baratheon" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3245.jpg",
-        "Stephen Dillane" to "https://static.tvmaze.com/uploads/images/medium_portrait/68/171092.jpg",
-        "Theon Greyjoy" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/599.jpg",
-        "Tom Wlaschiha" to "https://static.tvmaze.com/uploads/images/medium_portrait/429/1073931.jpg",
-        "Tommen Baratheon" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/603.jpg",
-        "Tormund Giantsbane" to "https://static.tvmaze.com/uploads/images/medium_portrait/1/3169.jpg",
-        "Tyrion Lannister" to "https://static.tvmaze.com/uploads/images/medium_portrait/63/158804.jpg",
-        "Viserys Targaryen" to "https://static.tvmaze.com/uploads/images/medium_portrait/0/600.jpg",
-        "Ygritte" to "https://static.tvmaze.com/uploads/images/medium_portrait/211/529550.jpg"
+        "Davos Seaworth" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/594.jpg",
+        "Dean Charles Chapman" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/2/5727.jpg",
+        "Ellaria Sand" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/9/23152.jpg",
+        "Emilia Clarke" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/460/1150100.jpg",
+        "Gendry" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/589.jpg",
+        "Gilly" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/192/482446.jpg",
+        "Grey Worm" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/172/431759.jpg",
+        "Gwendoline Christie" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/418/1046433.jpg",
+        "Hannah Murray" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/7/18055.jpg",
+        "Harry Lloyd" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3329.jpg",
+        "High Sparrow" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/11/28572.jpg",
+        "Iain Glen" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3233.jpg",
+        "Indira Varma" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/525/1313489.jpg",
+        "Isaac Hempstead-Wright" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3238.jpg",
+        "Iwan Rheon" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/447/1118762.jpg",
+        "Jack Gleeson" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3237.jpg",
+        "Jacob Anderson" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/520/1300143.jpg",
+        "James Cosmo" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/181/453032.jpg",
+        "Jaqen H'ghar" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/211/529595.jpg",
+        "Jerome Flynn" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/428/1070572.jpg",
+        "Joe Dempsie" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/557/1394747.jpg",
+        "John Bradley" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3242.jpg",
+        "Jon Snow" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/63/158800.jpg",
+        "Jonathan Pryce" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/92/231635.jpg",
+        "King Robert Baratheon" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/598.jpg",
+        "Kit Harington" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3229.jpg",
+        "Kristofer Hivju" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3330.jpg",
+        "Lady Catelyn Stark" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/63/158823.jpg",
+        "Lena Headey" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/458/1145115.jpg",
+        "Liam Cunningham" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3260.jpg",
+        "Lord Commander Jeor Mormont" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/211/529534.jpg",
+        "Lord Eddard Stark" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/211/529531.jpg",
+        "Lord Roose Bolton" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/609.jpg",
+        "Lord Tywin Lannister" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/602.jpg",
+        "Lord Varys" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/596.jpg",
+        "Maisie Williams" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/282/706106.jpg",
+        "Mark Addy" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3324.jpg",
+        "Melisandre" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/172/431775.jpg",
+        "Michael McElhatton" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/3/8123.jpg",
+        "Michiel Huisman" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/8/20724.jpg",
+        "Michelle Fairley" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/186/466394.jpg",
+        "Missandei" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/611.jpg",
+        "Natalie Dormer" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/512/1281914.jpg",
+        "Nathalie Emmanuel" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/93/234475.jpg",
+        "Nikolaj Coster-Waldau" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/62/155678.jpg",
+        "Peter Dinklage" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/74/186607.jpg",
+        "Petyr \"Littlefinger\" Baelish" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/1463.jpg",
+        "Prince Joffrey Baratheon" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/63/158821.jpg",
+        "Queen Cersei Lannister" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/63/158806.jpg",
+        "Queen Margaery Tyrell" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/211/529552.jpg",
+        "Ramsay Snow" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3331.jpg",
+        "Richard Madden" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/173/434079.jpg",
+        "Robb Stark" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/63/158825.jpg",
+        "Rory McCann" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/394/987171.jpg",
+        "Rose Leslie" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/107/267661.jpg",
+        "Samwell Tarly" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/591.jpg",
+        "Sandor Clegane" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/63/158819.jpg",
+        "Sansa Stark" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/63/158812.jpg",
+        "Sean Bean" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3294.jpg",
+        "Ser Jaime Lannister" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/64/162190.jpg",
+        "Ser Jorah Mormont" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/1457.jpg",
+        "Shae" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/211/529553.jpg",
+        "Sibel Kekilli" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3244.jpg",
+        "Sophie Turner" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/82/205626.jpg",
+        "Stannis Baratheon" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3245.jpg",
+        "Stephen Dillane" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/68/171092.jpg",
+        "Theon Greyjoy" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/599.jpg",
+        "Tom Wlaschiha" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/429/1073931.jpg",
+        "Tommen Baratheon" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/603.jpg",
+        "Tormund Giantsbane" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/1/3169.jpg",
+        "Tyrion Lannister" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/63/158804.jpg",
+        "Viserys Targaryen" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/0/600.jpg",
+        "Ygritte" to
+            "https://static.tvmaze.com/uploads/images/medium_portrait/211/529550.jpg"
     )
 }

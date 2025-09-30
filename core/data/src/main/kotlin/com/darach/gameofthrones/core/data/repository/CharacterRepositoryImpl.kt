@@ -1,5 +1,7 @@
 package com.darach.gameofthrones.core.data.repository
 
+import com.darach.gameofthrones.core.common.performance.PerformanceMonitor
+import com.darach.gameofthrones.core.common.performance.trace
 import com.darach.gameofthrones.core.data.mapper.toDomain
 import com.darach.gameofthrones.core.data.mapper.toEntity
 import com.darach.gameofthrones.core.database.dao.CharacterDao
@@ -17,7 +19,8 @@ import kotlinx.coroutines.flow.map
 @Singleton
 class CharacterRepositoryImpl @Inject constructor(
     private val apiService: GoTApiService,
-    private val characterDao: CharacterDao
+    private val characterDao: CharacterDao,
+    private val performanceMonitor: PerformanceMonitor
 ) : CharacterRepository {
 
     override fun observeCharacters(forceRefresh: Boolean): Flow<Result<List<Character>>> = flow {
@@ -62,24 +65,34 @@ class CharacterRepositoryImpl @Inject constructor(
             .map { entities -> entities.map { it.toDomain() } }
 
     override suspend fun updateFavorite(characterId: String, isFavorite: Boolean) {
-        characterDao.updateFavorite(characterId, isFavorite)
+        performanceMonitor.trace(
+            traceName = "update_favorite",
+            attributes = mapOf("is_favorite" to isFavorite.toString())
+        ) {
+            characterDao.updateFavorite(characterId, isFavorite)
+        }
     }
 
-    override suspend fun refreshCharacters(): Result<Unit> = when (
-        val networkResult = safeApiCall {
-            fetchCharactersFromApi()
-        }
+    override suspend fun refreshCharacters(): Result<Unit> = performanceMonitor.trace(
+        traceName = "refresh_characters",
+        attributes = mapOf("operation" to "refresh")
     ) {
-        is NetworkResult.Success -> {
-            val characters = networkResult.data
-            characterDao.refreshCharacters(characters.map { it.toEntity() })
-            Result.success(Unit)
-        }
-        is NetworkResult.Error -> {
-            Result.failure(Exception(networkResult.message))
-        }
-        is NetworkResult.Loading -> {
-            Result.failure(Exception("Loading state should not occur"))
+        when (
+            val networkResult = safeApiCall {
+                fetchCharactersFromApi()
+            }
+        ) {
+            is NetworkResult.Success -> {
+                val characters = networkResult.data
+                characterDao.refreshCharacters(characters.map { it.toEntity() })
+                Result.success(Unit)
+            }
+            is NetworkResult.Error -> {
+                Result.failure(Exception(networkResult.message))
+            }
+            is NetworkResult.Loading -> {
+                Result.failure(Exception("Loading state should not occur"))
+            }
         }
     }
 

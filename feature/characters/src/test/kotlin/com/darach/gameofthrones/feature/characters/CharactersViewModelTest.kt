@@ -3,7 +3,9 @@ package com.darach.gameofthrones.feature.characters
 import app.cash.turbine.test
 import com.darach.gameofthrones.core.common.analytics.AnalyticsService
 import com.darach.gameofthrones.core.common.crash.CrashReportingService
+import com.darach.gameofthrones.core.common.performance.PerformanceMonitor
 import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.feature.characters.di.CharactersServiceProvider
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
@@ -585,8 +587,11 @@ class CharactersViewModelTest {
         sortCharactersUseCase = sortCharactersUseCase,
         toggleFavoriteUseCase = toggleFavoriteUseCase,
         refreshCharactersUseCase = refreshCharactersUseCase,
-        analyticsService = analyticsService,
-        crashReportingService = crashReportingService,
+        serviceProvider = CharactersServiceProvider(
+            analyticsService = analyticsService,
+            crashReportingService = crashReportingService,
+            performanceMonitor = mockk<PerformanceMonitor>(relaxed = true)
+        ),
         networkMonitor = networkMonitor
     )
 }
