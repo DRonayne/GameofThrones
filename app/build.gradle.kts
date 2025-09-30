@@ -118,6 +118,10 @@ dependencies {
     implementation(libs.androidx.window)
     implementation(libs.androidx.window.core)
 
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

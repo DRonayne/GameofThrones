@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import com.darach.gameofthrones.feature.characters.CharactersScreen
 import com.darach.gameofthrones.ui.theme.GameOfThronesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,12 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GameOfThronesTheme {
-                CharactersScreen(
-                    onCharacterClick = { characterId ->
-                        // TODO: Navigate to character detail screen
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
+                GoTNavHost(modifier = Modifier.fillMaxSize())
             }
         }
     }
