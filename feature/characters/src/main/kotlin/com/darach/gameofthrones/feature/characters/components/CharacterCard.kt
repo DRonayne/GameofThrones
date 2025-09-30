@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
+import com.darach.gameofthrones.core.ui.component.PortraitImage
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -42,19 +43,31 @@ fun CharacterCard(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            CharacterCardHeader(
-                character = character,
-                onFavoriteClick = onFavoriteClick
+            PortraitImage(
+                imageUrl = character.characterImageUrl,
+                contentDescription = character.name,
+                modifier = Modifier.width(80.dp)
             )
 
-            CharacterCardSeasonBadges(seasons = character.tvSeriesSeasons)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                CharacterCardHeader(
+                    character = character,
+                    onFavoriteClick = onFavoriteClick
+                )
 
-            CharacterCardAlias(alias = character.aliases.firstOrNull())
+                CharacterCardSeasonBadges(seasons = character.tvSeriesSeasons)
+
+                CharacterCardAlias(alias = character.aliases.firstOrNull())
+            }
         }
     }
 }

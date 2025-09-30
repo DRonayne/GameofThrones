@@ -5,7 +5,6 @@ import com.darach.gameofthrones.core.common.analytics.AnalyticsService
 import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.common.performance.PerformanceMonitor
 import com.darach.gameofthrones.core.domain.model.Character
-import com.darach.gameofthrones.feature.characters.di.CharactersServiceProvider
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
@@ -15,6 +14,7 @@ import com.darach.gameofthrones.core.domain.usecase.SortCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SortOption
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
 import com.darach.gameofthrones.core.network.util.NetworkMonitor
+import com.darach.gameofthrones.feature.characters.di.CharactersServiceProvider
 import com.darach.gameofthrones.feature.characters.ui.CharactersViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify

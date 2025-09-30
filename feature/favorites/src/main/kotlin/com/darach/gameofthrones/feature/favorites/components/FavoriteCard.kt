@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
+import com.darach.gameofthrones.core.ui.component.PortraitImage
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -69,11 +70,38 @@ fun FavoriteCard(
             }
         )
     ) {
-        Box {
+        FavoriteCardContent(
+            character = character,
+            isSelectionMode = isSelectionMode,
+            isSelected = isSelected,
+            callbacks = callbacks
+        )
+    }
+}
+
+@Composable
+private fun FavoriteCardContent(
+    character: Character,
+    isSelectionMode: Boolean,
+    isSelected: Boolean,
+    callbacks: FavoriteCardCallbacks,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PortraitImage(
+                imageUrl = character.characterImageUrl,
+                contentDescription = character.name,
+                modifier = Modifier.width(80.dp)
+            )
+
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 FavoriteCardHeader(
                     character = character,
@@ -85,16 +113,16 @@ fun FavoriteCard(
 
                 FavoriteCardCulture(culture = character.culture)
             }
+        }
 
-            if (isSelectionMode) {
-                Checkbox(
-                    checked = isSelected,
-                    onCheckedChange = { callbacks.onToggleSelection() },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                )
-            }
+        if (isSelectionMode) {
+            Checkbox(
+                checked = isSelected,
+                onCheckedChange = { callbacks.onToggleSelection() },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            )
         }
     }
 }

@@ -18,6 +18,8 @@ data class Character(
     val tvSeries: List<String>,
     val tvSeriesSeasons: List<Int>,
     val playedBy: List<String>,
+    val characterImageUrl: String? = null,
+    val actorImageUrls: Map<String, String?> = emptyMap(),
     val isFavorite: Boolean = false,
     val isDead: Boolean = died.isNotEmpty(),
     val lastUpdated: Long = System.currentTimeMillis()

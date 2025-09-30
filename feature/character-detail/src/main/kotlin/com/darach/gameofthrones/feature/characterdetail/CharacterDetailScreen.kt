@@ -55,6 +55,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
+import com.darach.gameofthrones.core.ui.component.PortraitImage
 import com.darach.gameofthrones.feature.characterdetail.ui.CharacterDetailViewModel
 
 @Composable
@@ -251,7 +252,10 @@ private fun CharacterDetails(character: Character, paddingValues: PaddingValues)
 
         if (character.playedBy.any { it.isNotBlank() }) {
             item {
-                ActorsSection(actors = character.playedBy.filter { it.isNotBlank() })
+                ActorsSection(
+                    actors = character.playedBy.filter { it.isNotBlank() },
+                    actorImageUrls = character.actorImageUrls
+                )
             }
         }
     }
@@ -271,6 +275,16 @@ private fun HeroSection(character: Character, modifier: Modifier = Modifier) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            if (character.characterImageUrl != null) {
+                PortraitImage(
+                    imageUrl = character.characterImageUrl,
+                    contentDescription = character.name,
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .padding(bottom = 16.dp)
+                )
+            }
+
             Text(
                 text = character.name.ifBlank { "Unknown" },
                 style = MaterialTheme.typography.headlineMedium,
@@ -463,7 +477,11 @@ private fun TVSeriesSection(seasons: List<Int>, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ActorsSection(actors: List<String>, modifier: Modifier = Modifier) {
+private fun ActorsSection(
+    actors: List<String>,
+    actorImageUrls: Map<String, String?>,
+    modifier: Modifier = Modifier
+) {
     Card(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -475,12 +493,23 @@ private fun ActorsSection(actors: List<String>, modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.height(12.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 actors.forEach { actor ->
-                    Text(
-                        text = actor,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        PortraitImage(
+                            imageUrl = actorImageUrls[actor],
+                            contentDescription = actor,
+                            modifier = Modifier.size(width = 60.dp, height = 80.dp)
+                        )
+                        Text(
+                            text = actor,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                 }
             }
         }

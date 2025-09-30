@@ -27,6 +27,8 @@ data class CharacterEntity(
     val povBooks: List<String>,
     val tvSeries: List<String>,
     val playedBy: List<String>,
+    val characterImageUrl: String? = null,
+    val actorImageUrls: Map<String, String?> = emptyMap(),
     val isFavorite: Boolean = false,
     val lastUpdated: Long = System.currentTimeMillis()
 )

@@ -67,7 +67,10 @@ class CharacterRepositoryImplTest {
     fun setup() {
         apiService = mockk()
         characterDao = mockk(relaxed = true)
-        val performanceMonitor = mockk<com.darach.gameofthrones.core.common.performance.PerformanceMonitor>(relaxed = true)
+        val performanceMonitor =
+            mockk<com.darach.gameofthrones.core.common.performance.PerformanceMonitor>(
+                relaxed = true
+            )
         repository = CharacterRepositoryImpl(apiService, characterDao, performanceMonitor)
     }
 

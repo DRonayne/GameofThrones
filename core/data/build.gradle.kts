@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":core:domain"))
+    implementation(project(":core:ui"))
 
     // DataStore
     implementation(libs.datastore.preferences)
