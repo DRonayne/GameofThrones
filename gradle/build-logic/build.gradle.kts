@@ -10,4 +10,18 @@ repositories {
 dependencies {
     implementation(libs.android.gradle.plugin)
     implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.kover.gradle.plugin)
+}
+
+gradlePlugin {
+    plugins {
+        register("androidLibrary") {
+            id = "gameofthrones.android.library"
+            implementationClass = "AndroidLibraryConventionPlugin"
+        }
+        register("androidFeature") {
+            id = "gameofthrones.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
+    }
 }

@@ -22,3 +22,18 @@ dependencyResolutionManagement {
 
 rootProject.name = "Game of Thrones"
 include(":app")
+
+// Core modules
+include(":core:common")
+include(":core:network")
+include(":core:database")
+include(":core:data")
+include(":core:domain")
+include(":core:ui")
+
+// Feature modules
+include(":feature:characters")
+include(":feature:character-detail")
+include(":feature:favorites")
+include(":feature:comparison")
+include(":feature:settings")

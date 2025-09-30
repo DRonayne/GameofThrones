@@ -3,6 +3,9 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -10,16 +13,19 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
+                apply("com.google.devtools.ksp")
+                apply("com.google.dagger.hilt.android")
+                apply("org.jetbrains.kotlinx.kover")
             }
 
+            val libs = extensions.getByType(org.gradle.api.artifacts.VersionCatalogsExtension::class.java).named("libs")
+
             extensions.configure<LibraryExtension> {
-                compileSdk = 36
+                compileSdk = libs.findVersion("compileSdk").get().toString().toInt()
 
                 defaultConfig {
-                    minSdk = 30
-
+                    minSdk = libs.findVersion("minSdk").get().toString().toInt()
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                    consumerProguardFiles("consumer-rules.pro")
                 }
 
                 compileOptions {
@@ -32,6 +38,22 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                         excludes += "/META-INF/{AL2.0,LGPL2.1}"
                     }
                 }
+            }
+
+            extensions.configure<KotlinAndroidProjectExtension> {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_17)
+                }
+            }
+
+            dependencies {
+                add("implementation", libs.findLibrary("hilt.android").get())
+                add("ksp", libs.findLibrary("hilt.android.compiler").get())
+
+                add("testImplementation", libs.findLibrary("junit").get())
+                add("testImplementation", libs.findLibrary("truth").get())
+                add("testImplementation", libs.findLibrary("kotlinx.coroutines.test").get())
+                add("testImplementation", libs.findLibrary("mockk").get())
             }
         }
     }

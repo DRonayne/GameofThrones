@@ -13,12 +13,21 @@ plugins {
 
 android {
     namespace = "com.darach.gameofthrones"
-    compileSdk = 36
+    compileSdk =
+        libs.versions.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "com.darach.gameofthrones"
-        minSdk = 30
-        targetSdk = 36
+        minSdk =
+            libs.versions.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.targetSdk
+                .get()
+                .toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -41,7 +50,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
                 mappingFileUploadEnabled = true
@@ -54,8 +63,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     buildFeatures {
@@ -71,6 +82,19 @@ android {
 }
 
 dependencies {
+    // Feature modules
+    implementation(project(":feature:characters"))
+    implementation(project(":feature:character-detail"))
+    implementation(project(":feature:favorites"))
+    implementation(project(":feature:comparison"))
+    implementation(project(":feature:settings"))
+
+    // Core modules
+    implementation(project(":core:common"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
+    implementation(project(":core:ui"))
+
     // AndroidX Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -96,27 +120,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
-
-    // Retrofit & Networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlinx.serialization)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-    implementation(libs.kotlinx.serialization.json)
-
-    // Coil
-    implementation(libs.coil)
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network.okhttp)
-
-    // Room
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
-
-    // DataStore
-    implementation(libs.datastore.preferences)
-    implementation(libs.datastore.preferences.core)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
@@ -157,11 +160,11 @@ kover {
                     "*.BuildConfig",
                     "*.ComposableSingletons*",
                     "*_Impl*",
-                    "dagger.hilt.*"
+                    "dagger.hilt.*",
                 )
                 packages(
                     "hilt_aggregated_deps",
-                    "dagger.hilt.internal"
+                    "dagger.hilt.internal",
                 )
             }
         }

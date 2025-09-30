@@ -30,7 +30,6 @@ subprojects {
                     )
                 )
             trimTrailingWhitespace()
-            indentWithSpaces()
             endWithNewline()
         }
         kotlinGradle {

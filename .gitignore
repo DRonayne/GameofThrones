@@ -14,8 +14,24 @@
 .cxx
 local.properties
 
+# Build outputs
+**/build/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Gradle files
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
 # Firebase - uncomment when adding real google-services.json
 # app/google-services.json
 
 # Detekt
 **/detekt-report.*
+
+# Kover
+**/kover/
