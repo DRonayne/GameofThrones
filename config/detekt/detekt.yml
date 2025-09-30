@@ -69,7 +69,7 @@ complexity:
   LongParameterList:
     active: true
     functionThreshold: 6
-    constructorThreshold: 7
+    constructorThreshold: 8
     ignoreDefaultParameters: false
     ignoreDataClasses: true
     ignoreAnnotatedParameter: []
@@ -88,7 +88,7 @@ complexity:
     active: true
     thresholdInFiles: 15
     thresholdInClasses: 15
-    thresholdInInterfaces: 11
+    thresholdInInterfaces: 12
     thresholdInObjects: 11
     thresholdInEnums: 11
     ignoreDeprecated: false

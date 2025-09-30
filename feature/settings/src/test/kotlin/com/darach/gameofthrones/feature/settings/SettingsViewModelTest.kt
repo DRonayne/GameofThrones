@@ -235,7 +235,6 @@ class SettingsViewModelTest {
         }
     }
 
-
     @Test
     fun `error during theme update shows error message`() = runTest {
         coEvery {

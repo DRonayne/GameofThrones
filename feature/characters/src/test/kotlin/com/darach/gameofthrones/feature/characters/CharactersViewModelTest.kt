@@ -10,6 +10,7 @@ import com.darach.gameofthrones.core.domain.usecase.SearchCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SortCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SortOption
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
+import com.darach.gameofthrones.core.network.util.NetworkMonitor
 import com.darach.gameofthrones.feature.characters.ui.CharactersViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -43,6 +44,7 @@ class CharactersViewModelTest {
     private lateinit var sortCharactersUseCase: SortCharactersUseCase
     private lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
     private lateinit var refreshCharactersUseCase: RefreshCharactersUseCase
+    private lateinit var networkMonitor: NetworkMonitor
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -102,9 +104,12 @@ class CharactersViewModelTest {
         sortCharactersUseCase = mockk()
         toggleFavoriteUseCase = mockk()
         refreshCharactersUseCase = mockk()
+        networkMonitor = mockk(relaxed = true)
 
         every { filterCharactersUseCase(any(), any()) } answers { firstArg() }
         every { sortCharactersUseCase(any(), any()) } answers { firstArg() }
+        every { networkMonitor.isOnline } returns flowOf(true)
+        every { networkMonitor.isCurrentlyOnline() } returns true
     }
 
     @After
@@ -573,6 +578,7 @@ class CharactersViewModelTest {
         filterCharactersUseCase = filterCharactersUseCase,
         sortCharactersUseCase = sortCharactersUseCase,
         toggleFavoriteUseCase = toggleFavoriteUseCase,
-        refreshCharactersUseCase = refreshCharactersUseCase
+        refreshCharactersUseCase = refreshCharactersUseCase,
+        networkMonitor = networkMonitor
     )
 }

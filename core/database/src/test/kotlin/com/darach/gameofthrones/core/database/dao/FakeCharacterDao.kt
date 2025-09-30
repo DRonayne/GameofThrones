@@ -64,5 +64,8 @@ class FakeCharacterDao : CharacterDao {
 
     override suspend fun getCharacterCount(): Int = characters.value.size
 
+    override suspend fun getFavoriteCharacterIds(): List<String> =
+        characters.value.filter { it.isFavorite }.map { it.id }
+
     suspend fun getFavoritesCount(): Int = characters.value.count { it.isFavorite }
 }

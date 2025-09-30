@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -41,6 +42,7 @@ import com.darach.gameofthrones.feature.characters.components.CharacterCard
 import com.darach.gameofthrones.feature.characters.components.CharactersSearchBar
 import com.darach.gameofthrones.feature.characters.components.FilterBottomSheet
 import com.darach.gameofthrones.feature.characters.components.FilterBottomSheetState
+import com.darach.gameofthrones.feature.characters.components.OfflineIndicator
 import com.darach.gameofthrones.feature.characters.components.SearchBarCallbacks
 import com.darach.gameofthrones.feature.characters.components.SortOptionsMenu
 import com.darach.gameofthrones.feature.characters.ui.CharactersViewModel
@@ -53,20 +55,30 @@ fun CharactersScreen(
     viewModel: CharactersViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
     var showFilterSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier
     ) { paddingValues ->
-        CharactersContent(
-            state = state,
-            callbacks = CharactersScreenCallbacks(
-                onCharacterClick = onCharacterClick,
-                onIntent = viewModel::handleIntent,
-                onFilterClick = { showFilterSheet = true }
-            ),
-            modifier = Modifier.padding(paddingValues)
-        )
+        Box(modifier = Modifier.padding(paddingValues)) {
+            CharactersContent(
+                state = state,
+                callbacks = CharactersScreenCallbacks(
+                    onCharacterClick = onCharacterClick,
+                    onIntent = viewModel::handleIntent,
+                    onFilterClick = { showFilterSheet = true }
+                )
+            )
+
+            OfflineIndicator(
+                isOffline = !isOnline,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 16.dp)
+            )
+        }
 
         if (showFilterSheet) {
             FilterBottomSheet(

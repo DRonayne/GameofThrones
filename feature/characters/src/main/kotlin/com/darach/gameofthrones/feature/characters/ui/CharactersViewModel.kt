@@ -10,6 +10,7 @@ import com.darach.gameofthrones.core.domain.usecase.RefreshCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SearchCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SortCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
+import com.darach.gameofthrones.core.network.util.NetworkMonitor
 import com.darach.gameofthrones.feature.characters.CharactersIntent
 import com.darach.gameofthrones.feature.characters.CharactersState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,8 +39,15 @@ class CharactersViewModel @Inject constructor(
     private val filterCharactersUseCase: FilterCharactersUseCase,
     private val sortCharactersUseCase: SortCharactersUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val refreshCharactersUseCase: RefreshCharactersUseCase
+    private val refreshCharactersUseCase: RefreshCharactersUseCase,
+    networkMonitor: NetworkMonitor
 ) : ViewModel() {
+
+    val isOnline: StateFlow<Boolean> = networkMonitor.isOnline.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = networkMonitor.isCurrentlyOnline()
+    )
 
     private val baseCharacters = MutableStateFlow<List<Character>>(emptyList())
     private val searchResultCharacters = MutableStateFlow<List<Character>>(emptyList())

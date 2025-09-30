@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "com.darach.gameofthrones.feature.characters"
 }
+
+dependencies {
+    implementation(project(":core:network"))
+}

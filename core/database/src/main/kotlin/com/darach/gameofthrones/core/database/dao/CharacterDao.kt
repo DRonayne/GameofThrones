@@ -84,12 +84,26 @@ interface CharacterDao {
     suspend fun getCharacterCount(): Int
 
     /**
+     * Gets all favorite character IDs.
+     */
+    @Query("SELECT id FROM characters WHERE isFavorite = 1")
+    suspend fun getFavoriteCharacterIds(): List<String>
+
+    /**
      * Clears the cache and inserts new characters atomically.
-     * This is useful for refreshing the entire dataset.
+     * Preserves favorite status for existing characters.
      */
     @Transaction
     suspend fun refreshCharacters(characters: List<CharacterEntity>) {
+        val favoriteIds = getFavoriteCharacterIds()
         deleteAllCharacters()
-        insertCharacters(characters)
+        val updatedCharacters = characters.map { character ->
+            if (character.id in favoriteIds) {
+                character.copy(isFavorite = true)
+            } else {
+                character
+            }
+        }
+        insertCharacters(updatedCharacters)
     }
 }
