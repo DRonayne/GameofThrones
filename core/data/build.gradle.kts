@@ -1,5 +1,6 @@
 plugins {
     id("gameofthrones.android.library")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -12,8 +13,22 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:domain"))
 
+    // DataStore
     implementation(libs.datastore.preferences)
     implementation(libs.datastore.preferences.core)
 
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.truth)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
+    testImplementation(libs.mockk)
 }
