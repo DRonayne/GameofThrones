@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
+import com.darach.gameofthrones.navigation.GoTApp
 import com.darach.gameofthrones.ui.theme.GameOfThronesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,7 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GameOfThronesTheme {
-                GoTNavHost(modifier = Modifier.fillMaxSize())
+                GoTApp(modifier = Modifier.fillMaxSize())
             }
         }
     }

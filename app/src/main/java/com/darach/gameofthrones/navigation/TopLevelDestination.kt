@@ -1,0 +1,46 @@
+package com.darach.gameofthrones.navigation
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.serialization.Serializable
+
+@Serializable
+object CharactersRoute
+
+@Serializable
+object FavoritesRoute
+
+@Serializable
+object SettingsRoute
+
+enum class TopLevelDestination(
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val label: String,
+    val contentDescription: String
+) {
+    CHARACTERS(
+        selectedIcon = Icons.Filled.Home,
+        unselectedIcon = Icons.Outlined.Home,
+        label = "Characters",
+        contentDescription = "Browse characters"
+    ),
+    FAVORITES(
+        selectedIcon = Icons.Filled.Favorite,
+        unselectedIcon = Icons.Outlined.FavoriteBorder,
+        label = "Favorites",
+        contentDescription = "View favorite characters"
+    ),
+    SETTINGS(
+        selectedIcon = Icons.Filled.Settings,
+        unselectedIcon = Icons.Outlined.Settings,
+        label = "Settings",
+        contentDescription = "App settings"
+    )
+}
