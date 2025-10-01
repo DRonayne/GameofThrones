@@ -123,7 +123,6 @@ internal fun FavoritesTopBar(
 ) {
     TopAppBar(
         title = { FavoritesTopBarTitle(state) },
-        navigationIcon = { FavoritesNavigationIcon(state, callbacks) },
         actions = { FavoritesTopBarActions(state, callbacks) },
         modifier = modifier
     )
@@ -138,22 +137,6 @@ private fun FavoritesTopBarTitle(state: FavoritesState) {
             "Favorites (${state.favorites.size})"
         }
     )
-}
-
-@Composable
-private fun FavoritesNavigationIcon(state: FavoritesState, callbacks: FavoritesTopBarCallbacks) {
-    val onClick = if (state.isSelectionMode) {
-        callbacks.onSelectionModeToggle
-    } else {
-        callbacks.onBackClick
-    }
-    val contentDesc = if (state.isSelectionMode) "Exit selection mode" else "Back"
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = contentDesc
-        )
-    }
 }
 
 @Composable

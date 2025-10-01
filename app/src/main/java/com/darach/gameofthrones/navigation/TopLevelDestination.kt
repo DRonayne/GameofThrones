@@ -4,9 +4,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.automirrored.outlined.CompareArrows
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -31,8 +33,8 @@ enum class TopLevelDestination(
     val contentDescription: String
 ) {
     CHARACTERS(
-        selectedIcon = Icons.Filled.Home,
-        unselectedIcon = Icons.Outlined.Home,
+        selectedIcon = Icons.Filled.GridView,
+        unselectedIcon = Icons.Outlined.GridView,
         label = "Characters",
         contentDescription = "Browse characters"
     ),
