@@ -1,5 +1,8 @@
 package com.darach.gameofthrones.feature.characters.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -50,15 +53,17 @@ import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
 import com.darach.gameofthrones.core.ui.test.TestTags
+import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun CharacterGridCard(
     character: Character,
     onFavoriteClick: (String) -> Unit,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     var isPressed by remember { mutableStateOf(false) }
@@ -87,16 +92,19 @@ fun CharacterGridCard(
     ) {
         GridCardContent(
             character = character,
-            onFavoriteClick = onFavoriteClick
+            onFavoriteClick = onFavoriteClick,
+            sharedTransitionData = sharedTransitionData
         )
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun GridCardContent(
     character: Character,
     onFavoriteClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     Column(
         modifier = modifier
@@ -106,7 +114,8 @@ private fun GridCardContent(
     ) {
         GridCardPortrait(
             character = character,
-            onFavoriteClick = onFavoriteClick
+            onFavoriteClick = onFavoriteClick,
+            sharedTransitionData = sharedTransitionData
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -115,11 +124,13 @@ private fun GridCardContent(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun GridCardPortrait(
     character: Character,
     onFavoriteClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
 
@@ -128,10 +139,29 @@ private fun GridCardPortrait(
             .fillMaxWidth()
             .aspectRatio(0.75f)
     ) {
+        val imageModifier = if (sharedTransitionData != null) {
+            with(sharedTransitionData.sharedTransitionScope) {
+                Modifier
+                    .fillMaxWidth()
+                    .sharedElement(
+                        rememberSharedContentState(key = "character-image-${character.id}"),
+                        animatedVisibilityScope = sharedTransitionData.animatedVisibilityScope,
+                        boundsTransform = { _, _ ->
+                            spring(
+                                dampingRatio = Spring.DampingRatioNoBouncy,
+                                stiffness = Spring.StiffnessMediumLow
+                            )
+                        }
+                    )
+            }
+        } else {
+            Modifier.fillMaxWidth()
+        }
+
         PortraitImage(
             imageUrl = character.characterImageUrl,
             contentDescription = character.name,
-            modifier = Modifier.fillMaxWidth()
+            modifier = imageModifier
         )
 
         IconButton(
@@ -322,13 +352,14 @@ private fun GridCardAliveBadge(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun CharacterCard(
     character: Character,
     onFavoriteClick: (String) -> Unit,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     Card(
@@ -347,10 +378,29 @@ fun CharacterCard(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            val imageModifier = if (sharedTransitionData != null) {
+                with(sharedTransitionData.sharedTransitionScope) {
+                    Modifier
+                        .width(80.dp)
+                        .sharedElement(
+                            rememberSharedContentState(key = "character-image-${character.id}"),
+                            animatedVisibilityScope = sharedTransitionData.animatedVisibilityScope,
+                            boundsTransform = { _, _ ->
+                                spring(
+                                    dampingRatio = Spring.DampingRatioNoBouncy,
+                                    stiffness = Spring.StiffnessMediumLow
+                                )
+                            }
+                        )
+                }
+            } else {
+                Modifier.width(80.dp)
+            }
+
             PortraitImage(
                 imageUrl = character.characterImageUrl,
                 contentDescription = character.name,
-                modifier = Modifier.width(80.dp)
+                modifier = imageModifier
             )
 
             Column(

@@ -1,6 +1,7 @@
 package com.darach.gameofthrones.feature.characters
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.ui.performance.TrackScreenLoadTime
+import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import com.darach.gameofthrones.feature.characters.CharactersViewModel
 import com.darach.gameofthrones.feature.characters.components.CharacterGridCard
 import com.darach.gameofthrones.feature.characters.components.CharactersSearchBar
@@ -61,12 +63,13 @@ import com.darach.gameofthrones.feature.characters.components.OfflineIndicator
 import com.darach.gameofthrones.feature.characters.components.SearchBarCallbacks
 import com.darach.gameofthrones.feature.characters.components.SortChip
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun CharactersScreen(
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CharactersViewModel = hiltViewModel()
+    viewModel: CharactersViewModel = hiltViewModel(),
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
@@ -96,7 +99,8 @@ fun CharactersScreen(
                 onCharacterClick = onCharacterClick,
                 onIntent = viewModel::handleIntent
             ),
-            paddingValues = paddingValues
+            paddingValues = paddingValues,
+            sharedTransitionData = sharedTransitionData
         )
 
         if (showFilterSheet) {
@@ -121,12 +125,17 @@ data class CharactersContentState(
 )
 
 @Composable
-private fun CharactersContent(contentState: CharactersContentState, paddingValues: PaddingValues) {
+private fun CharactersContent(
+    contentState: CharactersContentState,
+    paddingValues: PaddingValues,
+    sharedTransitionData: SharedTransitionData? = null
+) {
     Box(modifier = Modifier.padding(paddingValues)) {
         CharactersBody(
             state = contentState.state,
             onCharacterClick = contentState.onCharacterClick,
-            onIntent = contentState.onIntent
+            onIntent = contentState.onIntent,
+            sharedTransitionData = sharedTransitionData
         )
 
         OfflineIndicator(
@@ -537,7 +546,8 @@ private fun SearchAndFilterControlsScrollingPreview() {
 private fun CharactersBody(
     state: CharactersState,
     onCharacterClick: (String) -> Unit,
-    onIntent: (CharactersIntent) -> Unit
+    onIntent: (CharactersIntent) -> Unit,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     when {
         state.isLoading && state.characters.isEmpty() -> LoadingState()
@@ -555,7 +565,8 @@ private fun CharactersBody(
             CharactersList(
                 state = state,
                 onCharacterClick = onCharacterClick,
-                onIntent = onIntent
+                onIntent = onIntent,
+                sharedTransitionData = sharedTransitionData
             )
         }
     }
@@ -566,7 +577,8 @@ private fun CharactersBody(
 private fun CharactersList(
     state: CharactersState,
     onCharacterClick: (String) -> Unit,
-    onIntent: (CharactersIntent) -> Unit
+    onIntent: (CharactersIntent) -> Unit,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     val onRefresh = remember(onIntent, performHaptic) {
@@ -600,7 +612,8 @@ private fun CharactersList(
                     onClick = remember(onCharacterClick) {
                         { onCharacterClick(character.id) }
                     },
-                    modifier = Modifier.animateItem()
+                    modifier = Modifier.animateItem(),
+                    sharedTransitionData = sharedTransitionData
                 )
             }
         }

@@ -1,6 +1,12 @@
 package com.darach.gameofthrones.feature.characterdetail
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -58,14 +64,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
+import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import com.darach.gameofthrones.feature.characterdetail.CharacterDetailViewModel
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CharacterDetailScreen(
     @Suppress("UnusedParameter") characterId: String,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CharacterDetailViewModel = hiltViewModel()
+    viewModel: CharacterDetailViewModel = hiltViewModel(),
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     // characterId is part of the navigation route and extracted by the ViewModel from SavedStateHandle
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -75,18 +84,21 @@ fun CharacterDetailScreen(
         onBackClick = onBackClick,
         onFavoriteClick = { viewModel.handleIntent(CharacterDetailIntent.ToggleFavorite) },
         onRetryClick = { viewModel.handleIntent(CharacterDetailIntent.RetryLoad) },
-        modifier = modifier
+        modifier = modifier,
+        sharedTransitionData = sharedTransitionData
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
+@Suppress("LongParameterList")
 private fun CharacterDetailContent(
     state: CharacterDetailState,
     onBackClick: () -> Unit,
     onFavoriteClick: () -> Unit,
     onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState()
@@ -116,7 +128,8 @@ private fun CharacterDetailContent(
             )
             state.character != null -> CharacterDetails(
                 character = state.character,
-                paddingValues = paddingValues
+                paddingValues = paddingValues,
+                sharedTransitionData = sharedTransitionData
             )
         }
     }
@@ -221,8 +234,13 @@ private fun ErrorContent(error: String, onRetryClick: () -> Unit, paddingValues:
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun CharacterDetails(character: Character, paddingValues: PaddingValues) {
+private fun CharacterDetails(
+    character: Character,
+    paddingValues: PaddingValues,
+    sharedTransitionData: SharedTransitionData? = null
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -231,7 +249,10 @@ private fun CharacterDetails(character: Character, paddingValues: PaddingValues)
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            HeroSection(character = character)
+            HeroSection(
+                character = character,
+                sharedTransitionData = sharedTransitionData
+            )
         }
 
         item {
@@ -267,8 +288,13 @@ private fun CharacterDetails(character: Character, paddingValues: PaddingValues)
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun HeroSection(character: Character, modifier: Modifier = Modifier) {
+private fun HeroSection(
+    character: Character,
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
+) {
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -282,12 +308,9 @@ private fun HeroSection(character: Character, modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (character.characterImageUrl != null) {
-                PortraitImage(
-                    imageUrl = character.characterImageUrl,
-                    contentDescription = character.name,
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .padding(bottom = 16.dp)
+                HeroPortraitImage(
+                    character = character,
+                    sharedTransitionData = sharedTransitionData
                 )
             }
 
@@ -307,6 +330,38 @@ private fun HeroSection(character: Character, modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun HeroPortraitImage(character: Character, sharedTransitionData: SharedTransitionData?) {
+    val imageModifier = if (sharedTransitionData != null) {
+        with(sharedTransitionData.sharedTransitionScope) {
+            Modifier
+                .fillMaxWidth(0.6f)
+                .padding(bottom = 16.dp)
+                .sharedElement(
+                    rememberSharedContentState(key = "character-image-${character.id}"),
+                    animatedVisibilityScope = sharedTransitionData.animatedVisibilityScope,
+                    boundsTransform = { _, _ ->
+                        spring(
+                            dampingRatio = Spring.DampingRatioNoBouncy,
+                            stiffness = Spring.StiffnessMediumLow
+                        )
+                    }
+                )
+        }
+    } else {
+        Modifier
+            .fillMaxWidth(0.6f)
+            .padding(bottom = 16.dp)
+    }
+
+    PortraitImage(
+        imageUrl = character.characterImageUrl,
+        contentDescription = character.name,
+        modifier = imageModifier
+    )
 }
 
 @Composable
