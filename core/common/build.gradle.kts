@@ -8,8 +8,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.bundles.coroutines)
 
     // Firebase (for monitoring)
     implementation(platform(libs.firebase.bom))
@@ -17,7 +16,6 @@ dependencies {
     implementation(libs.firebase.perf)
 
     testImplementation(libs.turbine)
-    testImplementation(libs.mockk)
 }
 
 kover {

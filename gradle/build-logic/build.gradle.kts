@@ -15,6 +15,10 @@ dependencies {
 
 gradlePlugin {
     plugins {
+        register("androidApplication") {
+            id = "gameofthrones.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
         register("androidLibrary") {
             id = "gameofthrones.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"

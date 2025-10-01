@@ -15,37 +15,34 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:domain"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // AndroidX Core
+    implementation(libs.bundles.androidx.core)
 
+    // Compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
+    implementation(libs.bundles.compose.ui)
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
 
+    // Window
     implementation(libs.androidx.window)
     implementation(libs.androidx.window.core)
 
+    // Coil
     implementation(libs.coil)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    // Hilt
     implementation(libs.hilt.navigation.compose)
 
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    // Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.bundles.compose.test)
 
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.bundles.compose.debug)
 }
 
 kover {

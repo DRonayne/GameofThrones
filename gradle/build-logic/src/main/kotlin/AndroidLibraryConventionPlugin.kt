@@ -47,16 +47,15 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
+                // Hilt
                 add("implementation", libs.findLibrary("hilt.android").get())
                 add("ksp", libs.findLibrary("hilt.android.compiler").get())
 
-                add("testImplementation", libs.findLibrary("junit").get())
-                add("testImplementation", libs.findLibrary("truth").get())
-                add("testImplementation", libs.findLibrary("kotlinx.coroutines.test").get())
-                add("testImplementation", libs.findLibrary("mockk").get())
+                // Testing - Unit
+                add("testImplementation", libs.findBundle("testing.unit").get())
 
-                add("androidTestImplementation", libs.findLibrary("androidx.junit").get())
-                add("androidTestImplementation", libs.findLibrary("androidx.espresso.core").get())
+                // Testing - Android
+                add("androidTestImplementation", libs.findBundle("testing.android").get())
             }
         }
     }

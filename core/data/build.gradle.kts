@@ -1,6 +1,5 @@
 plugins {
     id("gameofthrones.android.library")
-    alias(libs.plugins.ksp)
 }
 
 android {
@@ -29,26 +28,14 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.datastore.preferences.core)
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-
     // Coroutines
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.bundles.coroutines)
 
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.truth)
-    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
-    testImplementation(libs.mockk)
 
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.truth)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
+    // Android Testing - Integration test specific
     androidTestImplementation(libs.turbine)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.okhttp.mockwebserver)
     androidTestImplementation(libs.room.testing)
     androidTestImplementation(libs.hilt.android.testing)

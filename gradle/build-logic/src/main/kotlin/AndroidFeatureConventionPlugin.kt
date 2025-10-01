@@ -30,35 +30,34 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
+                // Core modules - common dependencies for all features
                 add("implementation", project(":core:model"))
                 add("implementation", project(":core:common"))
                 add("implementation", project(":core:analytics"))
                 add("implementation", project(":core:domain"))
                 add("implementation", project(":core:ui"))
 
+                // Compose
+                val composeBom = libs.findLibrary("androidx.compose.bom").get()
+                add("implementation", platform(composeBom))
+                add("implementation", libs.findBundle("compose.ui").get())
+
+                // Lifecycle
                 add("implementation", libs.findLibrary("androidx.lifecycle.runtime.compose").get())
                 add("implementation", libs.findLibrary("androidx.lifecycle.viewmodel.compose").get())
 
-                val composeBom = libs.findLibrary("androidx.compose.bom").get()
-                add("implementation", platform(composeBom))
-                add("implementation", libs.findLibrary("androidx.compose.ui").get())
-                add("implementation", libs.findLibrary("androidx.compose.ui.graphics").get())
-                add("implementation", libs.findLibrary("androidx.compose.ui.tooling.preview").get())
-                add("implementation", libs.findLibrary("androidx.compose.material3").get())
-                add("implementation", libs.findLibrary("androidx.compose.material-icons-extended").get())
-
+                // Hilt Navigation
                 add("implementation", libs.findLibrary("hilt.navigation.compose").get())
 
+                // Testing
                 add("testImplementation", libs.findLibrary("turbine").get())
                 add("testImplementation", libs.findLibrary("konsist").get())
 
-                add("androidTestImplementation", libs.findLibrary("androidx.junit").get())
                 add("androidTestImplementation", platform(composeBom))
-                add("androidTestImplementation", libs.findLibrary("androidx.compose.ui.test.junit4").get())
+                add("androidTestImplementation", libs.findBundle("compose.test").get())
                 add("androidTestImplementation", libs.findLibrary("mockk-android").get())
 
-                add("debugImplementation", libs.findLibrary("androidx.compose.ui.tooling").get())
-                add("debugImplementation", libs.findLibrary("androidx.compose.ui.test.manifest").get())
+                add("debugImplementation", libs.findBundle("compose.debug").get())
             }
         }
     }

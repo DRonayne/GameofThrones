@@ -172,6 +172,78 @@ android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", ve
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kover-gradle-plugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
 
+[bundles]
+# AndroidX Core
+androidx-core = [
+    "androidx-core-ktx",
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-lifecycle-runtime-compose",
+    "androidx-lifecycle-viewmodel-compose"
+]
+
+# Compose UI - Base
+compose-ui = [
+    "androidx-compose-ui",
+    "androidx-compose-ui-graphics",
+    "androidx-compose-ui-tooling-preview",
+    "androidx-compose-material3",
+    "androidx-compose-material-icons-extended"
+]
+
+# Compose Debug
+compose-debug = [
+    "androidx-compose-ui-tooling",
+    "androidx-compose-ui-test-manifest"
+]
+
+# Compose Testing
+compose-test = [
+    "androidx-compose-ui-test-junit4"
+]
+
+# Coroutines
+coroutines = [
+    "kotlinx-coroutines-core",
+    "kotlinx-coroutines-android"
+]
+
+# Testing - Unit
+testing-unit = [
+    "junit",
+    "truth",
+    "kotlinx-coroutines-test",
+    "mockk"
+]
+
+# Testing - Android
+testing-android = [
+    "androidx-junit",
+    "androidx-espresso-core"
+]
+
+# Networking
+networking = [
+    "retrofit",
+    "retrofit-kotlinx-serialization",
+    "okhttp",
+    "okhttp-logging-interceptor",
+    "kotlinx-serialization-json"
+]
+
+# Room
+room = [
+    "room-runtime",
+    "room-ktx"
+]
+
+# Firebase
+firebase = [
+    "firebase-analytics",
+    "firebase-crashlytics",
+    "firebase-perf",
+    "firebase-config"
+]
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }

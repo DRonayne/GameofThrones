@@ -3,8 +3,6 @@ import java.util.Properties
 plugins {
     id("gameofthrones.android.library")
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
 }
 
 // Read local.properties
@@ -40,27 +38,11 @@ android {
 dependencies {
     implementation(project(":core:common"))
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-
     // Networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlinx.serialization)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.bundles.networking)
 
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.truth)
-    testImplementation(libs.mockk)
-    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.okhttp.mockwebserver)
-
-    // Android Testing
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
 
 kover {
