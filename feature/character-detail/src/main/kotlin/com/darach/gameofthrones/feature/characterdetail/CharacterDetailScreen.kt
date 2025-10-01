@@ -1,10 +1,7 @@
 package com.darach.gameofthrones.feature.characterdetail
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
@@ -25,7 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExpandLess
@@ -43,18 +39,30 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
@@ -65,7 +73,31 @@ import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
 import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
-import com.darach.gameofthrones.feature.characterdetail.CharacterDetailViewModel
+import kotlinx.coroutines.launch
+
+@Composable
+private fun rememberHapticFeedback(): HapticFeedback {
+    val view = LocalView.current
+    return androidx.compose.runtime.remember(view) {
+        object : HapticFeedback {
+            override fun performHapticFeedback(hapticFeedbackType: HapticFeedbackType) {
+                when (hapticFeedbackType) {
+                    HapticFeedbackType.LongPress -> view.performHapticFeedback(
+                        android.view.HapticFeedbackConstants.LONG_PRESS
+                    )
+
+                    HapticFeedbackType.TextHandleMove -> view.performHapticFeedback(
+                        android.view.HapticFeedbackConstants.TEXT_HANDLE_MOVE
+                    )
+
+                    else -> view.performHapticFeedback(
+                        android.view.HapticFeedbackConstants.CONTEXT_CLICK
+                    )
+                }
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -89,6 +121,37 @@ fun CharacterDetailScreen(
     )
 }
 
+@Composable
+private fun FavoriteSnackbarEffect(
+    isFavorite: Boolean?,
+    snackbarHostState: SnackbarHostState,
+    onUndoFavorite: () -> Unit
+) {
+    val updatedOnUndoFavorite by rememberUpdatedState(onUndoFavorite)
+    val scope = rememberCoroutineScope()
+    var previousFavoriteState by remember { mutableStateOf<Boolean?>(null) }
+
+    LaunchedEffect(isFavorite) {
+        if (previousFavoriteState != null && previousFavoriteState != isFavorite &&
+            isFavorite != null
+        ) {
+            val message = if (isFavorite) "Added to favorites" else "Removed from favorites"
+
+            scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = "Undo",
+                    duration = SnackbarDuration.Short
+                )
+                if (result == SnackbarResult.ActionPerformed) {
+                    updatedOnUndoFavorite()
+                }
+            }
+        }
+        previousFavoriteState = isFavorite
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 @Suppress("LongParameterList")
@@ -100,8 +163,15 @@ private fun CharacterDetailContent(
     modifier: Modifier = Modifier,
     sharedTransitionData: SharedTransitionData? = null
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        rememberTopAppBarState()
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val haptic = rememberHapticFeedback()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    FavoriteSnackbarEffect(
+        isFavorite = state.character?.isFavorite,
+        snackbarHostState = snackbarHostState,
+        onUndoFavorite = onFavoriteClick
     )
 
     Scaffold(
@@ -113,19 +183,39 @@ private fun CharacterDetailContent(
                     isFavorite = state.character?.isFavorite ?: false,
                     showFavoriteButton = state.character != null
                 ),
-                onBackClick = onBackClick,
-                onFavoriteClick = onFavoriteClick,
+                onBackClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    onBackClick()
+                },
+                onFavoriteClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onFavoriteClick()
+                },
                 scrollBehavior = scrollBehavior
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.inverseSurface,
+                    contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                    actionColor = MaterialTheme.colorScheme.inversePrimary
+                )
+            }
         }
     ) { paddingValues ->
         when {
             state.isLoading -> LoadingContent(paddingValues)
             state.error != null -> ErrorContent(
                 error = state.error,
-                onRetryClick = onRetryClick,
+                onRetryClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onRetryClick()
+                },
                 paddingValues = paddingValues
             )
+
             state.character != null -> CharacterDetails(
                 character = state.character,
                 paddingValues = paddingValues,
@@ -415,6 +505,49 @@ private fun InfoRow(label: String, value: String, modifier: Modifier = Modifier)
 }
 
 @Composable
+private fun ExpandableHeader(
+    title: String,
+    isExpanded: Boolean,
+    onToggle: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val haptic = rememberHapticFeedback()
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge
+        )
+        IconButton(
+            onClick = {
+                haptic.performHapticFeedback(
+                    if (isExpanded) {
+                        HapticFeedbackType.TextHandleMove
+                    } else {
+                        HapticFeedbackType.LongPress
+                    }
+                )
+                onToggle()
+            },
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                imageVector = if (isExpanded) {
+                    Icons.Default.ExpandLess
+                } else {
+                    Icons.Default.ExpandMore
+                },
+                contentDescription = if (isExpanded) "Collapse" else "Expand"
+            )
+        }
+    }
+}
+
+@Composable
 private fun TitlesSection(titles: List<String>, modifier: Modifier = Modifier) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
 
@@ -424,29 +557,11 @@ private fun TitlesSection(titles: List<String>, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Titles (${titles.size})",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                IconButton(
-                    onClick = { isExpanded = !isExpanded },
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        imageVector = if (isExpanded) {
-                            Icons.Default.ExpandLess
-                        } else {
-                            Icons.Default.ExpandMore
-                        },
-                        contentDescription = if (isExpanded) "Collapse" else "Expand"
-                    )
-                }
-            }
+            ExpandableHeader(
+                title = "Titles (${titles.size})",
+                isExpanded = isExpanded,
+                onToggle = { isExpanded = !isExpanded }
+            )
 
             AnimatedVisibility(
                 visible = isExpanded,
