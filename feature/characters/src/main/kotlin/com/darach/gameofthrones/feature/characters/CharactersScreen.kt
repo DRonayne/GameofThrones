@@ -18,8 +18,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -52,7 +53,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.ui.performance.TrackScreenLoadTime
 import com.darach.gameofthrones.feature.characters.CharactersViewModel
-import com.darach.gameofthrones.feature.characters.components.CharacterCard
+import com.darach.gameofthrones.feature.characters.components.CharacterGridCard
 import com.darach.gameofthrones.feature.characters.components.CharactersSearchBar
 import com.darach.gameofthrones.feature.characters.components.FilterBottomSheet
 import com.darach.gameofthrones.feature.characters.components.FilterBottomSheetState
@@ -580,28 +581,26 @@ private fun CharactersList(
         onRefresh = onRefresh,
         modifier = Modifier.fillMaxSize()
     ) {
-        LazyColumn(
+        LazyVerticalStaggeredGrid(
+            columns = StaggeredGridCells.Adaptive(minSize = 160.dp),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 8.dp,
-                bottom = 88.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            contentPadding = PaddingValues(16.dp, bottom = 88.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalItemSpacing = 12.dp
         ) {
             items(
                 items = state.filteredCharacters,
                 key = { it.id }
             ) { character ->
-                CharacterCard(
+                CharacterGridCard(
                     character = character,
                     onFavoriteClick = remember(onIntent) {
                         { id -> onIntent(CharactersIntent.ToggleFavorite(id)) }
                     },
                     onClick = remember(onCharacterClick) {
                         { onCharacterClick(character.id) }
-                    }
+                    },
+                    modifier = Modifier.animateItem()
                 )
             }
         }
