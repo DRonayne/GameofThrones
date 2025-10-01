@@ -29,6 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
@@ -165,7 +167,7 @@ private fun FavoriteButton(
 
     IconButton(
         onClick = onClick,
-        modifier = modifier.size(40.dp)
+        modifier = modifier.size(48.dp)
     ) {
         Icon(
             imageVector = if (character.isFavorite) {
@@ -226,7 +228,9 @@ private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
     Surface(
         shape = AssistChipDefaults.shape,
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier
+        modifier = modifier.semantics {
+            contentDescription = "Season $season"
+        }
     ) {
         Text(
             text = RomanNumeralConverter.toRomanNumeral(season),
@@ -238,8 +242,8 @@ private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
 
 @Composable
 private fun DeathIndicator(modifier: Modifier = Modifier) {
-    androidx.compose.material3.Icon(
-        imageVector = androidx.compose.material.icons.Icons.Default.Close,
+    Icon(
+        imageVector = Icons.Default.Close,
         contentDescription = "Deceased",
         tint = MaterialTheme.colorScheme.error,
         modifier = modifier

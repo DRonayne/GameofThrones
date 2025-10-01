@@ -49,6 +49,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -187,7 +189,11 @@ private fun LoadingContent(paddingValues: PaddingValues) {
             .padding(paddingValues),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            modifier = Modifier.semantics {
+                contentDescription = "Loading character details"
+            }
+        )
     }
 }
 
@@ -374,7 +380,7 @@ private fun TitlesSection(titles: List<String>, modifier: Modifier = Modifier) {
                 )
                 IconButton(
                     onClick = { isExpanded = !isExpanded },
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
                         imageVector = if (isExpanded) {

@@ -42,6 +42,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -227,7 +229,11 @@ internal fun FavoritesContent(
         when {
             state.isLoading -> {
                 CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .semantics {
+                            contentDescription = "Loading favorites"
+                        }
                 )
             }
             state.isEmpty -> {

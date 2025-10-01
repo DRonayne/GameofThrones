@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun CharactersSearchBar(
     query: String,
-    searchHistory: List<String>,
+    @Suppress("UnusedParameter") searchHistory: List<String>,
     callbacks: SearchBarCallbacks,
     modifier: Modifier = Modifier
 ) {
