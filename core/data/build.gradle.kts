@@ -5,6 +5,16 @@ plugins {
 
 android {
     namespace = "com.darach.gameofthrones.core.data"
+
+    packaging {
+        resources {
+            excludes +=
+                setOf(
+                    "META-INF/LICENSE.md",
+                    "META-INF/LICENSE-notice.md",
+                )
+        }
+    }
 }
 
 dependencies {
@@ -32,6 +42,20 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.mockk)
+
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.okhttp.mockwebserver)
+    androidTestImplementation(libs.room.testing)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.retrofit)
+    androidTestImplementation(libs.retrofit.kotlinx.serialization)
+    androidTestImplementation(libs.kotlinx.serialization.json)
+    androidTestImplementation(libs.mockk.android)
+    kspAndroidTest(libs.hilt.android.compiler)
 }
 
 kover {
