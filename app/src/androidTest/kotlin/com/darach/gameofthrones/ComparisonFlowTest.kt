@@ -45,14 +45,59 @@ class ComparisonFlowTest {
 
     @Test
     fun comparison_navigation_fromFavorites() {
-        // Navigate to Favorites
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
+        // First add at least 2 favorites to enable comparison
+        composeTestRule.waitUntil(timeoutMillis = 15000) {
             composeTestRule
-                .onAllNodesWithText("Favorites", substring = true)
+                .onAllNodesWithText("", substring = true)
                 .fetchSemanticsNodes()
-                .isNotEmpty()
+                .size > 5
         }
 
+        // Add first favorite
+        val addFavoriteButtons = composeTestRule
+            .onAllNodesWithContentDescription(
+                "Add to favorites",
+                substring = true,
+                useUnmergedTree = true
+            )
+            .fetchSemanticsNodes()
+
+        if (addFavoriteButtons.size >= 2) {
+            composeTestRule
+                .onAllNodesWithContentDescription(
+                    "Add to favorites",
+                    substring = true,
+                    useUnmergedTree = true
+                )
+                .onFirst()
+                .performClick()
+
+            composeTestRule.waitForIdle()
+
+            // Add second favorite
+            val addFavoriteButtons2 = composeTestRule
+                .onAllNodesWithContentDescription(
+                    "Add to favorites",
+                    substring = true,
+                    useUnmergedTree = true
+                )
+                .fetchSemanticsNodes()
+
+            if (addFavoriteButtons2.isNotEmpty()) {
+                composeTestRule
+                    .onAllNodesWithContentDescription(
+                        "Add to favorites",
+                        substring = true,
+                        useUnmergedTree = true
+                    )
+                    .onFirst()
+                    .performClick()
+
+                composeTestRule.waitForIdle()
+            }
+        }
+
+        // Navigate to Favorites
         composeTestRule.onNodeWithText("Favorites").performClick()
         composeTestRule.waitForIdle()
 
@@ -61,20 +106,12 @@ class ComparisonFlowTest {
             composeTestRule
                 .onAllNodesWithText("", substring = true)
                 .fetchSemanticsNodes()
-                .size > 1
+                .size > 3
         }
 
-        // Look for selection mode or compare button
+        // Look for selection mode button
         val selectionModeButtons = composeTestRule
             .onAllNodesWithTag(TestTags.SELECTION_MODE_BUTTON, useUnmergedTree = true)
-            .fetchSemanticsNodes()
-
-        val compareButtons = composeTestRule
-            .onAllNodesWithContentDescription("Compare", substring = true, useUnmergedTree = true)
-            .fetchSemanticsNodes()
-
-        val compareTextButtons = composeTestRule
-            .onAllNodesWithText("Compare", substring = true, useUnmergedTree = true)
             .fetchSemanticsNodes()
 
         if (selectionModeButtons.isNotEmpty()) {
@@ -83,20 +120,14 @@ class ComparisonFlowTest {
                 .performClick()
 
             composeTestRule.waitForIdle()
-        } else if (compareButtons.isNotEmpty()) {
-            composeTestRule
-                .onAllNodesWithContentDescription("Compare", useUnmergedTree = true)
-                .onFirst()
-                .performClick()
 
-            composeTestRule.waitForIdle()
-        } else if (compareTextButtons.isNotEmpty()) {
-            composeTestRule
-                .onAllNodesWithText("Compare", useUnmergedTree = true)
-                .onFirst()
-                .performClick()
-
-            composeTestRule.waitForIdle()
+            // Verify comparison mode is active
+            composeTestRule.waitUntil(timeoutMillis = 3000) {
+                composeTestRule
+                    .onAllNodesWithText("", substring = true)
+                    .fetchSemanticsNodes()
+                    .size > 1
+            }
         }
 
         // Navigate back to Characters

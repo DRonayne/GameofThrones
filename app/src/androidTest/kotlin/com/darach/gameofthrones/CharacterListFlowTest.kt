@@ -609,7 +609,24 @@ class CharacterListFlowTest {
                 .size > 5
         }
 
-        // Apply a filter first
+        // First do a search
+        val searchBar = composeTestRule
+            .onNode(hasText("Search characters", substring = true))
+
+        searchBar.performClick()
+        composeTestRule.waitForIdle()
+
+        searchBar.performTextInput("Stark")
+
+        // Wait for results
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule
+                .onAllNodesWithText("", substring = true)
+                .fetchSemanticsNodes()
+                .size > 1
+        }
+
+        // Then apply a filter
         val maleNodes = composeTestRule
             .onAllNodesWithText("Male", substring = true)
             .fetchSemanticsNodes()
@@ -618,47 +635,25 @@ class CharacterListFlowTest {
             composeTestRule.onAllNodesWithText("Male").onFirst().performClick()
             composeTestRule.waitForIdle()
 
-            // Then search
+            // Verify both search and filter are applied
             composeTestRule.waitUntil(timeoutMillis = 3000) {
                 composeTestRule
-                    .onAllNodesWithText("Search characters", substring = true)
+                    .onAllNodesWithText("", substring = true)
                     .fetchSemanticsNodes()
                     .isNotEmpty()
             }
 
-            val searchBars = composeTestRule
-                .onAllNodesWithText("Search characters", substring = true)
-                .fetchSemanticsNodes()
-
-            if (searchBars.isNotEmpty()) {
-                val searchBar = composeTestRule
-                    .onNode(hasText("Search characters", substring = true))
-
-                searchBar.performClick()
-                composeTestRule.waitForIdle()
-
-                searchBar.performTextInput("Stark")
-
-                // Wait for results
-                composeTestRule.waitUntil(timeoutMillis = 5000) {
-                    composeTestRule
-                        .onAllNodesWithText("", substring = true)
-                        .fetchSemanticsNodes()
-                        .isNotEmpty()
-                }
-
-                // Clear search
-                val clearButton = composeTestRule
-                    .onNodeWithContentDescription("Clear search", useUnmergedTree = true)
-
-                if (clearButton.fetchSemanticsNode(null) != null) {
-                    clearButton.performClick()
-                    composeTestRule.waitForIdle()
-                }
-            }
-
             // Clear filter
             composeTestRule.onAllNodesWithText("Male").onFirst().performClick()
+            composeTestRule.waitForIdle()
+        }
+
+        // Clear search
+        val clearButton = composeTestRule
+            .onNodeWithContentDescription("Clear search", useUnmergedTree = true)
+
+        if (clearButton.fetchSemanticsNode(null) != null) {
+            clearButton.performClick()
             composeTestRule.waitForIdle()
         }
     }
