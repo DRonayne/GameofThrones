@@ -5,3 +5,13 @@ plugins {
 android {
     namespace = "com.darach.gameofthrones.feature.characterdetail"
 }
+
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(16)
+            }
+        }
+    }
+}

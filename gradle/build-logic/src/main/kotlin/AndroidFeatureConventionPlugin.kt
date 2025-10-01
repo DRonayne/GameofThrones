@@ -18,6 +18,15 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 buildFeatures {
                     compose = true
                 }
+
+                packaging {
+                    resources {
+                        excludes += setOf(
+                            "META-INF/LICENSE.md",
+                            "META-INF/LICENSE-notice.md"
+                        )
+                    }
+                }
             }
 
             dependencies {
@@ -44,6 +53,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("androidTestImplementation", libs.findLibrary("androidx.junit").get())
                 add("androidTestImplementation", platform(composeBom))
                 add("androidTestImplementation", libs.findLibrary("androidx.compose.ui.test.junit4").get())
+                add("androidTestImplementation", libs.findLibrary("mockk-android").get())
 
                 add("debugImplementation", libs.findLibrary("androidx.compose.ui.tooling").get())
                 add("debugImplementation", libs.findLibrary("androidx.compose.ui.test.manifest").get())

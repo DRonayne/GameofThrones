@@ -47,3 +47,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
+
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(0)
+            }
+        }
+    }
+}

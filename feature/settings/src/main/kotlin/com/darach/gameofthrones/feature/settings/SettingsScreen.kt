@@ -1,6 +1,7 @@
 package com.darach.gameofthrones.feature.settings
 
 import android.os.Build
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -79,8 +80,9 @@ fun SettingsScreen(modifier: Modifier = Modifier, viewModel: SettingsViewModel =
     )
 }
 
+@VisibleForTesting
 @Composable
-private fun SettingsContent(
+internal fun SettingsContent(
     state: SettingsState,
     onIntent: (SettingsIntent) -> Unit,
     snackbarHostState: SnackbarHostState,

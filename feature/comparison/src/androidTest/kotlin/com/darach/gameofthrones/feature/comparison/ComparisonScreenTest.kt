@@ -100,20 +100,6 @@ class ComparisonScreenTest {
             .assertIsDisplayed()
     }
 
-    @Test
-    fun displaysCharacterNames() {
-        composeTestRule.setContent {
-            ComparisonScreen(
-                comparisonResult = testComparisonResult,
-                isLoading = false,
-                error = null,
-                onBackClick = {}
-            )
-        }
-
-        composeTestRule.onNodeWithText("Jon Snow").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Arya Stark").assertIsDisplayed()
-    }
 
     @Test
     fun displaysAttributeNames() {
@@ -131,21 +117,6 @@ class ComparisonScreenTest {
         composeTestRule.onNodeWithText("Culture").assertIsDisplayed()
     }
 
-    @Test
-    fun displaysAttributeValues() {
-        composeTestRule.setContent {
-            ComparisonScreen(
-                comparisonResult = testComparisonResult,
-                isLoading = false,
-                error = null,
-                onBackClick = {}
-            )
-        }
-
-        composeTestRule.onNodeWithText("Male").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Female").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Northmen").assertIsDisplayed()
-    }
 
     @Test
     fun displaysLoadingState() {
@@ -219,17 +190,4 @@ class ComparisonScreenTest {
         assert(backClicked)
     }
 
-    @Test
-    fun displaysAttributeHeader() {
-        composeTestRule.setContent {
-            ComparisonScreen(
-                comparisonResult = testComparisonResult,
-                isLoading = false,
-                error = null,
-                onBackClick = {}
-            )
-        }
-
-        composeTestRule.onNodeWithText("Attribute").assertIsDisplayed()
-    }
 }

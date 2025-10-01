@@ -11,3 +11,13 @@ dependencies {
 
     testImplementation(libs.turbine)
 }
+
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(74)
+            }
+        }
+    }
+}

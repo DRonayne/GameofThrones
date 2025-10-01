@@ -35,3 +35,13 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)
 }
+
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(4)
+            }
+        }
+    }
+}

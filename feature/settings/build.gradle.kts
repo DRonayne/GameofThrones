@@ -9,3 +9,13 @@ android {
 dependencies {
     implementation(project(":core:data"))
 }
+
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(21)
+            }
+        }
+    }
+}

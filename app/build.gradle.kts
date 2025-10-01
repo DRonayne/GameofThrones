@@ -181,7 +181,7 @@ kover {
         }
         verify {
             rule {
-                minBound(0) // TODO: Increase coverage threshold as you add tests
+                minBound(0)
             }
         }
     }

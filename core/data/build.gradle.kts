@@ -33,3 +33,13 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.mockk)
 }
+
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(59)
+            }
+        }
+    }
+}

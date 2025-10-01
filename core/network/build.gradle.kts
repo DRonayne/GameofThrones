@@ -62,3 +62,13 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(18)
+            }
+        }
+    }
+}

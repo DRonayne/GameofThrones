@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AssistChip
@@ -109,6 +110,17 @@ private fun CharacterInfo(character: Character, modifier: Modifier = Modifier) {
                 overflow = TextOverflow.Ellipsis
             )
         }
+
+        if (character.gender.isNotBlank()) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = character.gender,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
@@ -184,7 +196,7 @@ private fun CharacterCardAlias(alias: String?, modifier: Modifier = Modifier) {
         Column(modifier = modifier) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Also known as: $alias",
+                text = alias,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -210,10 +222,10 @@ private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
 
 @Composable
 private fun DeathIndicator(modifier: Modifier = Modifier) {
-    Text(
-        text = "\u271D",
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.error,
+    androidx.compose.material3.Icon(
+        imageVector = androidx.compose.material.icons.Icons.Default.Close,
+        contentDescription = "Deceased",
+        tint = MaterialTheme.colorScheme.error,
         modifier = modifier
     )
 }

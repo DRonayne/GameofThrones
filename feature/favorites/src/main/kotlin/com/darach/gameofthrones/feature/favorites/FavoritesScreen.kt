@@ -1,5 +1,6 @@
 package com.darach.gameofthrones.feature.favorites
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -107,9 +108,10 @@ data class FavoritesTopBarCallbacks(
     val onDeselectAll: () -> Unit
 )
 
+@VisibleForTesting
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FavoritesTopBar(
+internal fun FavoritesTopBar(
     state: FavoritesState,
     callbacks: FavoritesTopBarCallbacks,
     modifier: Modifier = Modifier
@@ -201,8 +203,9 @@ private fun NormalModeActions(state: FavoritesState, callbacks: FavoritesTopBarC
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun FavoritesContent(
+internal fun FavoritesContent(
     state: FavoritesState,
     onCharacterClick: (String) -> Unit,
     onToggleSelection: (String) -> Unit,

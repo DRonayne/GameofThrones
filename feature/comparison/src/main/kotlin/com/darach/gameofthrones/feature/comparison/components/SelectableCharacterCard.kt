@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -179,10 +180,10 @@ private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
 
 @Composable
 private fun DeathIndicator(modifier: Modifier = Modifier) {
-    Text(
-        text = "\u271D",
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.error,
+    androidx.compose.material3.Icon(
+        imageVector = androidx.compose.material.icons.Icons.Default.Close,
+        contentDescription = "Deceased",
+        tint = MaterialTheme.colorScheme.error,
         modifier = modifier
     )
 }

@@ -1,6 +1,7 @@
 package com.darach.gameofthrones.feature.characterdetail.ui
 
 import androidx.lifecycle.SavedStateHandle
+import app.cash.turbine.test
 import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
 import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
 import com.darach.gameofthrones.core.common.analytics.AnalyticsService
@@ -15,11 +16,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verify
-import app.cash.turbine.test
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import java.io.IOException
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
