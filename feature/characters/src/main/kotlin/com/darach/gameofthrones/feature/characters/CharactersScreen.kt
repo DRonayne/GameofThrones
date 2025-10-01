@@ -129,6 +129,14 @@ private fun CharactersHeader(
     onIntent: (CharactersIntent) -> Unit,
     onFilterClick: () -> Unit
 ) {
+    val searchBarCallbacks = remember(onIntent) {
+        SearchBarCallbacks(
+            onQueryChange = { onIntent(CharactersIntent.SearchCharacters(it)) },
+            onSearch = { onIntent(CharactersIntent.SearchCharacters(it)) },
+            onClearSearch = { onIntent(CharactersIntent.ClearSearch) }
+        )
+    }
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -144,11 +152,7 @@ private fun CharactersHeader(
             CharactersSearchBar(
                 query = state.searchQuery,
                 searchHistory = state.searchHistory,
-                callbacks = SearchBarCallbacks(
-                    onQueryChange = { onIntent(CharactersIntent.SearchCharacters(it)) },
-                    onSearch = { onIntent(CharactersIntent.SearchCharacters(it)) },
-                    onClearSearch = { onIntent(CharactersIntent.ClearSearch) }
-                ),
+                callbacks = searchBarCallbacks,
                 modifier = Modifier.weight(1f)
             )
 
@@ -176,7 +180,9 @@ private fun CharactersHeader(
 
             SortOptionsMenu(
                 currentSortOption = state.sortOption,
-                onSortOptionChange = { onIntent(CharactersIntent.SortCharacters(it)) }
+                onSortOptionChange = remember(onIntent) {
+                    { option -> onIntent(CharactersIntent.SortCharacters(option)) }
+                }
             )
         }
 
@@ -220,9 +226,13 @@ private fun CharactersList(
     onCharacterClick: (String) -> Unit,
     onIntent: (CharactersIntent) -> Unit
 ) {
+    val onRefresh = remember(onIntent) {
+        { onIntent(CharactersIntent.RefreshCharacters) }
+    }
+
     PullToRefreshBox(
         isRefreshing = state.isRefreshing,
-        onRefresh = { onIntent(CharactersIntent.RefreshCharacters) },
+        onRefresh = onRefresh,
         modifier = Modifier.fillMaxSize()
     ) {
         LazyColumn(
@@ -236,8 +246,12 @@ private fun CharactersList(
             ) { character ->
                 CharacterCard(
                     character = character,
-                    onFavoriteClick = { onIntent(CharactersIntent.ToggleFavorite(it)) },
-                    onClick = { onCharacterClick(character.id) }
+                    onFavoriteClick = remember(onIntent) {
+                        { id -> onIntent(CharactersIntent.ToggleFavorite(id)) }
+                    },
+                    onClick = remember(onCharacterClick) {
+                        { onCharacterClick(character.id) }
+                    }
                 )
             }
         }

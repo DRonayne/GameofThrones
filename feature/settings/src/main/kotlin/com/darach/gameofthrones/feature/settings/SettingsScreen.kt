@@ -51,11 +51,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.data.preferences.ThemeMode
+import com.darach.gameofthrones.core.ui.test.TestTags
 
 /**
  * Settings screen with theme management, cache controls, and app information.
@@ -91,6 +93,7 @@ internal fun SettingsContent(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .testTag(TestTags.SETTINGS_CONTENT)
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
@@ -383,7 +386,8 @@ private fun DataSyncActions(
                 subtitle = "Refresh all data from server",
                 icon = Icons.Default.Sync,
                 onClick = onSyncData,
-                enabled = !isSyncing
+                enabled = !isSyncing,
+                testTag = TestTags.SYNC_DATA_BUTTON
             ),
             trailing = { if (isSyncing) SyncingIndicator() }
         )
@@ -411,7 +415,8 @@ private fun DataSyncActions(
                 subtitle = "Reset all preferences and clear cache",
                 icon = Icons.Default.Delete,
                 onClick = onShowClearAllDialog,
-                destructive = true
+                destructive = true,
+                testTag = TestTags.CLEAR_CACHE_BUTTON
             )
         )
     }
@@ -558,7 +563,8 @@ data class SettingsButtonConfig(
     val icon: ImageVector,
     val onClick: () -> Unit,
     val enabled: Boolean = true,
-    val destructive: Boolean = false
+    val destructive: Boolean = false,
+    val testTag: String? = null
 )
 
 @Composable
@@ -570,6 +576,7 @@ private fun SettingsButtonContent(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .then(config.testTag?.let { Modifier.testTag(it) } ?: Modifier)
             .clickable(enabled = config.enabled, onClick = config.onClick)
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,

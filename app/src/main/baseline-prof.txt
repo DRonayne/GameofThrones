@@ -1,0 +1,29 @@
+# Baseline profile for Game of Thrones app
+# This file contains hot methods and classes that should be precompiled
+# for optimal startup and runtime performance
+
+# Main Application
+Lcom/darach/gameofthrones/GameOfThronesApplication;
+HSPLcom/darach/gameofthrones/GameOfThronesApplication;->onCreate()V
+
+# Main Activity
+Lcom/darach/gameofthrones/MainActivity;
+HSPLcom/darach/gameofthrones/MainActivity;->onCreate(Landroid/os/Bundle;)V
+
+# Characters Screen - Most frequently used
+Lcom/darach/gameofthrones/feature/characters/CharactersScreen;
+Lcom/darach/gameofthrones/feature/characters/CharactersViewModel;
+HSPLcom/darach/gameofthrones/feature/characters/CharactersViewModel;->handleIntent(Lcom/darach/gameofthrones/feature/characters/CharactersIntent;)V
+
+# Character Card - Rendered frequently in list
+Lcom/darach/gameofthrones/feature/characters/components/CharacterCard;
+
+# Character Repository - Critical data path
+Lcom/darach/gameofthrones/core/data/repository/CharacterRepository;
+
+# Database - Frequently accessed
+Lcom/darach/gameofthrones/core/database/CharacterDatabase;
+Lcom/darach/gameofthrones/core/database/dao/CharacterDao;
+
+# Image Loading - Performance critical
+Lcom/darach/gameofthrones/core/ui/component/PortraitImage;

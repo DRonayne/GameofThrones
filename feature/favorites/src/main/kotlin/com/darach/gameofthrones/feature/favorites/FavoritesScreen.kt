@@ -18,12 +18,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.SelectAll
-import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -38,13 +38,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.model.Character
+import com.darach.gameofthrones.core.ui.test.TestTags
 import com.darach.gameofthrones.feature.favorites.FavoritesViewModel
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCard
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCardCallbacks as CardCallbacks
@@ -183,17 +186,23 @@ private fun SelectionModeActions(state: FavoritesState, callbacks: FavoritesTopB
 @Composable
 private fun NormalModeActions(state: FavoritesState, callbacks: FavoritesTopBarCallbacks) {
     Row {
-        IconButton(onClick = callbacks.onViewModeToggle) {
+        IconButton(
+            onClick = callbacks.onViewModeToggle,
+            modifier = Modifier.testTag(TestTags.VIEW_MODE_TOGGLE)
+        ) {
             Icon(
                 imageVector = when (state.viewMode) {
-                    ViewMode.GRID -> Icons.Default.ViewList
+                    ViewMode.GRID -> Icons.AutoMirrored.Filled.ViewList
                     ViewMode.LIST -> Icons.Default.GridView
                 },
                 contentDescription = "Toggle view mode"
             )
         }
         if (state.favorites.isNotEmpty()) {
-            IconButton(onClick = callbacks.onSelectionModeToggle) {
+            IconButton(
+                onClick = callbacks.onSelectionModeToggle,
+                modifier = Modifier.testTag(TestTags.SELECTION_MODE_BUTTON)
+            ) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = "Enter selection mode"
@@ -276,15 +285,18 @@ private fun FavoritesGridView(
             items = state.favorites,
             key = { it.id }
         ) { character ->
-            FavoriteCard(
-                character = character,
-                isSelectionMode = state.isSelectionMode,
-                isSelected = state.selectedIds.contains(character.id),
-                callbacks = CardCallbacks(
+            val cardCallbacks = remember(callbacks) {
+                CardCallbacks(
                     onCharacterClick = { callbacks.onCharacterClick(character.id) },
                     onToggleSelection = { callbacks.onToggleSelection(character.id) },
                     onRemoveFavorite = { callbacks.onRemoveFavorite(character.id) }
                 )
+            }
+            FavoriteCard(
+                character = character,
+                isSelectionMode = state.isSelectionMode,
+                isSelected = state.selectedIds.contains(character.id),
+                callbacks = cardCallbacks
             )
         }
     }
@@ -305,15 +317,18 @@ private fun FavoritesListView(
             items = state.favorites,
             key = { it.id }
         ) { character ->
-            FavoriteCard(
-                character = character,
-                isSelectionMode = state.isSelectionMode,
-                isSelected = state.selectedIds.contains(character.id),
-                callbacks = CardCallbacks(
+            val cardCallbacks = remember(callbacks) {
+                CardCallbacks(
                     onCharacterClick = { callbacks.onCharacterClick(character.id) },
                     onToggleSelection = { callbacks.onToggleSelection(character.id) },
                     onRemoveFavorite = { callbacks.onRemoveFavorite(character.id) }
                 )
+            }
+            FavoriteCard(
+                character = character,
+                isSelectionMode = state.isSelectionMode,
+                isSelected = state.selectedIds.contains(character.id),
+                callbacks = cardCallbacks
             )
         }
     }

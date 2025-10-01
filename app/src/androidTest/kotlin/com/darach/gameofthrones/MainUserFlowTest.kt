@@ -59,7 +59,7 @@ class MainUserFlowTest {
 
         // Verify we're on the Characters screen
         composeTestRule
-            .onNode(hasText("Search characters, cultures, aliases...", substring = true))
+            .onNode(hasText("Search characters", substring = true))
             .assertExists()
 
         // Test 1: Navigate to Favorites

@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.map
  * Provides methods to schedule periodic syncs and check sync status.
  */
 @Singleton
-class SyncManager @Inject constructor(@ApplicationContext private val context: Context) {
+class SyncManager @Inject constructor(@param:ApplicationContext private val context: Context) {
     private val workManager = WorkManager.getInstance(context)
 
     /**

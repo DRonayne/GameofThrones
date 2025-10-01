@@ -649,11 +649,14 @@ class CharacterListFlowTest {
         }
 
         // Clear search
-        val clearButton = composeTestRule
-            .onNodeWithContentDescription("Clear search", useUnmergedTree = true)
+        val clearButtons = composeTestRule
+            .onAllNodesWithContentDescription("Clear search", useUnmergedTree = true)
+            .fetchSemanticsNodes()
 
-        if (clearButton.fetchSemanticsNode(null) != null) {
-            clearButton.performClick()
+        if (clearButtons.isNotEmpty()) {
+            composeTestRule
+                .onNodeWithContentDescription("Clear search", useUnmergedTree = true)
+                .performClick()
             composeTestRule.waitForIdle()
         }
     }

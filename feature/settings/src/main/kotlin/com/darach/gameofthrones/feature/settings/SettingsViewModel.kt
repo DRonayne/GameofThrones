@@ -32,7 +32,7 @@ class SettingsViewModel @Inject constructor(
     private val preferencesDataSource: PreferencesDataSource,
     private val analyticsService: AnalyticsService,
     private val crashReportingService: CrashReportingService,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val isLoading = MutableStateFlow(false)

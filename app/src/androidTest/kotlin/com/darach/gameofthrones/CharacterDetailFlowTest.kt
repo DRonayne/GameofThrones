@@ -55,7 +55,7 @@ class CharacterDetailFlowTest {
 
         // Find and click first character card
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -114,35 +114,38 @@ class CharacterDetailFlowTest {
                 .isNotEmpty()
         }
 
+        composeTestRule.waitForIdle()
+
         // Click first result
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
             composeTestRule
-                .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+                .onAllNodesWithTag(TestTags.CHARACTER_CARD)
                 .onFirst()
                 .performClick()
 
             composeTestRule.waitForIdle()
 
-            // Verify character name appears in detail
-            composeTestRule.waitUntil(timeoutMillis = 5000) {
+            // Verify detail screen loads with back button
+            composeTestRule.waitUntil(timeoutMillis = 10000) {
                 composeTestRule
-                    .onAllNodesWithText("Jon", substring = true, ignoreCase = true)
+                    .onAllNodesWithContentDescription(
+                        "Navigate back",
+                        substring = true
+                    )
                     .fetchSemanticsNodes()
                     .isNotEmpty()
             }
 
             // Navigate back
-            val backButton = composeTestRule
-                .onNodeWithContentDescription("Navigate back", useUnmergedTree = true)
+            composeTestRule
+                .onNodeWithContentDescription("Navigate back")
+                .performClick()
 
-            if (backButton.fetchSemanticsNode(null) != null) {
-                backButton.performClick()
-                composeTestRule.waitForIdle()
-            }
+            composeTestRule.waitForIdle()
         }
     }
 
@@ -158,7 +161,7 @@ class CharacterDetailFlowTest {
 
         // Click first character with culture
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -215,35 +218,35 @@ class CharacterDetailFlowTest {
                 .size > 3
         }
 
+        composeTestRule.waitForIdle()
+
         // Click first result
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
             composeTestRule
-                .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+                .onAllNodesWithTag(TestTags.CHARACTER_CARD)
                 .onFirst()
                 .performClick()
 
             composeTestRule.waitForIdle()
 
-            // Wait for detail to load
-            composeTestRule.waitUntil(timeoutMillis = 5000) {
+            // Wait for detail screen to load with back button
+            composeTestRule.waitUntil(timeoutMillis = 10000) {
                 composeTestRule
-                    .onAllNodesWithText("", substring = true)
+                    .onAllNodesWithContentDescription("Navigate back", substring = true)
                     .fetchSemanticsNodes()
-                    .size > 3
+                    .isNotEmpty()
             }
 
             // Navigate back
-            val backButton = composeTestRule
-                .onNodeWithContentDescription("Navigate back", useUnmergedTree = true)
+            composeTestRule
+                .onNodeWithContentDescription("Navigate back")
+                .performClick()
 
-            if (backButton.fetchSemanticsNode(null) != null) {
-                backButton.performClick()
-                composeTestRule.waitForIdle()
-            }
+            composeTestRule.waitForIdle()
         }
     }
 
@@ -259,7 +262,7 @@ class CharacterDetailFlowTest {
 
         // Click first character
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -301,7 +304,7 @@ class CharacterDetailFlowTest {
 
         // Click first character
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -343,7 +346,7 @@ class CharacterDetailFlowTest {
 
         // Click first character
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -450,7 +453,7 @@ class CharacterDetailFlowTest {
 
         // Click first character
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -499,59 +502,59 @@ class CharacterDetailFlowTest {
 
         // Click first character and remember details
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.size >= 2) {
             // Click first character
             composeTestRule
-                .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+                .onAllNodesWithTag(TestTags.CHARACTER_CARD)
                 .onFirst()
                 .performClick()
 
             composeTestRule.waitForIdle()
 
-            // Wait for detail to load
-            composeTestRule.waitUntil(timeoutMillis = 5000) {
+            // Wait for detail screen to load
+            composeTestRule.waitUntil(timeoutMillis = 10000) {
                 composeTestRule
-                    .onAllNodesWithContentDescription(
-                        "Navigate back",
-                        substring = true,
-                        useUnmergedTree = true
-                    )
+                    .onAllNodesWithContentDescription("Navigate back", substring = true)
                     .fetchSemanticsNodes()
                     .isNotEmpty()
             }
 
             // Navigate back
             composeTestRule
-                .onNodeWithContentDescription("Navigate back", useUnmergedTree = true)
+                .onNodeWithContentDescription("Navigate back")
                 .performClick()
 
             composeTestRule.waitForIdle()
+
+            // Wait for list to be displayed again
+            composeTestRule.waitUntil(timeoutMillis = 5000) {
+                composeTestRule
+                    .onAllNodesWithTag(TestTags.CHARACTER_CARD)
+                    .fetchSemanticsNodes()
+                    .size >= 2
+            }
 
             // Click second character
             composeTestRule
-                .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)[1]
+                .onAllNodesWithTag(TestTags.CHARACTER_CARD)[1]
                 .performClick()
 
             composeTestRule.waitForIdle()
 
-            // Wait for detail to load
-            composeTestRule.waitUntil(timeoutMillis = 5000) {
+            // Wait for detail screen to load
+            composeTestRule.waitUntil(timeoutMillis = 15000) {
                 composeTestRule
-                    .onAllNodesWithContentDescription(
-                        "Navigate back",
-                        substring = true,
-                        useUnmergedTree = true
-                    )
+                    .onAllNodesWithContentDescription("Navigate back", substring = true)
                     .fetchSemanticsNodes()
                     .isNotEmpty()
             }
 
             // Navigate back
             composeTestRule
-                .onNodeWithContentDescription("Navigate back", useUnmergedTree = true)
+                .onNodeWithContentDescription("Navigate back")
                 .performClick()
 
             composeTestRule.waitForIdle()

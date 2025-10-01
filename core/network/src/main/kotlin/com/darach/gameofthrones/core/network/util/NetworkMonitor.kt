@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
  * Monitors network connectivity status and provides a reactive Flow of connectivity changes.
  */
 @Singleton
-class NetworkMonitor @Inject constructor(@ApplicationContext private val context: Context) {
+class NetworkMonitor @Inject constructor(@param:ApplicationContext private val context: Context) {
     private val connectivityManager = context.getSystemService(
         Context.CONNECTIVITY_SERVICE
     ) as ConnectivityManager

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.gms)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.perf)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 android {
@@ -68,6 +69,9 @@ dependencies {
 
     // LeakCanary
     debugImplementation(libs.leakcanary)
+
+    // Baseline Profile
+    implementation(libs.androidx.profileinstaller)
 }
 
 kover {

@@ -14,7 +14,7 @@ import okhttp3.Response
  * Throws NoConnectivityException if there's no network connection.
  */
 class NetworkConnectivityInterceptor @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!isNetworkAvailable()) {

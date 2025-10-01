@@ -28,11 +28,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.ui.component.PortraitImage
+import com.darach.gameofthrones.core.ui.test.TestTags
 
 /**
  * Main comparison screen showing side-by-side character comparison.
@@ -87,6 +89,7 @@ private fun ComparisonContent(comparisonResult: ComparisonResult, modifier: Modi
     Column(
         modifier = modifier
             .fillMaxSize()
+            .testTag(TestTags.COMPARISON_RESULT_TABLE)
             .verticalScroll(scrollState)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally

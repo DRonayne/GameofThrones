@@ -41,21 +41,24 @@ class FavoritesViewModel @Inject constructor(
         isLoading,
         errorMessage
     ) { flows ->
-        val favorites = flows[0] as List<*>
+        @Suppress("UNCHECKED_CAST")
+        val favorites = flows[0] as List<Character>
         val mode = flows[1] as ViewMode
         val selectionMode = flows[2] as Boolean
-        val selected = flows[3] as Set<*>
+
+        @Suppress("UNCHECKED_CAST")
+        val selected = flows[3] as Set<String>
         val loading = flows[4] as Boolean
         val error = flows[5] as String?
 
         FavoritesState(
-            favorites = favorites as List<Character>,
+            favorites = favorites,
             isLoading = loading,
             error = error,
             isEmpty = favorites.isEmpty(),
             viewMode = mode,
             isSelectionMode = selectionMode,
-            selectedIds = selected as Set<String>
+            selectedIds = selected
         )
     }.stateIn(
         scope = viewModelScope,

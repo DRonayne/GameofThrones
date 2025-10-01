@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
+import com.darach.gameofthrones.core.ui.test.TestTags
 
 /**
  * Character card with selection mode support.
@@ -56,6 +58,7 @@ fun SelectableCharacterCard(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
+            .testTag(TestTags.SELECTABLE_CHARACTER_CARD)
             .alpha(cardAlpha),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         border = if (isSelected) {

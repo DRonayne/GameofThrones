@@ -21,7 +21,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 import com.darach.gameofthrones.GoTNavHost
 
 @Composable
@@ -30,8 +30,9 @@ fun GoTApp(
     navController: NavHostController = rememberNavController()
 ) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
-    val useNavigationRail =
-        adaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
+    val useNavigationRail = adaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(
+        WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
+    )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination

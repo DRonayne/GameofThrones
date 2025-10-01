@@ -57,6 +57,9 @@ firebaseBom = "34.3.0"
 # LeakCanary
 leakcanary = "2.14"
 
+# Baseline Profile
+baselineProfile = "1.4.0"
+
 # Code Quality
 spotless = "8.0.0"
 detekt = "1.23.7"
@@ -151,6 +154,9 @@ firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 
 # LeakCanary
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+
+# Baseline Profile
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "baselineProfile" }
 
 # Code Quality
 detekt-compose = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detektCompose" }
@@ -258,4 +264,5 @@ gms = { id = "com.google.gms.google-services", version = "4.4.3" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineProfile" }
 

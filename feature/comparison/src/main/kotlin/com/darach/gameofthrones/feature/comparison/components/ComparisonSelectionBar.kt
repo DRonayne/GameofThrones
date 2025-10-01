@@ -23,7 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.darach.gameofthrones.core.ui.test.TestTags
 
 /**
  * State for the comparison selection bar.
@@ -113,7 +115,9 @@ private fun SelectionActions(
     ) {
         OutlinedButton(
             onClick = callbacks.onClearClick,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .testTag(TestTags.CLEAR_SELECTION_BUTTON)
         ) {
             Text("Clear")
         }
@@ -121,7 +125,9 @@ private fun SelectionActions(
         Button(
             onClick = callbacks.onCompareClick,
             enabled = canCompare,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .testTag(TestTags.COMPARE_BUTTON)
         ) {
             Text("Compare")
         }

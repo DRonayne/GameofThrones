@@ -1,8 +1,8 @@
-package com.darach.gameofthrones
+package com.darach.gameofthrones.core.ui.test
 
 /**
  * Test tags for UI components to improve test targeting and reliability.
- * Note: These are duplicated in core/ui/test/TestTags.kt for main code usage.
+ * These tags are used by UI tests to reliably find and interact with components.
  */
 object TestTags {
     // Character List Screen

@@ -27,7 +27,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
  */
 @Singleton
 class PreferencesDataSourceImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : PreferencesDataSource {
 
     private object PreferencesKeys {

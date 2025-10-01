@@ -16,20 +16,25 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
+import com.darach.gameofthrones.core.ui.test.TestTags
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -41,7 +46,9 @@ fun CharacterCard(
 ) {
     Card(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag(TestTags.CHARACTER_CARD),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -147,10 +154,18 @@ private fun CharacterActions(
 }
 
 @Composable
-private fun FavoriteButton(character: Character, onFavoriteClick: (String) -> Unit) {
+private fun FavoriteButton(
+    character: Character,
+    onFavoriteClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val onClick = remember(character.id, onFavoriteClick) {
+        { onFavoriteClick(character.id) }
+    }
+
     IconButton(
-        onClick = { onFavoriteClick(character.id) },
-        modifier = Modifier.size(40.dp)
+        onClick = onClick,
+        modifier = modifier.size(40.dp)
     ) {
         Icon(
             imageVector = if (character.isFavorite) {
@@ -208,16 +223,17 @@ private fun CharacterCardAlias(alias: String?, modifier: Modifier = Modifier) {
 
 @Composable
 private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
-    AssistChip(
-        onClick = { },
-        label = {
-            Text(
-                text = RomanNumeralConverter.toRomanNumeral(season),
-                style = MaterialTheme.typography.labelMedium
-            )
-        },
+    Surface(
+        shape = AssistChipDefaults.shape,
+        color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier
-    )
+    ) {
+        Text(
+            text = RomanNumeralConverter.toRomanNumeral(season),
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+        )
+    }
 }
 
 @Composable

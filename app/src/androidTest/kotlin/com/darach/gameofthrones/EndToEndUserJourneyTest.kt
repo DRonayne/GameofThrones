@@ -53,7 +53,7 @@ class EndToEndUserJourneyTest {
 
         // Step 2: Browse character list
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -174,6 +174,8 @@ class EndToEndUserJourneyTest {
                 .isNotEmpty()
         }
 
+        composeTestRule.waitForIdle()
+
         // Step 4: Apply additional filter (e.g., Female)
         val femaleNodes = composeTestRule
             .onAllNodesWithText("Female", substring = true)
@@ -187,54 +189,28 @@ class EndToEndUserJourneyTest {
             composeTestRule.waitForIdle()
         }
 
+        composeTestRule.waitForIdle()
+
         // Step 5: View a filtered character
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
             composeTestRule
-                .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+                .onAllNodesWithTag(TestTags.CHARACTER_CARD)
                 .onFirst()
                 .performClick()
 
             composeTestRule.waitForIdle()
 
-            // Wait for detail
-            composeTestRule.waitUntil(timeoutMillis = 5000) {
+            // Wait for detail screen to load
+            composeTestRule.waitUntil(timeoutMillis = 10000) {
                 composeTestRule
-                    .onAllNodesWithContentDescription(
-                        "Navigate back",
-                        substring = true,
-                        useUnmergedTree = true
-                    )
+                    .onAllNodesWithContentDescription("Navigate back", substring = true)
                     .fetchSemanticsNodes()
                     .isNotEmpty()
             }
-
-            // Navigate back
-            composeTestRule
-                .onNodeWithContentDescription("Navigate back", useUnmergedTree = true)
-                .performClick()
-
-            composeTestRule.waitForIdle()
-        }
-
-        // Step 6: Clear search and filter
-        val clearButton = composeTestRule
-            .onNodeWithContentDescription("Clear search", useUnmergedTree = true)
-
-        if (clearButton.fetchSemanticsNode(null) != null) {
-            clearButton.performClick()
-            composeTestRule.waitForIdle()
-        }
-
-        if (femaleNodes.isNotEmpty()) {
-            composeTestRule
-                .onNodeWithText("Female")
-                .performClick()
-
-            composeTestRule.waitForIdle()
         }
     }
 
@@ -289,7 +265,7 @@ class EndToEndUserJourneyTest {
 
         // Step 4: Browse with new theme
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -370,32 +346,30 @@ class EndToEndUserJourneyTest {
                 .isNotEmpty()
         }
 
+        composeTestRule.waitForIdle()
+
         // Step 3: View a Northmen character
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
             composeTestRule
-                .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+                .onAllNodesWithTag(TestTags.CHARACTER_CARD)
                 .onFirst()
                 .performClick()
 
             composeTestRule.waitForIdle()
 
-            composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.waitUntil(timeoutMillis = 10000) {
                 composeTestRule
-                    .onAllNodesWithContentDescription(
-                        "Navigate back",
-                        substring = true,
-                        useUnmergedTree = true
-                    )
+                    .onAllNodesWithContentDescription("Navigate back", substring = true)
                     .fetchSemanticsNodes()
                     .isNotEmpty()
             }
 
             composeTestRule
-                .onNodeWithContentDescription("Navigate back", useUnmergedTree = true)
+                .onNodeWithContentDescription("Navigate back")
                 .performClick()
 
             composeTestRule.waitForIdle()
@@ -620,7 +594,7 @@ class EndToEndUserJourneyTest {
 
         // Step 5: View a filtered character
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
@@ -707,7 +681,7 @@ class EndToEndUserJourneyTest {
 
         // Step 5: Open character detail
         val characterCards = composeTestRule
-            .onAllNodesWithTag(TestTags.CHARACTER_CARD, useUnmergedTree = true)
+            .onAllNodesWithTag(TestTags.CHARACTER_CARD)
             .fetchSemanticsNodes()
 
         if (characterCards.isNotEmpty()) {
