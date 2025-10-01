@@ -1,6 +1,6 @@
 package com.darach.gameofthrones.feature.characterdetail
 
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
 
 data class CharacterDetailState(
     val character: Character? = null,

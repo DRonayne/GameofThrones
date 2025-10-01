@@ -1,6 +1,6 @@
 package com.darach.gameofthrones.feature.characters.di
 
-import com.darach.gameofthrones.core.common.analytics.AnalyticsService
+import com.darach.gameofthrones.core.analytics.AnalyticsService
 import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.common.performance.PerformanceMonitor
 import javax.inject.Inject

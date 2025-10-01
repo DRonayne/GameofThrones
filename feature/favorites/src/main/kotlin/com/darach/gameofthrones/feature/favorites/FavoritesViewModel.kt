@@ -1,10 +1,10 @@
-package com.darach.gameofthrones.feature.favorites.ui
+package com.darach.gameofthrones.feature.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.favorites.FavoritesIntent
 import com.darach.gameofthrones.feature.favorites.FavoritesState
 import com.darach.gameofthrones.feature.favorites.ViewMode

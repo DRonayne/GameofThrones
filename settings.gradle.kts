@@ -24,7 +24,9 @@ rootProject.name = "Game of Thrones"
 include(":app")
 
 // Core modules
+include(":core:model")
 include(":core:common")
+include(":core:analytics")
 include(":core:network")
 include(":core:database")
 include(":core:data")

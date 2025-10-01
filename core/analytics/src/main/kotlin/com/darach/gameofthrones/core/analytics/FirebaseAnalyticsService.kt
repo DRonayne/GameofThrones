@@ -1,6 +1,5 @@
-package com.darach.gameofthrones.core.common.analytics
+package com.darach.gameofthrones.core.analytics
 
-import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import javax.inject.Inject

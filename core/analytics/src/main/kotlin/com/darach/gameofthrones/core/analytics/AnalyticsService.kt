@@ -1,6 +1,4 @@
-package com.darach.gameofthrones.core.common.analytics
-
-import android.os.Bundle
+package com.darach.gameofthrones.core.analytics
 
 /**
  * Service for tracking analytics events throughout the app.

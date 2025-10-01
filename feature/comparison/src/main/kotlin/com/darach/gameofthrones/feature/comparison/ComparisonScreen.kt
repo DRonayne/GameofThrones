@@ -108,8 +108,8 @@ private fun ComparisonContent(comparisonResult: ComparisonResult, modifier: Modi
 
 @Composable
 private fun TaleOfTheTapeHeader(
-    character1: com.darach.gameofthrones.core.domain.model.Character?,
-    character2: com.darach.gameofthrones.core.domain.model.Character?,
+    character1: com.darach.gameofthrones.core.model.Character?,
+    character2: com.darach.gameofthrones.core.model.Character?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -153,7 +153,7 @@ private fun TaleOfTheTapeHeader(
 
 @Composable
 private fun CharacterColumn(
-    character: com.darach.gameofthrones.core.domain.model.Character?,
+    character: com.darach.gameofthrones.core.model.Character?,
     modifier: Modifier = Modifier
 ) {
     Column(

@@ -17,9 +17,9 @@ import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 import com.darach.gameofthrones.core.domain.usecase.SortOption
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.characters.components.CharacterCard
 import com.darach.gameofthrones.feature.characters.components.CharactersSearchBar
 import com.darach.gameofthrones.feature.characters.components.FilterBottomSheet

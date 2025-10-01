@@ -6,10 +6,10 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
-import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
-import com.darach.gameofthrones.core.common.analytics.AnalyticsService
-import com.darach.gameofthrones.core.common.analytics.UserProperties
+import com.darach.gameofthrones.core.analytics.AnalyticsEvents
+import com.darach.gameofthrones.core.analytics.AnalyticsParams
+import com.darach.gameofthrones.core.analytics.AnalyticsService
+import com.darach.gameofthrones.core.analytics.UserProperties
 import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
 import com.darach.gameofthrones.core.data.preferences.ThemeMode

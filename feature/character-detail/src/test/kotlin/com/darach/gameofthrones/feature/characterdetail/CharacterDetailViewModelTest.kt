@@ -1,14 +1,14 @@
-package com.darach.gameofthrones.feature.characterdetail.ui
+package com.darach.gameofthrones.feature.characterdetail
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
-import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
-import com.darach.gameofthrones.core.common.analytics.AnalyticsService
+import com.darach.gameofthrones.core.analytics.AnalyticsEvents
+import com.darach.gameofthrones.core.analytics.AnalyticsParams
+import com.darach.gameofthrones.core.analytics.AnalyticsService
 import com.darach.gameofthrones.core.common.crash.CrashReportingService
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.GetCharacterByIdUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.characterdetail.CharacterDetailIntent
 import io.mockk.coEvery
 import io.mockk.coVerify

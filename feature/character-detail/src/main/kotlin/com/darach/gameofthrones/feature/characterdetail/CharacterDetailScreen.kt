@@ -53,10 +53,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
-import com.darach.gameofthrones.feature.characterdetail.ui.CharacterDetailViewModel
+import com.darach.gameofthrones.feature.characterdetail.CharacterDetailViewModel
 
 @Composable
 fun CharacterDetailScreen(

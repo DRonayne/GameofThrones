@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.ui.performance.TrackScreenLoadTime
+import com.darach.gameofthrones.feature.characters.CharactersViewModel
 import com.darach.gameofthrones.feature.characters.components.CharacterCard
 import com.darach.gameofthrones.feature.characters.components.CharactersSearchBar
 import com.darach.gameofthrones.feature.characters.components.FilterBottomSheet
@@ -46,7 +47,6 @@ import com.darach.gameofthrones.feature.characters.components.FilterBottomSheetS
 import com.darach.gameofthrones.feature.characters.components.OfflineIndicator
 import com.darach.gameofthrones.feature.characters.components.SearchBarCallbacks
 import com.darach.gameofthrones.feature.characters.components.SortOptionsMenu
-import com.darach.gameofthrones.feature.characters.ui.CharactersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

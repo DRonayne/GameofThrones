@@ -1,6 +1,6 @@
 package com.darach.gameofthrones.feature.comparison
 
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
 
 /**
  * Callbacks for the comparison selection screen.

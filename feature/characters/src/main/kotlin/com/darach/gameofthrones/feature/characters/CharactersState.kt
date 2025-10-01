@@ -1,8 +1,8 @@
 package com.darach.gameofthrones.feature.characters
 
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 import com.darach.gameofthrones.core.domain.usecase.SortOption
+import com.darach.gameofthrones.core.model.Character
 
 data class CharactersState(
     val characters: List<Character> = emptyList(),

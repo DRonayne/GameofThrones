@@ -1,12 +1,12 @@
-package com.darach.gameofthrones.feature.comparison.ui
+package com.darach.gameofthrones.feature.comparison
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
-import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
-import com.darach.gameofthrones.core.common.analytics.AnalyticsService
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.analytics.AnalyticsEvents
+import com.darach.gameofthrones.core.analytics.AnalyticsParams
+import com.darach.gameofthrones.core.analytics.AnalyticsService
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.comparison.ComparisonDiffCalculator
 import com.darach.gameofthrones.feature.comparison.ComparisonIntent
 import com.darach.gameofthrones.feature.comparison.ComparisonState

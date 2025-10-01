@@ -90,7 +90,9 @@ dependencies {
     implementation(project(":feature:settings"))
 
     // Core modules
+    implementation(project(":core:model"))
     implementation(project(":core:common"))
+    implementation(project(":core:analytics"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))

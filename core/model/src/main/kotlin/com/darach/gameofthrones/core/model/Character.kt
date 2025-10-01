@@ -1,4 +1,4 @@
-package com.darach.gameofthrones.core.domain.model
+package com.darach.gameofthrones.core.model
 
 data class Character(
     val id: String,

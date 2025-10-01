@@ -5,8 +5,8 @@ import com.darach.gameofthrones.core.common.performance.trace
 import com.darach.gameofthrones.core.data.mapper.toDomain
 import com.darach.gameofthrones.core.data.mapper.toEntity
 import com.darach.gameofthrones.core.database.dao.CharacterDao
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.repository.CharacterRepository
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.network.api.GoTApiService
 import com.darach.gameofthrones.core.network.util.NetworkResult
 import com.darach.gameofthrones.core.network.util.safeApiCall

@@ -1,6 +1,6 @@
 package com.darach.gameofthrones.feature.comparison
 
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows

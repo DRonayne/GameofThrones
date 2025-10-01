@@ -1,9 +1,9 @@
-package com.darach.gameofthrones.feature.favorites.ui
+package com.darach.gameofthrones.feature.favorites
 
 import app.cash.turbine.test
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.favorites.FavoritesIntent
 import com.darach.gameofthrones.feature.favorites.ViewMode
 import io.mockk.coEvery

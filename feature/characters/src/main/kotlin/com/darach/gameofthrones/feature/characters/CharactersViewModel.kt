@@ -1,17 +1,17 @@
-package com.darach.gameofthrones.feature.characters.ui
+package com.darach.gameofthrones.feature.characters
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.darach.gameofthrones.core.common.analytics.AnalyticsEvents
-import com.darach.gameofthrones.core.common.analytics.AnalyticsParams
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.analytics.AnalyticsEvents
+import com.darach.gameofthrones.core.analytics.AnalyticsParams
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.RefreshCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SearchCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SortCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.network.util.NetworkMonitor
 import com.darach.gameofthrones.feature.characters.CharactersIntent
 import com.darach.gameofthrones.feature.characters.CharactersState

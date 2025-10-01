@@ -1,6 +1,6 @@
 package com.darach.gameofthrones.feature.favorites
 
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
 
 enum class ViewMode {
     GRID,

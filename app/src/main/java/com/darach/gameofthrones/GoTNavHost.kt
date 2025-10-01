@@ -17,7 +17,7 @@ import com.darach.gameofthrones.feature.comparison.ComparisonIntent
 import com.darach.gameofthrones.feature.comparison.ComparisonScreen
 import com.darach.gameofthrones.feature.comparison.ComparisonSelectionCallbacks
 import com.darach.gameofthrones.feature.comparison.ComparisonSelectionScreen
-import com.darach.gameofthrones.feature.comparison.ui.ComparisonViewModel
+import com.darach.gameofthrones.feature.comparison.ComparisonViewModel
 import com.darach.gameofthrones.feature.favorites.FavoritesScreen
 import com.darach.gameofthrones.feature.settings.SettingsScreen
 import com.darach.gameofthrones.navigation.CharacterDetailRoute

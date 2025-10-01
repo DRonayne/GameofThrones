@@ -1,8 +1,8 @@
 package com.darach.gameofthrones.core.data.mapper
 
 import com.darach.gameofthrones.core.database.model.CharacterEntity
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.network.model.CharacterDto
 import com.darach.gameofthrones.core.ui.GameOfThronesImages
 

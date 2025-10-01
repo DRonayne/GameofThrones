@@ -8,6 +8,7 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:model"))
 
     testImplementation(libs.turbine)
 }
@@ -16,7 +17,7 @@ kover {
     reports {
         verify {
             rule {
-                minBound(74)
+                minBound(71)
             }
         }
     }

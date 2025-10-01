@@ -1,8 +1,8 @@
-package com.darach.gameofthrones.feature.comparison.ui
+package com.darach.gameofthrones.feature.comparison
 
-import com.darach.gameofthrones.core.common.analytics.AnalyticsService
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.analytics.AnalyticsService
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.comparison.ComparisonDiffCalculator
 import com.darach.gameofthrones.feature.comparison.ComparisonIntent
 import io.mockk.every

@@ -123,7 +123,7 @@ class CharacterMapperTest {
 
     @Test
     fun `toEntity from Domain maps all fields correctly`() {
-        val domain = com.darach.gameofthrones.core.domain.model.Character(
+        val domain = com.darach.gameofthrones.core.model.Character(
             id = "583",
             name = "Jon Snow",
             gender = "Male",

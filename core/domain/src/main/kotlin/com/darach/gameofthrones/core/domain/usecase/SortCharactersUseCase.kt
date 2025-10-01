@@ -1,6 +1,6 @@
 package com.darach.gameofthrones.core.domain.usecase
 
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
 import javax.inject.Inject
 
 enum class SortOption {

@@ -31,8 +31,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.darach.gameofthrones.core.domain.model.Character
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
+import com.darach.gameofthrones.core.model.Character
 
 /**
  * Character card with selection mode support.

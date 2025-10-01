@@ -1,6 +1,6 @@
 package com.darach.gameofthrones.core.domain.repository
 
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
 import kotlinx.coroutines.flow.Flow
 
 interface CharacterRepository {

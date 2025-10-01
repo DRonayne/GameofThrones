@@ -5,7 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCard
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCardCallbacks
 import io.mockk.mockk

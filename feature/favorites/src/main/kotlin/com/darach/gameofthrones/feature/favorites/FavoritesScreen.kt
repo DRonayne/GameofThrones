@@ -44,10 +44,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
+import com.darach.gameofthrones.feature.favorites.FavoritesViewModel
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCard
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCardCallbacks as CardCallbacks
-import com.darach.gameofthrones.feature.favorites.ui.FavoritesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

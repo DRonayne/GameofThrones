@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.darach.gameofthrones.core.domain.model.Character
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.comparison.components.ComparisonSelectionBar
 import com.darach.gameofthrones.feature.comparison.components.ComparisonSelectionBarCallbacks
 import com.darach.gameofthrones.feature.comparison.components.ComparisonSelectionBarState
