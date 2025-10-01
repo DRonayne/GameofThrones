@@ -1,5 +1,11 @@
 package com.darach.gameofthrones.feature.characters
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,15 +15,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +42,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +58,7 @@ import com.darach.gameofthrones.feature.characters.components.FilterBottomSheet
 import com.darach.gameofthrones.feature.characters.components.FilterBottomSheetState
 import com.darach.gameofthrones.feature.characters.components.OfflineIndicator
 import com.darach.gameofthrones.feature.characters.components.SearchBarCallbacks
-import com.darach.gameofthrones.feature.characters.components.SortOptionsMenu
+import com.darach.gameofthrones.feature.characters.components.SortChip
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,26 +79,24 @@ fun CharactersScreen(
     )
 
     Scaffold(
-        modifier = modifier
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            CharactersContent(
+        modifier = modifier.offset(y = (-24).dp),
+        topBar = {
+            SearchAndFilterControls(
                 state = state,
-                callbacks = CharactersScreenCallbacks(
-                    onCharacterClick = onCharacterClick,
-                    onIntent = viewModel::handleIntent,
-                    onFilterClick = { showFilterSheet = true }
-                )
-            )
-
-            OfflineIndicator(
-                isOffline = !isOnline,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding()
-                    .padding(top = 16.dp)
+                onIntent = viewModel::handleIntent,
+                onOpenFilterSheet = { showFilterSheet = true }
             )
         }
+    ) { paddingValues ->
+        CharactersContent(
+            contentState = CharactersContentState(
+                state = state,
+                isOnline = isOnline,
+                onCharacterClick = onCharacterClick,
+                onIntent = viewModel::handleIntent
+            ),
+            paddingValues = paddingValues
+        )
 
         if (showFilterSheet) {
             FilterBottomSheet(
@@ -104,91 +112,422 @@ fun CharactersScreen(
     }
 }
 
+data class CharactersContentState(
+    val state: CharactersState,
+    val isOnline: Boolean,
+    val onCharacterClick: (String) -> Unit,
+    val onIntent: (CharactersIntent) -> Unit
+)
+
 @Composable
-private fun CharactersContent(
-    state: CharactersState,
-    callbacks: CharactersScreenCallbacks,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier.fillMaxSize()) {
-        CharactersHeader(
-            state = state,
-            onIntent = callbacks.onIntent,
-            onFilterClick = callbacks.onFilterClick
+private fun CharactersContent(contentState: CharactersContentState, paddingValues: PaddingValues) {
+    Box(modifier = Modifier.padding(paddingValues)) {
+        CharactersBody(
+            state = contentState.state,
+            onCharacterClick = contentState.onCharacterClick,
+            onIntent = contentState.onIntent
         )
 
-        CharactersBody(
-            state = state,
-            onCharacterClick = callbacks.onCharacterClick,
-            onIntent = callbacks.onIntent
+        OfflineIndicator(
+            isOffline = !contentState.isOnline,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 8.dp)
         )
     }
 }
 
 @Composable
-private fun CharactersHeader(
+private fun SearchAndFilterControls(
     state: CharactersState,
     onIntent: (CharactersIntent) -> Unit,
-    onFilterClick: () -> Unit
+    onOpenFilterSheet: () -> Unit
 ) {
-    val searchBarCallbacks = remember(onIntent) {
-        SearchBarCallbacks(
-            onQueryChange = { onIntent(CharactersIntent.SearchCharacters(it)) },
-            onSearch = { onIntent(CharactersIntent.SearchCharacters(it)) },
-            onClearSearch = { onIntent(CharactersIntent.ClearSearch) }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Search bar row
+        CharactersSearchBar(
+            query = state.searchQuery,
+            searchHistory = state.searchHistory,
+            callbacks = SearchBarCallbacks(
+                onQueryChange = { onIntent(CharactersIntent.SearchCharacters(it)) },
+                onSearch = { onIntent(CharactersIntent.SearchCharacters(it)) },
+                onClearSearch = { onIntent(CharactersIntent.ClearSearch) }
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         )
-    }
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
+        // Filter and sort chips row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CharactersSearchBar(
-                query = state.searchQuery,
-                searchHistory = state.searchHistory,
-                callbacks = searchBarCallbacks,
-                modifier = Modifier.weight(1f)
-            )
-
-            BadgedBox(
-                badge = {
-                    if (state.filter.activeFilterCount() > 0) {
-                        Badge(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ) {
-                            Text(
-                                text = state.filter.activeFilterCount().toString(),
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        }
-                    }
-                }
-            ) {
-                IconButton(onClick = onFilterClick) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filter characters"
-                    )
-                }
-            }
-
-            SortOptionsMenu(
+            ActiveFilterChips(filter = state.filter, onFilterChange = onIntent)
+            AllFiltersChip(onOpenFilterSheet = onOpenFilterSheet)
+            SortChip(
                 currentSortOption = state.sortOption,
-                onSortOptionChange = remember(onIntent) {
-                    { option -> onIntent(CharactersIntent.SortCharacters(option)) }
+                onSortOptionChange = { onIntent(CharactersIntent.SortCharacters(it)) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ActiveFilterChips(
+    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    onFilterChange: (CharactersIntent) -> Unit
+) {
+    val haptic = LocalHapticFeedback.current
+
+    FavoritesFilterChip(filter, haptic, onFilterChange)
+    StatusFilterChip(filter, haptic, onFilterChange)
+    AppearancesFilterChip(filter, haptic, onFilterChange)
+    GenderFilterChip(filter, haptic, onFilterChange)
+    CultureFilterChip(filter, haptic, onFilterChange)
+    SeasonsFilterChips(filter, haptic, onFilterChange)
+}
+
+@Composable
+private fun FavoritesFilterChip(
+    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    onFilterChange: (CharactersIntent) -> Unit
+) {
+    AnimatedVisibility(
+        visible = filter.onlyFavorites,
+        enter = expandHorizontally() + fadeIn(),
+        exit = shrinkHorizontally() + fadeOut()
+    ) {
+        CompactFilterChip(
+            label = "Favorites",
+            icon = Icons.Default.Favorite,
+            onDismiss = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                onFilterChange(
+                    CharactersIntent.FilterCharacters(filter.copy(onlyFavorites = false))
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun StatusFilterChip(
+    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    onFilterChange: (CharactersIntent) -> Unit
+) {
+    filter.isDead?.let { isDead ->
+        AnimatedVisibility(
+            visible = true,
+            enter = expandHorizontally() + fadeIn(),
+            exit = shrinkHorizontally() + fadeOut()
+        ) {
+            CompactFilterChip(
+                label = if (isDead) "Deceased" else "Alive",
+                onDismiss = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onFilterChange(CharactersIntent.FilterCharacters(filter.copy(isDead = null)))
                 }
             )
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(16.dp))
+@Composable
+private fun AppearancesFilterChip(
+    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    onFilterChange: (CharactersIntent) -> Unit
+) {
+    AnimatedVisibility(
+        visible = filter.hasAppearances == true,
+        enter = expandHorizontally() + fadeIn(),
+        exit = shrinkHorizontally() + fadeOut()
+    ) {
+        CompactFilterChip(
+            label = "TV Appearances",
+            onDismiss = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                onFilterChange(
+                    CharactersIntent.FilterCharacters(filter.copy(hasAppearances = null))
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun GenderFilterChip(
+    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    onFilterChange: (CharactersIntent) -> Unit
+) {
+    filter.gender?.let { gender ->
+        AnimatedVisibility(
+            visible = true,
+            enter = expandHorizontally() + fadeIn(),
+            exit = shrinkHorizontally() + fadeOut()
+        ) {
+            CompactFilterChip(
+                label = gender,
+                onDismiss = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onFilterChange(CharactersIntent.FilterCharacters(filter.copy(gender = null)))
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CultureFilterChip(
+    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    onFilterChange: (CharactersIntent) -> Unit
+) {
+    filter.culture?.let { culture ->
+        AnimatedVisibility(
+            visible = true,
+            enter = expandHorizontally() + fadeIn(),
+            exit = shrinkHorizontally() + fadeOut()
+        ) {
+            CompactFilterChip(
+                label = culture,
+                onDismiss = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onFilterChange(CharactersIntent.FilterCharacters(filter.copy(culture = null)))
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SeasonsFilterChips(
+    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    onFilterChange: (CharactersIntent) -> Unit
+) {
+    filter.seasons.forEach { season ->
+        AnimatedVisibility(
+            visible = true,
+            enter = expandHorizontally() + fadeIn(),
+            exit = shrinkHorizontally() + fadeOut(),
+            label = "Season $season chip"
+        ) {
+            CompactFilterChip(
+                label = "S$season",
+                onDismiss = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onFilterChange(
+                        CharactersIntent.FilterCharacters(
+                            filter.copy(
+                                seasons =
+                                filter.seasons - season
+                            )
+                        )
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CompactFilterChip(
+    label: String,
+    onDismiss: () -> Unit,
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null
+) {
+    androidx.compose.material3.FilterChip(
+        selected = true,
+        onClick = onDismiss,
+        label = { Text(label, style = MaterialTheme.typography.labelMedium) },
+        leadingIcon = icon?.let {
+            {
+                Icon(
+                    imageVector = it,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        },
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Remove $label filter",
+                modifier = Modifier.size(16.dp)
+            )
+        }
+    )
+}
+
+@Composable
+private fun AllFiltersChip(onOpenFilterSheet: () -> Unit) {
+    androidx.compose.material3.FilterChip(
+        selected = false,
+        onClick = onOpenFilterSheet,
+        label = { Text("All Filters", style = MaterialTheme.typography.labelMedium) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.FilterList,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+        },
+        modifier = Modifier.semantics {
+            contentDescription = "Filter options"
+        }
+    )
+}
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search and Filter Controls - No Filters",
+    showBackground = true
+)
+@Composable
+private fun SearchAndFilterControlsNoFiltersPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SearchAndFilterControls(
+            state = CharactersState(
+                searchQuery = "",
+                searchHistory = emptyList(),
+                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(),
+                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.NAME_ASC
+            ),
+            onIntent = {},
+            onOpenFilterSheet = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search and Filter Controls - With Search",
+    showBackground = true
+)
+@Composable
+private fun SearchAndFilterControlsWithSearchPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SearchAndFilterControls(
+            state = CharactersState(
+                searchQuery = "Jon Snow",
+                searchHistory = listOf("Jon Snow", "Arya Stark"),
+                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(),
+                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.NAME_ASC
+            ),
+            onIntent = {},
+            onOpenFilterSheet = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search and Filter Controls - Multiple Filters",
+    showBackground = true
+)
+@Composable
+private fun SearchAndFilterControlsMultipleFiltersPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SearchAndFilterControls(
+            state = CharactersState(
+                searchQuery = "",
+                searchHistory = emptyList(),
+                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(
+                    onlyFavorites = true,
+                    isDead = false,
+                    gender = "Female",
+                    culture = "Northmen",
+                    seasons = listOf(1, 2, 3)
+                ),
+                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.FAVORITE_FIRST
+            ),
+            onIntent = {},
+            onOpenFilterSheet = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search and Filter Controls - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SearchAndFilterControlsDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SearchAndFilterControls(
+            state = CharactersState(
+                searchQuery = "Daenerys",
+                searchHistory = emptyList(),
+                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(
+                    isDead = true,
+                    culture = "Valyrian"
+                ),
+                sortOption =
+                com.darach.gameofthrones.core.domain.usecase.SortOption.SEASONS_COUNT_DESC
+            ),
+            onIntent = {},
+            onOpenFilterSheet = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search and Filter Controls - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun SearchAndFilterControlsTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SearchAndFilterControls(
+            state = CharactersState(
+                searchQuery = "",
+                searchHistory = emptyList(),
+                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(
+                    gender = "Male",
+                    hasAppearances = true,
+                    seasons = listOf(1, 2, 3, 4, 5, 6, 7, 8)
+                ),
+                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.CULTURE_ASC
+            ),
+            onIntent = {},
+            onOpenFilterSheet = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search and Filter Controls - Many Filters (Scrolling)",
+    showBackground = true
+)
+@Composable
+private fun SearchAndFilterControlsScrollingPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SearchAndFilterControls(
+            state = CharactersState(
+                searchQuery = "Stark",
+                searchHistory = emptyList(),
+                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(
+                    onlyFavorites = true,
+                    isDead = false,
+                    gender = "Female",
+                    culture = "Northmen",
+                    hasAppearances = true,
+                    seasons = listOf(1, 2, 3, 4, 5)
+                ),
+                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.NAME_DESC
+            ),
+            onIntent = {},
+            onOpenFilterSheet = {}
+        )
     }
 }
 
@@ -239,7 +578,12 @@ private fun CharactersList(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                top = 8.dp,
+                bottom = 16.dp
+            ),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(
