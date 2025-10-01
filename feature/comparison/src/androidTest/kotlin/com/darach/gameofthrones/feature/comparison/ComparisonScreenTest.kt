@@ -100,7 +100,6 @@ class ComparisonScreenTest {
             .assertIsDisplayed()
     }
 
-
     @Test
     fun displaysAttributeNames() {
         composeTestRule.setContent {
@@ -116,7 +115,6 @@ class ComparisonScreenTest {
         composeTestRule.onNodeWithText("Gender").assertIsDisplayed()
         composeTestRule.onNodeWithText("Culture").assertIsDisplayed()
     }
-
 
     @Test
     fun displaysLoadingState() {
@@ -189,5 +187,4 @@ class ComparisonScreenTest {
 
         assert(backClicked)
     }
-
 }

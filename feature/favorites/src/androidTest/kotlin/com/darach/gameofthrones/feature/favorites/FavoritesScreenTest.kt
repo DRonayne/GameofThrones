@@ -61,7 +61,6 @@ class FavoritesScreenTest {
         )
     )
 
-
     @Test
     fun displaysEmptyState() {
         composeTestRule.setContent {
@@ -323,7 +322,6 @@ class FavoritesScreenTest {
         verify { onDeselectAll() }
     }
 
-
     @Test
     fun favoritesCountDisplayed() {
         composeTestRule.setContent {
@@ -360,7 +358,6 @@ class FavoritesScreenTest {
 
         composeTestRule.onNodeWithText("Jon Snow").assertIsDisplayed()
     }
-
 
     @Test
     fun favoriteCard_displaysSeasonBadges() {
@@ -436,7 +433,6 @@ class FavoritesScreenTest {
         composeTestRule.onNodeWithContentDescription("Remove from favorites").assertDoesNotExist()
     }
 
-
     @Test
     fun favoriteCard_removeButtonCallsCallback() {
         val onRemoveFavorite = mockk<() -> Unit>(relaxed = true)
@@ -458,8 +454,6 @@ class FavoritesScreenTest {
 
         verify { onRemoveFavorite() }
     }
-
-
 
     @Test
     fun favoriteCard_displaysOverflowIndicatorForManySeasons() {

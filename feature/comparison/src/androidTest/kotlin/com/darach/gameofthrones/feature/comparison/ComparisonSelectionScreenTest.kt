@@ -181,8 +181,6 @@ class ComparisonSelectionScreenTest {
             .assertIsEnabled()
     }
 
-
-
     @Test
     fun clearButtonClearsSelection() {
         var clearClicked = false

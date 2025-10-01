@@ -162,7 +162,6 @@ class SettingsScreenTest {
         composeTestRule.onNodeWithText("Clear Cache?").assertDoesNotExist()
     }
 
-
     @Test
     fun syncDataButtonCallsIntent() {
         val onIntent = mockk<(SettingsIntent) -> Unit>(relaxed = true)
@@ -192,11 +191,6 @@ class SettingsScreenTest {
 
         composeTestRule.onNodeWithText("Sync Data").assertIsNotEnabled()
     }
-
-
-
-
-
 
     @Test
     fun clearCacheButtonDisabledWhenLoading() {
