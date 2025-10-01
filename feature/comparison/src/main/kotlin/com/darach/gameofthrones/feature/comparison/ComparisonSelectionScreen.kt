@@ -151,3 +151,187 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         )
     }
 }
+
+// Sample data for previews
+private val sampleCharacters = listOf(
+    Character(
+        id = "583",
+        name = "Jon Snow",
+        gender = "Male",
+        culture = "Northmen",
+        born = "In 283 AC",
+        died = "",
+        titles = listOf("Lord Commander of the Night's Watch"),
+        aliases = listOf("Lord Snow"),
+        father = "",
+        mother = "",
+        spouse = "",
+        allegiances = listOf(),
+        books = listOf(),
+        povBooks = listOf(),
+        tvSeries = listOf(),
+        tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+        playedBy = listOf("Kit Harington")
+    ),
+    Character(
+        id = "148",
+        name = "Arya Stark",
+        gender = "Female",
+        culture = "Northmen",
+        born = "In 289 AC",
+        died = "",
+        titles = listOf("Princess"),
+        aliases = listOf("No One"),
+        father = "",
+        mother = "",
+        spouse = "",
+        allegiances = listOf(),
+        books = listOf(),
+        povBooks = listOf(),
+        tvSeries = listOf(),
+        tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+        playedBy = listOf("Maisie Williams")
+    ),
+    Character(
+        id = "1052",
+        name = "Tyrion Lannister",
+        gender = "Male",
+        culture = "Andal",
+        born = "In 273 AC",
+        died = "",
+        titles = listOf("Hand of the Queen"),
+        aliases = listOf("The Imp"),
+        father = "",
+        mother = "",
+        spouse = "",
+        allegiances = listOf(),
+        books = listOf(),
+        povBooks = listOf(),
+        tvSeries = listOf(),
+        tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+        playedBy = listOf("Peter Dinklage")
+    )
+)
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Selection - No Selection",
+    showBackground = true
+)
+@Composable
+private fun ComparisonSelectionScreenNoSelectionPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionScreen(
+            characters = sampleCharacters,
+            selectedCharacters = emptyList(),
+            callbacks = ComparisonSelectionCallbacks(
+                onCharacterToggle = {},
+                onCompareClick = {},
+                onClearSelection = {},
+                onBackClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Selection - Two Selected",
+    showBackground = true
+)
+@Composable
+private fun ComparisonSelectionScreenTwoSelectedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionScreen(
+            characters = sampleCharacters,
+            selectedCharacters = sampleCharacters.take(2),
+            callbacks = ComparisonSelectionCallbacks(
+                onCharacterToggle = {},
+                onCompareClick = {},
+                onClearSelection = {},
+                onBackClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Selection - Max Selected",
+    showBackground = true
+)
+@Composable
+private fun ComparisonSelectionScreenMaxSelectedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionScreen(
+            characters = sampleCharacters,
+            selectedCharacters = sampleCharacters,
+            callbacks = ComparisonSelectionCallbacks(
+                onCharacterToggle = {},
+                onCompareClick = {},
+                onClearSelection = {},
+                onBackClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Selection - Empty List",
+    showBackground = true
+)
+@Composable
+private fun ComparisonSelectionScreenEmptyPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionScreen(
+            characters = emptyList(),
+            selectedCharacters = emptyList(),
+            callbacks = ComparisonSelectionCallbacks(
+                onCharacterToggle = {},
+                onCompareClick = {},
+                onClearSelection = {},
+                onBackClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Selection - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ComparisonSelectionScreenDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionScreen(
+            characters = sampleCharacters,
+            selectedCharacters = sampleCharacters.take(2),
+            callbacks = ComparisonSelectionCallbacks(
+                onCharacterToggle = {},
+                onCompareClick = {},
+                onClearSelection = {},
+                onBackClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Selection - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun ComparisonSelectionScreenTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionScreen(
+            characters = sampleCharacters,
+            selectedCharacters = sampleCharacters.take(1),
+            callbacks = ComparisonSelectionCallbacks(
+                onCharacterToggle = {},
+                onCompareClick = {},
+                onClearSelection = {},
+                onBackClick = {}
+            )
+        )
+    }
+}

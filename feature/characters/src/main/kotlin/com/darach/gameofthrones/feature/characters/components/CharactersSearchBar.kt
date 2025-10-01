@@ -56,3 +56,82 @@ fun CharactersSearchBar(
         content = {}
     )
 }
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search Bar - Empty",
+    showBackground = true
+)
+@Composable
+private fun CharactersSearchBarEmptyPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        CharactersSearchBar(
+            query = "",
+            searchHistory = emptyList(),
+            callbacks = SearchBarCallbacks(
+                onQueryChange = {},
+                onSearch = {},
+                onClearSearch = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search Bar - With Query",
+    showBackground = true
+)
+@Composable
+private fun CharactersSearchBarWithQueryPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        CharactersSearchBar(
+            query = "Jon Snow",
+            searchHistory = emptyList(),
+            callbacks = SearchBarCallbacks(
+                onQueryChange = {},
+                onSearch = {},
+                onClearSearch = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search Bar - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun CharactersSearchBarDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        CharactersSearchBar(
+            query = "Arya Stark",
+            searchHistory = emptyList(),
+            callbacks = SearchBarCallbacks(
+                onQueryChange = {},
+                onSearch = {},
+                onClearSearch = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Search Bar - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun CharactersSearchBarTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        CharactersSearchBar(
+            query = "Daenerys Targaryen",
+            searchHistory = emptyList(),
+            callbacks = SearchBarCallbacks(
+                onQueryChange = {},
+                onSearch = {},
+                onClearSearch = {}
+            )
+        )
+    }
+}

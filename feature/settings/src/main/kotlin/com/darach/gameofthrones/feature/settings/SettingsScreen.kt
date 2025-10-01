@@ -614,3 +614,114 @@ private fun SettingsButtonContent(
         trailing?.invoke()
     }
 }
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Settings Content - Light Mode",
+    showBackground = true
+)
+@Composable
+private fun SettingsContentPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SettingsContent(
+            state = SettingsState(
+                userPreferences = com.darach.gameofthrones.core.data.preferences.UserPreferences(
+                    themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.SYSTEM,
+                    useDynamicColors = true,
+                    cacheExpirationHours = 24,
+                    searchHistory = List(15) { "Search $it" }
+                ),
+                appVersion = "1.0.0",
+                buildNumber = "42",
+                isLoading = false,
+                isSyncing = false,
+                message = null
+            ),
+            onIntent = {},
+            snackbarHostState = androidx.compose.material3.SnackbarHostState()
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Settings Content - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SettingsContentDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SettingsContent(
+            state = SettingsState(
+                userPreferences = com.darach.gameofthrones.core.data.preferences.UserPreferences(
+                    themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.DARK,
+                    useDynamicColors = false,
+                    cacheExpirationHours = 48,
+                    searchHistory = List(25) { "Search $it" },
+                ),
+                appVersion = "1.0.0",
+                buildNumber = "42",
+                isLoading = false,
+                isSyncing = false,
+                message = null
+            ),
+            onIntent = {},
+            snackbarHostState = androidx.compose.material3.SnackbarHostState()
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Settings Content - Syncing",
+    showBackground = true
+)
+@Composable
+private fun SettingsContentSyncingPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SettingsContent(
+            state = SettingsState(
+                userPreferences = com.darach.gameofthrones.core.data.preferences.UserPreferences(
+                    themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.LIGHT,
+                    useDynamicColors = true,
+                    cacheExpirationHours = 24,
+                    searchHistory = List(10) { "Search $it" },
+                ),
+                appVersion = "1.0.0",
+                buildNumber = "42",
+                isLoading = false,
+                isSyncing = true,
+                message = null
+            ),
+            onIntent = {},
+            snackbarHostState = androidx.compose.material3.SnackbarHostState()
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Settings Content - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun SettingsContentTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SettingsContent(
+            state = SettingsState(
+                userPreferences = com.darach.gameofthrones.core.data.preferences.UserPreferences(
+                    themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.SYSTEM,
+                    useDynamicColors = true,
+                    cacheExpirationHours = 24,
+                    searchHistory = List(30) { "Search $it" },
+                ),
+                appVersion = "1.0.0",
+                buildNumber = "42",
+                isLoading = false,
+                isSyncing = false,
+                message = null
+            ),
+            onIntent = {},
+            snackbarHostState = androidx.compose.material3.SnackbarHostState()
+        )
+    }
+}

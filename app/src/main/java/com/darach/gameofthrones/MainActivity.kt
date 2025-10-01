@@ -12,8 +12,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
 import com.darach.gameofthrones.core.data.preferences.ThemeMode
 import com.darach.gameofthrones.core.data.preferences.UserPreferences
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 import com.darach.gameofthrones.navigation.GoTApp
-import com.darach.gameofthrones.ui.theme.GameOfThronesTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

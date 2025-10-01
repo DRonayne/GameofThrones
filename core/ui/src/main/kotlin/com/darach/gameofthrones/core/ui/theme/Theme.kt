@@ -1,4 +1,4 @@
-package com.darach.gameofthrones.ui.theme
+package com.darach.gameofthrones.core.ui.theme
 
 import android.content.res.Configuration
 import android.os.Build
@@ -156,7 +156,12 @@ fun GameOfThronesTheme(
 }
 
 @Composable
-@Preview(name = "Light Theme", showBackground = true)
+@Preview(
+    name = "Light Theme",
+    showBackground = true,
+    widthDp = 1920,
+    heightDp = 1080
+)
 private fun ThemeShowcasePreview() {
     GameOfThronesTheme {
         Column(

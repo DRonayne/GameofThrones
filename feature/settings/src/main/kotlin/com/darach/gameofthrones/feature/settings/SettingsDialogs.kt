@@ -65,3 +65,96 @@ internal fun ConfirmationDialog(
         }
     )
 }
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Clear History Dialog",
+    showBackground = true
+)
+@Composable
+private fun ClearHistoryDialogPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ClearHistoryDialog(
+            onConfirm = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Clear All Data Dialog",
+    showBackground = true
+)
+@Composable
+private fun ClearAllDataDialogPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ClearAllDataDialog(
+            onConfirm = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Confirmation Dialog - Non-Destructive",
+    showBackground = true
+)
+@Composable
+private fun ConfirmationDialogPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ConfirmationDialog(
+            title = "Sync Data?",
+            message = "This will refresh all data from the server.",
+            onConfirm = {},
+            onDismiss = {},
+            destructive = false
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Confirmation Dialog - Destructive",
+    showBackground = true
+)
+@Composable
+private fun ConfirmationDialogDestructivePreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ConfirmationDialog(
+            title = "Delete Everything?",
+            message = "This action cannot be undone. All your data will be permanently deleted.",
+            onConfirm = {},
+            onDismiss = {},
+            destructive = true
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Clear History Dialog - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ClearHistoryDialogDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ClearHistoryDialog(
+            onConfirm = {},
+            onDismiss = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Clear All Data Dialog - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun ClearAllDataDialogTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ClearAllDataDialog(
+            onConfirm = {},
+            onDismiss = {}
+        )
+    }
+}

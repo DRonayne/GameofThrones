@@ -336,11 +336,114 @@ private fun SelectableFilterChip(selected: Boolean, onClick: () -> Unit, label: 
 private const val MAX_CULTURE_CHIPS = 10
 
 // Previews
-@androidx.compose.ui.tooling.preview.Preview(name = "Filter Chips", showBackground = true)
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Filter Chips - No Filters",
+    showBackground = true
+)
 @Composable
-private fun FilterChipsPreview() {
-    FilterChips(
-        currentFilter = CharacterFilter(onlyFavorites = true, isDead = false),
-        onFilterChange = {}
-    )
+private fun FilterChipsNoFiltersPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FilterChips(
+            currentFilter = CharacterFilter(),
+            onFilterChange = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Filter Chips - Multiple Filters",
+    showBackground = true
+)
+@Composable
+private fun FilterChipsMultipleFiltersPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FilterChips(
+            currentFilter = CharacterFilter(
+                onlyFavorites = true,
+                isDead = false,
+                gender = "Male",
+                hasAppearances = true
+            ),
+            onFilterChange = {},
+            availableCultures = listOf("Northmen", "Dothraki", "Andal", "Valyrian"),
+            availableSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8)
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Filter Chips - With Cultures and Seasons",
+    showBackground = true
+)
+@Composable
+private fun FilterChipsWithCulturesPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FilterChips(
+            currentFilter = CharacterFilter(
+                culture = "Northmen",
+                seasons = listOf(1, 2, 3)
+            ),
+            onFilterChange = {},
+            availableCultures = listOf(
+                "Northmen",
+                "Dothraki",
+                "Andal",
+                "Valyrian",
+                "Ironborn",
+                "Dornish"
+            ),
+            availableSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8)
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Filter Chips - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FilterChipsDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FilterChips(
+            currentFilter = CharacterFilter(
+                onlyFavorites = true,
+                isDead = true,
+                gender = "Female"
+            ),
+            onFilterChange = {},
+            availableCultures = listOf("Northmen", "Dothraki"),
+            availableSeasons = listOf(1, 2, 3, 4, 5)
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Filter Chips - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun FilterChipsTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FilterChips(
+            currentFilter = CharacterFilter(
+                gender = "Male",
+                culture = "Valyrian",
+                seasons = listOf(1, 2, 3, 4, 5, 6)
+            ),
+            onFilterChange = {},
+            availableCultures = listOf(
+                "Northmen",
+                "Dothraki",
+                "Andal",
+                "Valyrian",
+                "Ironborn",
+                "Dornish",
+                "First Men",
+                "Wildling"
+            ),
+            availableSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8)
+        )
+    }
 }

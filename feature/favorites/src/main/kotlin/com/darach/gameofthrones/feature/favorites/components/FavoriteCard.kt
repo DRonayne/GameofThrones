@@ -241,3 +241,193 @@ private fun FavoriteCardCulture(culture: String, modifier: Modifier = Modifier) 
         }
     }
 }
+
+// Sample data for previews
+private val sampleJonSnow = Character(
+    id = "583",
+    name = "Jon Snow",
+    gender = "Male",
+    culture = "Northmen",
+    born = "In 283 AC",
+    died = "",
+    titles = listOf("Lord Commander of the Night's Watch", "King in the North"),
+    aliases = listOf("Lord Snow", "Ned Stark's Bastard", "The White Wolf"),
+    father = "",
+    mother = "",
+    spouse = "",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1", "Season 2", "Season 3", "Season 4", "Season 5", "Season 6"),
+    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+    playedBy = listOf("Kit Harington"),
+    isFavorite = true,
+    isDead = false
+)
+
+private val sampleAryaStark = Character(
+    id = "148",
+    name = "Arya Stark",
+    gender = "Female",
+    culture = "Northmen",
+    born = "In 289 AC",
+    died = "",
+    titles = listOf("Princess"),
+    aliases = listOf("Arya Horseface", "Arya Underfoot", "Cat of the Canals", "No One"),
+    father = "",
+    mother = "",
+    spouse = "",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1", "Season 2", "Season 3", "Season 4", "Season 5"),
+    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+    playedBy = listOf("Maisie Williams"),
+    isFavorite = true,
+    isDead = false
+)
+
+private val sampleNedStark = Character(
+    id = "339",
+    name = "Eddard Stark",
+    gender = "Male",
+    culture = "Northmen",
+    born = "In 263 AC",
+    died = "In 299 AC, at King's Landing",
+    titles = listOf("Lord of Winterfell", "Warden of the North", "Hand of the King"),
+    aliases = listOf("Ned", "The Ned", "The Quiet Wolf"),
+    father = "",
+    mother = "",
+    spouse = "Catelyn Tully",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1"),
+    tvSeriesSeasons = listOf(1),
+    playedBy = listOf("Sean Bean"),
+    isFavorite = true,
+    isDead = true
+)
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorite Card - Normal Mode Alive",
+    showBackground = true
+)
+@Composable
+private fun FavoriteCardNormalAlivePreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoriteCard(
+            character = sampleJonSnow,
+            isSelectionMode = false,
+            isSelected = false,
+            callbacks = FavoriteCardCallbacks(
+                onCharacterClick = {},
+                onToggleSelection = {},
+                onRemoveFavorite = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorite Card - Normal Mode Deceased",
+    showBackground = true
+)
+@Composable
+private fun FavoriteCardNormalDeceasedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoriteCard(
+            character = sampleNedStark,
+            isSelectionMode = false,
+            isSelected = false,
+            callbacks = FavoriteCardCallbacks(
+                onCharacterClick = {},
+                onToggleSelection = {},
+                onRemoveFavorite = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorite Card - Selection Mode Unselected",
+    showBackground = true
+)
+@Composable
+private fun FavoriteCardSelectionUnselectedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoriteCard(
+            character = sampleAryaStark,
+            isSelectionMode = true,
+            isSelected = false,
+            callbacks = FavoriteCardCallbacks(
+                onCharacterClick = {},
+                onToggleSelection = {},
+                onRemoveFavorite = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorite Card - Selection Mode Selected",
+    showBackground = true
+)
+@Composable
+private fun FavoriteCardSelectionSelectedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoriteCard(
+            character = sampleJonSnow,
+            isSelectionMode = true,
+            isSelected = true,
+            callbacks = FavoriteCardCallbacks(
+                onCharacterClick = {},
+                onToggleSelection = {},
+                onRemoveFavorite = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorite Card - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FavoriteCardDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoriteCard(
+            character = sampleNedStark,
+            isSelectionMode = false,
+            isSelected = false,
+            callbacks = FavoriteCardCallbacks(
+                onCharacterClick = {},
+                onToggleSelection = {},
+                onRemoveFavorite = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorite Card - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun FavoriteCardTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoriteCard(
+            character = sampleAryaStark,
+            isSelectionMode = false,
+            isSelected = false,
+            callbacks = FavoriteCardCallbacks(
+                onCharacterClick = {},
+                onToggleSelection = {},
+                onRemoveFavorite = {}
+            )
+        )
+    }
+}

@@ -94,3 +94,62 @@ private fun getSortOptionLabel(sortOption: SortOption): String = when (sortOptio
     SortOption.SEASONS_COUNT_DESC -> "Seasons Count (Most First)"
     SortOption.FAVORITE_FIRST -> "Favorites First"
 }
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Sort Menu - Name Ascending",
+    showBackground = true
+)
+@Composable
+private fun SortOptionsMenuNameAscPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SortOptionsMenu(
+            currentSortOption = SortOption.NAME_ASC,
+            onSortOptionChange = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Sort Menu - Favorite First",
+    showBackground = true
+)
+@Composable
+private fun SortOptionsMenuFavoritePreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SortOptionsMenu(
+            currentSortOption = SortOption.FAVORITE_FIRST,
+            onSortOptionChange = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Sort Menu - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SortOptionsMenuDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SortOptionsMenu(
+            currentSortOption = SortOption.SEASONS_COUNT_DESC,
+            onSortOptionChange = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Sort Menu - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun SortOptionsMenuTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SortOptionsMenu(
+            currentSortOption = SortOption.CULTURE_ASC,
+            onSortOptionChange = {}
+        )
+    }
+}

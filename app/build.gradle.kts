@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
+    implementation(project(":core:ui"))
 
     // Adaptive & Window
     implementation(libs.androidx.compose.material3.adaptive)

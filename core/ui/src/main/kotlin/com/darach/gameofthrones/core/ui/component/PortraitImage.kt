@@ -1,10 +1,15 @@
 package com.darach.gameofthrones.core.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
@@ -82,5 +87,70 @@ private fun ErrorPlaceholder() {
             tint = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.5f),
             modifier = Modifier.fillMaxSize(0.5f)
         )
+    }
+}
+
+// Previews
+@Composable
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Portrait Image - Light",
+    showBackground = true
+)
+private fun PortraitImageLightPreview() {
+    MaterialTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            PortraitImage(
+                imageUrl = null,
+                contentDescription = "Character portrait"
+            )
+        }
+    }
+}
+
+@Composable
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Portrait Image - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+private fun PortraitImageDarkPreview() {
+    MaterialTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            PortraitImage(
+                imageUrl = null,
+                contentDescription = "Character portrait"
+            )
+        }
+    }
+}
+
+@Composable
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Portrait Image - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+private fun PortraitImageTabletPreview() {
+    MaterialTheme {
+        Row(
+            modifier = Modifier.padding(32.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            PortraitImage(
+                imageUrl = null,
+                contentDescription = "Character 1",
+                modifier = Modifier.width(200.dp)
+            )
+            PortraitImage(
+                imageUrl = null,
+                contentDescription = "Character 2",
+                modifier = Modifier.width(200.dp)
+            )
+            PortraitImage(
+                imageUrl = null,
+                contentDescription = "Character 3",
+                modifier = Modifier.width(200.dp)
+            )
+        }
     }
 }

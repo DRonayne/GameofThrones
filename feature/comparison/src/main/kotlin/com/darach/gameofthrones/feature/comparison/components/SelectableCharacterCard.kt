@@ -190,3 +190,169 @@ private fun DeathIndicator(modifier: Modifier = Modifier) {
         modifier = modifier
     )
 }
+
+// Sample data for previews
+private val sampleTyrionLannister = Character(
+    id = "1052",
+    name = "Tyrion Lannister",
+    gender = "Male",
+    culture = "Andal",
+    born = "In 273 AC",
+    died = "",
+    titles = listOf("Hand of the Queen", "Master of Coin"),
+    aliases = listOf("The Imp", "Halfman", "The Little Lion"),
+    father = "Tywin Lannister",
+    mother = "Joanna Lannister",
+    spouse = "",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1", "Season 2", "Season 3", "Season 4", "Season 5"),
+    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+    playedBy = listOf("Peter Dinklage"),
+    isFavorite = false,
+    isDead = false
+)
+
+private val sampleDaenerysTargaryen = Character(
+    id = "1303",
+    name = "Daenerys Targaryen",
+    gender = "Female",
+    culture = "Valyrian",
+    born = "In 284 AC",
+    died = "",
+    titles = listOf("Queen of the Andals and the First Men", "Khaleesi"),
+    aliases = listOf("Dany", "Daenerys Stormborn", "The Unburnt", "Mother of Dragons"),
+    father = "",
+    mother = "",
+    spouse = "",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1", "Season 2", "Season 3", "Season 4"),
+    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+    playedBy = listOf("Emilia Clarke"),
+    isFavorite = false,
+    isDead = false
+)
+
+private val sampleCerseiLannister = Character(
+    id = "238",
+    name = "Cersei Lannister",
+    gender = "Female",
+    culture = "Andal",
+    born = "In 266 AC",
+    died = "In 305 AC",
+    titles = listOf("Queen of the Seven Kingdoms", "Light of the West"),
+    aliases = listOf("Cersei of House Lannister"),
+    father = "",
+    mother = "",
+    spouse = "Robert Baratheon",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1", "Season 2", "Season 3"),
+    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+    playedBy = listOf("Lena Headey"),
+    isFavorite = false,
+    isDead = true
+)
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selectable Card - Unselected",
+    showBackground = true
+)
+@Composable
+private fun SelectableCharacterCardUnselectedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SelectableCharacterCard(
+            character = sampleTyrionLannister,
+            isSelected = false,
+            isSelectionEnabled = true,
+            onClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selectable Card - Selected",
+    showBackground = true
+)
+@Composable
+private fun SelectableCharacterCardSelectedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SelectableCharacterCard(
+            character = sampleDaenerysTargaryen,
+            isSelected = true,
+            isSelectionEnabled = true,
+            onClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selectable Card - Disabled",
+    showBackground = true
+)
+@Composable
+private fun SelectableCharacterCardDisabledPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SelectableCharacterCard(
+            character = sampleTyrionLannister,
+            isSelected = false,
+            isSelectionEnabled = false,
+            onClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selectable Card - Deceased",
+    showBackground = true
+)
+@Composable
+private fun SelectableCharacterCardDeceasedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SelectableCharacterCard(
+            character = sampleCerseiLannister,
+            isSelected = false,
+            isSelectionEnabled = true,
+            onClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selectable Card - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SelectableCharacterCardDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SelectableCharacterCard(
+            character = sampleDaenerysTargaryen,
+            isSelected = true,
+            isSelectionEnabled = true,
+            onClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selectable Card - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun SelectableCharacterCardTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        SelectableCharacterCard(
+            character = sampleTyrionLannister,
+            isSelected = false,
+            isSelectionEnabled = true,
+            onClick = {}
+        )
+    }
+}

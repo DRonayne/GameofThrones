@@ -329,3 +329,67 @@ private fun EmptyState(message: String, modifier: Modifier = Modifier) {
         }
     }
 }
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Characters Screen - Loading",
+    showBackground = true
+)
+@Composable
+private fun LoadingStatePreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        LoadingState()
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Characters Screen - Error",
+    showBackground = true
+)
+@Composable
+private fun ErrorStatePreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ErrorState(
+            error = "Failed to load characters. Please check your connection and try again.",
+            onRetry = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Characters Screen - Empty",
+    showBackground = true
+)
+@Composable
+private fun EmptyStatePreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        EmptyState(message = "No characters found")
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Characters Screen - Empty Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun EmptyStateDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        EmptyState(message = "No characters match your filters")
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Characters Screen - Error Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun ErrorStateTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ErrorState(
+            error = "Network error occurred",
+            onRetry = {}
+        )
+    }
+}

@@ -1,4 +1,4 @@
-package com.darach.gameofthrones.ui.theme
+package com.darach.gameofthrones.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

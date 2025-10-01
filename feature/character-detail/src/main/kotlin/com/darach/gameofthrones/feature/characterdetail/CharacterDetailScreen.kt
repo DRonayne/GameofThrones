@@ -521,3 +521,158 @@ private fun ActorsSection(
         }
     }
 }
+
+// Sample data for previews
+private val sampleCharacter = Character(
+    id = "583",
+    name = "Jon Snow",
+    gender = "Male",
+    culture = "Northmen",
+    born = "In 283 AC",
+    died = "",
+    titles = listOf(
+        "Lord Commander of the Night's Watch",
+        "King in the North",
+        "Warden of the North"
+    ),
+    aliases = listOf("Lord Snow", "Ned Stark's Bastard", "The White Wolf", "King Crow"),
+    father = "",
+    mother = "",
+    spouse = "",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1", "Season 2", "Season 3", "Season 4", "Season 5", "Season 6"),
+    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+    playedBy = listOf("Kit Harington"),
+    isFavorite = true,
+    isDead = false
+)
+
+private val sampleDeceasedCharacter = Character(
+    id = "339",
+    name = "Eddard Stark",
+    gender = "Male",
+    culture = "Northmen",
+    born = "In 263 AC",
+    died = "In 299 AC, at King's Landing",
+    titles = listOf("Lord of Winterfell", "Warden of the North", "Hand of the King"),
+    aliases = listOf("Ned", "The Ned", "The Quiet Wolf"),
+    father = "",
+    mother = "",
+    spouse = "Catelyn Tully",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1"),
+    tvSeriesSeasons = listOf(1),
+    playedBy = listOf("Sean Bean"),
+    isFavorite = false,
+    isDead = true
+)
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - Loading",
+    showBackground = true
+)
+@Composable
+private fun LoadingContentPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        LoadingContent(paddingValues = androidx.compose.foundation.layout.PaddingValues(16.dp))
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - Error",
+    showBackground = true
+)
+@Composable
+private fun ErrorContentPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ErrorContent(
+            error = "Character not found",
+            onRetryClick = {},
+            paddingValues = androidx.compose.foundation.layout.PaddingValues(16.dp)
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - Hero Section",
+    showBackground = true
+)
+@Composable
+private fun HeroSectionPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        HeroSection(character = sampleCharacter)
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - Hero Section Deceased",
+    showBackground = true
+)
+@Composable
+private fun HeroSectionDeceasedPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        HeroSection(character = sampleDeceasedCharacter)
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - Basic Info Section",
+    showBackground = true
+)
+@Composable
+private fun BasicInfoSectionPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        BasicInfoSection(character = sampleCharacter)
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - Titles Section",
+    showBackground = true
+)
+@Composable
+private fun TitlesSectionPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        TitlesSection(titles = sampleCharacter.titles)
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - TV Series Section",
+    showBackground = true
+)
+@Composable
+private fun TVSeriesSectionPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        TVSeriesSection(seasons = sampleCharacter.tvSeriesSeasons)
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun HeroSectionDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        HeroSection(character = sampleCharacter)
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Character Detail - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun BasicInfoSectionTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        BasicInfoSection(character = sampleDeceasedCharacter)
+    }
+}

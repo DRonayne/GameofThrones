@@ -388,3 +388,217 @@ private fun ErrorState(message: String, modifier: Modifier = Modifier) {
         )
     }
 }
+
+// Sample data for previews
+private val sampleFavorites = listOf(
+    Character(
+        id = "583",
+        name = "Jon Snow",
+        gender = "Male",
+        culture = "Northmen",
+        born = "In 283 AC",
+        died = "",
+        titles = listOf("Lord Commander of the Night's Watch"),
+        aliases = listOf("Lord Snow"),
+        father = "",
+        mother = "",
+        spouse = "",
+        allegiances = listOf(),
+        books = listOf(),
+        povBooks = listOf(),
+        tvSeries = listOf(),
+        tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+        playedBy = listOf("Kit Harington"),
+        isFavorite = true
+    ),
+    Character(
+        id = "148",
+        name = "Arya Stark",
+        gender = "Female",
+        culture = "Northmen",
+        born = "In 289 AC",
+        died = "",
+        titles = listOf("Princess"),
+        aliases = listOf("No One"),
+        father = "",
+        mother = "",
+        spouse = "",
+        allegiances = listOf(),
+        books = listOf(),
+        povBooks = listOf(),
+        tvSeries = listOf(),
+        tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+        playedBy = listOf("Maisie Williams"),
+        isFavorite = true
+    ),
+    Character(
+        id = "339",
+        name = "Eddard Stark",
+        gender = "Male",
+        culture = "Northmen",
+        born = "In 263 AC",
+        died = "In 299 AC",
+        titles = listOf("Lord of Winterfell"),
+        aliases = listOf("Ned"),
+        father = "",
+        mother = "",
+        spouse = "",
+        allegiances = listOf(),
+        books = listOf(),
+        povBooks = listOf(),
+        tvSeries = listOf(),
+        tvSeriesSeasons = listOf(1),
+        playedBy = listOf("Sean Bean"),
+        isFavorite = true,
+        isDead = true
+    )
+)
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorites Content - Empty",
+    showBackground = true
+)
+@Composable
+private fun FavoritesContentEmptyPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoritesContent(
+            state = FavoritesState(isEmpty = true),
+            onCharacterClick = {},
+            onToggleSelection = {},
+            onRemoveFavorite = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorites Content - Loading",
+    showBackground = true
+)
+@Composable
+private fun FavoritesContentLoadingPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoritesContent(
+            state = FavoritesState(isLoading = true),
+            onCharacterClick = {},
+            onToggleSelection = {},
+            onRemoveFavorite = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorites Content - Error",
+    showBackground = true
+)
+@Composable
+private fun FavoritesContentErrorPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoritesContent(
+            state = FavoritesState(error = "Failed to load favorites"),
+            onCharacterClick = {},
+            onToggleSelection = {},
+            onRemoveFavorite = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorites Top Bar - Normal Mode",
+    showBackground = true
+)
+@Composable
+private fun FavoritesTopBarNormalPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoritesTopBar(
+            state = FavoritesState(
+                favorites = sampleFavorites,
+                viewMode = ViewMode.LIST
+            ),
+            callbacks = FavoritesTopBarCallbacks(
+                onBackClick = {},
+                onViewModeToggle = {},
+                onSelectionModeToggle = {},
+                onSelectAll = {},
+                onDeselectAll = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorites Top Bar - Selection Mode",
+    showBackground = true
+)
+@Composable
+private fun FavoritesTopBarSelectionPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoritesTopBar(
+            state = FavoritesState(
+                favorites = sampleFavorites,
+                isSelectionMode = true,
+                selectedIds = setOf("583", "148"),
+                viewMode = ViewMode.LIST
+            ),
+            callbacks = FavoritesTopBarCallbacks(
+                onBackClick = {},
+                onViewModeToggle = {},
+                onSelectionModeToggle = {},
+                onSelectAll = {},
+                onDeselectAll = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Empty Favorites State",
+    showBackground = true
+)
+@Composable
+private fun EmptyFavoritesStatePreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        EmptyFavoritesState()
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorites - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FavoritesContentDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoritesContent(
+            state = FavoritesState(isEmpty = true),
+            onCharacterClick = {},
+            onToggleSelection = {},
+            onRemoveFavorite = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Favorites Top Bar - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun FavoritesTopBarTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        FavoritesTopBar(
+            state = FavoritesState(
+                favorites = sampleFavorites,
+                viewMode = ViewMode.GRID
+            ),
+            callbacks = FavoritesTopBarCallbacks(
+                onBackClick = {},
+                onViewModeToggle = {},
+                onSelectionModeToggle = {},
+                onSelectAll = {},
+                onDeselectAll = {}
+            )
+        )
+    }
+}

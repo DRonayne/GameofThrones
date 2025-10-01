@@ -156,3 +156,116 @@ private fun SelectionInfo(selectionCount: Int, maxSelection: Int, modifier: Modi
         }
     }
 }
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selection Bar - One Selected",
+    showBackground = true
+)
+@Composable
+private fun ComparisonSelectionBarOnePreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionBar(
+            state = ComparisonSelectionBarState(
+                selectionCount = 1,
+                maxSelection = 3,
+                canCompare = false
+            ),
+            callbacks = ComparisonSelectionBarCallbacks(
+                onClearClick = {},
+                onCompareClick = {},
+                onCloseClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selection Bar - Two Selected (Can Compare)",
+    showBackground = true
+)
+@Composable
+private fun ComparisonSelectionBarTwoPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionBar(
+            state = ComparisonSelectionBarState(
+                selectionCount = 2,
+                maxSelection = 3,
+                canCompare = true
+            ),
+            callbacks = ComparisonSelectionBarCallbacks(
+                onClearClick = {},
+                onCompareClick = {},
+                onCloseClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selection Bar - Maximum Selected",
+    showBackground = true
+)
+@Composable
+private fun ComparisonSelectionBarMaxPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionBar(
+            state = ComparisonSelectionBarState(
+                selectionCount = 3,
+                maxSelection = 3,
+                canCompare = true
+            ),
+            callbacks = ComparisonSelectionBarCallbacks(
+                onClearClick = {},
+                onCompareClick = {},
+                onCloseClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selection Bar - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ComparisonSelectionBarDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionBar(
+            state = ComparisonSelectionBarState(
+                selectionCount = 2,
+                maxSelection = 3,
+                canCompare = true
+            ),
+            callbacks = ComparisonSelectionBarCallbacks(
+                onClearClick = {},
+                onCompareClick = {},
+                onCloseClick = {}
+            )
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Selection Bar - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun ComparisonSelectionBarTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonSelectionBar(
+            state = ComparisonSelectionBarState(
+                selectionCount = 3,
+                maxSelection = 3,
+                canCompare = true
+            ),
+            callbacks = ComparisonSelectionBarCallbacks(
+                onClearClick = {},
+                onCompareClick = {},
+                onCloseClick = {}
+            )
+        )
+    }
+}

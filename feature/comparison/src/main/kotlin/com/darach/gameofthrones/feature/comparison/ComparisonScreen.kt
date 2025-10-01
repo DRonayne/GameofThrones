@@ -314,3 +314,193 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         )
     }
 }
+
+// Sample data for previews
+private val sampleJonSnow = com.darach.gameofthrones.core.model.Character(
+    id = "583",
+    name = "Jon Snow",
+    gender = "Male",
+    culture = "Northmen",
+    born = "In 283 AC",
+    died = "",
+    titles = listOf("Lord Commander of the Night's Watch", "King in the North"),
+    aliases = listOf("Lord Snow", "The White Wolf"),
+    father = "",
+    mother = "",
+    spouse = "",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1", "Season 2", "Season 3", "Season 4", "Season 5", "Season 6"),
+    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+    playedBy = listOf("Kit Harington"),
+    isFavorite = true,
+    isDead = false
+)
+
+private val sampleAryaStark = com.darach.gameofthrones.core.model.Character(
+    id = "148",
+    name = "Arya Stark",
+    gender = "Female",
+    culture = "Northmen",
+    born = "In 289 AC",
+    died = "",
+    titles = listOf("Princess"),
+    aliases = listOf("No One", "Cat of the Canals"),
+    father = "",
+    mother = "",
+    spouse = "",
+    allegiances = listOf(),
+    books = listOf(),
+    povBooks = listOf(),
+    tvSeries = listOf("Season 1", "Season 2", "Season 3"),
+    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
+    playedBy = listOf("Maisie Williams"),
+    isFavorite = true,
+    isDead = false
+)
+
+private val sampleComparisonResult = ComparisonResult(
+    characters = listOf(sampleJonSnow, sampleAryaStark),
+    attributes = listOf(
+        ComparisonAttribute(
+            name = "Gender",
+            values = listOf(
+                AttributeValue("Male", isDifferent = true),
+                AttributeValue("Female", isDifferent = true)
+            ),
+            hasDifference = true
+        ),
+        ComparisonAttribute(
+            name = "Culture",
+            values = listOf(
+                AttributeValue("Northmen", isDifferent = false),
+                AttributeValue("Northmen", isDifferent = false)
+            ),
+            hasDifference = false
+        ),
+        ComparisonAttribute(
+            name = "Born",
+            values = listOf(
+                AttributeValue("In 283 AC", isDifferent = true),
+                AttributeValue("In 289 AC", isDifferent = true)
+            ),
+            hasDifference = true
+        ),
+        ComparisonAttribute(
+            name = "Status",
+            values = listOf(
+                AttributeValue("Alive", isDifferent = false),
+                AttributeValue("Alive", isDifferent = false)
+            ),
+            hasDifference = false
+        ),
+        ComparisonAttribute(
+            name = "Seasons",
+            values = listOf(
+                AttributeValue("8 seasons", isDifferent = false),
+                AttributeValue("8 seasons", isDifferent = false)
+            ),
+            hasDifference = false
+        )
+    )
+)
+
+// Previews
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Screen - Loading",
+    showBackground = true
+)
+@Composable
+private fun ComparisonScreenLoadingPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonScreen(
+            comparisonResult = null,
+            isLoading = true,
+            error = null,
+            onBackClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Screen - With Data",
+    showBackground = true
+)
+@Composable
+private fun ComparisonScreenWithDataPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonScreen(
+            comparisonResult = sampleComparisonResult,
+            isLoading = false,
+            error = null,
+            onBackClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Screen - Error",
+    showBackground = true
+)
+@Composable
+private fun ComparisonScreenErrorPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonScreen(
+            comparisonResult = null,
+            isLoading = false,
+            error = "Failed to load comparison data",
+            onBackClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Screen - Empty",
+    showBackground = true
+)
+@Composable
+private fun ComparisonScreenEmptyPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonScreen(
+            comparisonResult = null,
+            isLoading = false,
+            error = null,
+            onBackClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Screen - Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ComparisonScreenDarkPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonScreen(
+            comparisonResult = sampleComparisonResult,
+            isLoading = false,
+            error = null,
+            onBackClick = {}
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Comparison Screen - Tablet",
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240"
+)
+@Composable
+private fun ComparisonScreenTabletPreview() {
+    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+        ComparisonScreen(
+            comparisonResult = sampleComparisonResult,
+            isLoading = false,
+            error = null,
+            onBackClick = {}
+        )
+    }
+}
