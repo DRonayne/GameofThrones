@@ -1,6 +1,8 @@
 package com.darach.gameofthrones.feature.characters.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -26,18 +28,36 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Floating offline indicator that appears when network is unavailable.
- * Automatically hides when online and animates in/out smoothly.
+ * Automatically hides when online and animates in/out smoothly with spring physics.
  */
 @Composable
 fun OfflineIndicator(isOffline: Boolean, modifier: Modifier = Modifier) {
     AnimatedVisibility(
         visible = isOffline,
         enter = slideInVertically(
-            initialOffsetY = { -it }
-        ) + fadeIn(),
+            initialOffsetY = { -it },
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            )
+        ) + fadeIn(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            )
+        ),
         exit = slideOutVertically(
-            targetOffsetY = { -it }
-        ) + fadeOut(),
+            targetOffsetY = { -it },
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMedium
+            )
+        ) + fadeOut(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMedium
+            )
+        ),
         modifier = modifier
     ) {
         Surface(

@@ -1,5 +1,8 @@
 package com.darach.gameofthrones.feature.characters.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -25,9 +28,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -37,6 +43,7 @@ import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
 import com.darach.gameofthrones.core.ui.test.TestTags
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -46,8 +53,12 @@ fun CharacterCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     Card(
-        onClick = onClick,
+        onClick = {
+            performHaptic()
+            onClick()
+        },
         modifier = modifier
             .fillMaxWidth()
             .testTag(TestTags.CHARACTER_CARD),
@@ -161,13 +172,40 @@ private fun FavoriteButton(
     onFavoriteClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val onClick = remember(character.id, onFavoriteClick) {
-        { onFavoriteClick(character.id) }
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
+    val scale = remember { Animatable(1f) }
+
+    val onClick = remember(character.id, onFavoriteClick, performHaptic) {
+        {
+            performHaptic()
+            onFavoriteClick(character.id)
+        }
+    }
+
+    LaunchedEffect(character.isFavorite) {
+        if (character.isFavorite) {
+            scale.animateTo(
+                targetValue = 1.2f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMediumLow
+                )
+            )
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMediumLow
+                )
+            )
+        }
     }
 
     IconButton(
         onClick = onClick,
-        modifier = modifier.size(48.dp)
+        modifier = modifier
+            .size(48.dp)
+            .scale(scale.value)
     ) {
         Icon(
             imageVector = if (character.isFavorite) {
@@ -242,11 +280,33 @@ private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
 
 @Composable
 private fun DeathIndicator(modifier: Modifier = Modifier) {
+    val alpha = remember { Animatable(1f) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            alpha.animateTo(
+                targetValue = 0.5f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessVeryLow
+                )
+            )
+            alpha.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessVeryLow
+                )
+            )
+            delay(2000)
+        }
+    }
+
     Icon(
         imageVector = Icons.Default.Close,
         contentDescription = "Deceased",
         tint = MaterialTheme.colorScheme.error,
-        modifier = modifier
+        modifier = modifier.graphicsLayer(alpha = alpha.value)
     )
 }
 

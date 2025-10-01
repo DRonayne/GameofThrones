@@ -1,6 +1,10 @@
 package com.darach.gameofthrones.feature.characters.components
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -10,21 +14,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 
@@ -37,67 +47,83 @@ fun FilterBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scrollState = rememberScrollState()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         modifier = modifier
     ) {
-        Column(
+        Box(modifier = Modifier.fillMaxWidth()) {
+            FilterContent(
+                state = state,
+                onFilterChange = onFilterChange,
+                scrollState = scrollState
+            )
+            CloseButton(
+                onDismiss = onDismiss,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
+    }
+}
+
+@Composable
+private fun FilterContent(
+    state: FilterBottomSheetState,
+    onFilterChange: (CharacterFilter) -> Unit,
+    scrollState: androidx.compose.foundation.ScrollState
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 88.dp)
+            .verticalScroll(scrollState)
+    ) {
+        FilterHeader(currentFilter = state.currentFilter, onFilterChange = onFilterChange)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        FilterSection(title = "Status") {
+            FavoritesFilterChip(state.currentFilter, onFilterChange)
+            DeathFilterChips(state.currentFilter, onFilterChange)
+            AppearancesFilterChip(state.currentFilter, onFilterChange)
+        }
+
+        FilterSection(title = "Gender") {
+            GenderFilterChips(state.currentFilter, onFilterChange)
+        }
+
+        if (state.availableCultures.isNotEmpty()) {
+            FilterSection(title = "Culture") {
+                CultureFilterChips(state.currentFilter, onFilterChange, state.availableCultures)
+            }
+        }
+
+        if (state.availableSeasons.isNotEmpty()) {
+            FilterSection(title = "Seasons") {
+                SeasonFilterChips(state.currentFilter, onFilterChange, state.availableSeasons)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CloseButton(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shadowElevation = 8.dp,
+        tonalElevation = 2.dp,
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Button(
+            onClick = onDismiss,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 32.dp)
+                .padding(16.dp)
         ) {
-            FilterHeader(currentFilter = state.currentFilter, onFilterChange = onFilterChange)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Status filters
-            FilterSection(title = "Status") {
-                FavoritesFilterChip(
-                    currentFilter = state.currentFilter,
-                    onFilterChange = onFilterChange
-                )
-                DeathFilterChips(
-                    currentFilter = state.currentFilter,
-                    onFilterChange = onFilterChange
-                )
-                AppearancesFilterChip(
-                    currentFilter = state.currentFilter,
-                    onFilterChange = onFilterChange
-                )
-            }
-
-            // Gender filters
-            FilterSection(title = "Gender") {
-                GenderFilterChips(
-                    currentFilter = state.currentFilter,
-                    onFilterChange = onFilterChange
-                )
-            }
-
-            // Culture filters
-            if (state.availableCultures.isNotEmpty()) {
-                FilterSection(title = "Culture") {
-                    CultureFilterChips(
-                        currentFilter = state.currentFilter,
-                        onFilterChange = onFilterChange,
-                        availableCultures = state.availableCultures
-                    )
-                }
-            }
-
-            // Season filters
-            if (state.availableSeasons.isNotEmpty()) {
-                FilterSection(title = "Seasons") {
-                    SeasonFilterChips(
-                        currentFilter = state.currentFilter,
-                        onFilterChange = onFilterChange,
-                        availableSeasons = state.availableSeasons
-                    )
-                }
-            }
+            Text("Close")
         }
     }
 }
@@ -127,6 +153,17 @@ private fun FilterHeader(
     currentFilter: CharacterFilter,
     onFilterChange: (CharacterFilter) -> Unit
 ) {
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
+    val filterCount = currentFilter.activeFilterCount()
+    val badgeScale by animateFloatAsState(
+        targetValue = if (filterCount > 0) 1f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMediumLow
+        ),
+        label = "Filter badge scale"
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -136,12 +173,13 @@ private fun FilterHeader(
     ) {
         BadgedBox(
             badge = {
-                if (currentFilter.activeFilterCount() > 0) {
+                if (filterCount > 0) {
                     Badge(
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.scale(badgeScale)
                     ) {
                         Text(
-                            text = currentFilter.activeFilterCount().toString(),
+                            text = filterCount.toString(),
                             style = MaterialTheme.typography.labelSmall
                         )
                     }
@@ -149,7 +187,7 @@ private fun FilterHeader(
             }
         ) {
             Text(
-                text = "Filters",
+                text = "Filters ",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -157,7 +195,10 @@ private fun FilterHeader(
 
         if (currentFilter.isActive()) {
             TextButton(
-                onClick = { onFilterChange(CharacterFilter()) }
+                onClick = {
+                    performHaptic()
+                    onFilterChange(CharacterFilter())
+                }
             ) {
                 Text(
                     text = "Clear all",
@@ -173,9 +214,11 @@ private fun FavoritesFilterChip(
     currentFilter: CharacterFilter,
     onFilterChange: (CharacterFilter) -> Unit
 ) {
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     SelectableFilterChip(
         selected = currentFilter.onlyFavorites,
         onClick = {
+            performHaptic()
             onFilterChange(currentFilter.copy(onlyFavorites = !currentFilter.onlyFavorites))
         },
         label = "Favorites"
@@ -187,9 +230,11 @@ private fun DeathFilterChips(
     currentFilter: CharacterFilter,
     onFilterChange: (CharacterFilter) -> Unit
 ) {
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     SelectableFilterChip(
         selected = currentFilter.isDead == true,
         onClick = {
+            performHaptic()
             onFilterChange(
                 currentFilter.copy(
                     isDead = if (currentFilter.isDead == true) null else true
@@ -202,6 +247,7 @@ private fun DeathFilterChips(
     SelectableFilterChip(
         selected = currentFilter.isDead == false,
         onClick = {
+            performHaptic()
             onFilterChange(
                 currentFilter.copy(
                     isDead = if (currentFilter.isDead == false) null else false
@@ -217,9 +263,11 @@ private fun AppearancesFilterChip(
     currentFilter: CharacterFilter,
     onFilterChange: (CharacterFilter) -> Unit
 ) {
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     SelectableFilterChip(
         selected = currentFilter.hasAppearances == true,
         onClick = {
+            performHaptic()
             onFilterChange(
                 currentFilter.copy(
                     hasAppearances = if (currentFilter.hasAppearances == true) null else true
@@ -235,9 +283,11 @@ private fun GenderFilterChips(
     currentFilter: CharacterFilter,
     onFilterChange: (CharacterFilter) -> Unit
 ) {
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     SelectableFilterChip(
         selected = currentFilter.gender == "Male",
         onClick = {
+            performHaptic()
             onFilterChange(
                 currentFilter.copy(
                     gender = if (currentFilter.gender == "Male") null else "Male"
@@ -250,6 +300,7 @@ private fun GenderFilterChips(
     SelectableFilterChip(
         selected = currentFilter.gender == "Female",
         onClick = {
+            performHaptic()
             onFilterChange(
                 currentFilter.copy(
                     gender = if (currentFilter.gender == "Female") null else "Female"
@@ -266,10 +317,12 @@ private fun CultureFilterChips(
     onFilterChange: (CharacterFilter) -> Unit,
     availableCultures: List<String>
 ) {
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     availableCultures.take(MAX_CULTURE_CHIPS).forEach { culture ->
         SelectableFilterChip(
             selected = currentFilter.culture == culture,
             onClick = {
+                performHaptic()
                 onFilterChange(
                     currentFilter.copy(
                         culture = if (currentFilter.culture == culture) null else culture
@@ -287,10 +340,12 @@ private fun SeasonFilterChips(
     onFilterChange: (CharacterFilter) -> Unit,
     availableSeasons: List<Int>
 ) {
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     availableSeasons.forEach { season ->
         SelectableFilterChip(
             selected = currentFilter.seasons.contains(season),
             onClick = {
+                performHaptic()
                 val newSeasons = if (currentFilter.seasons.contains(season)) {
                     currentFilter.seasons - season
                 } else {

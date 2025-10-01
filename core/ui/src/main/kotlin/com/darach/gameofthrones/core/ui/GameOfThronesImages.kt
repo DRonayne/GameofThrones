@@ -118,7 +118,7 @@ object GameOfThronesImages {
             "Lancel Lannister" to
                 "https://static.tvmaze.com/uploads/images/medium_untouched/0/616.jpg",
             "Loras Tyrell" to
-                "https://www.tvmaze.com/images/3202/ser-loras-tyrell-image-3202",
+                "https://static.tvmaze.com/uploads/images/medium_untouched/1/3204.jpg",
             "Lysa Arryn" to
                 "https://static.tvmaze.com/uploads/images/medium_untouched/144/360179.jpg",
             "Osha" to

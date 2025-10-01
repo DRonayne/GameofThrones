@@ -79,7 +79,7 @@ fun CharactersScreen(
     )
 
     Scaffold(
-        modifier = modifier.offset(y = (-24).dp),
+        modifier = modifier,
         topBar = {
             SearchAndFilterControls(
                 state = state,
@@ -567,8 +567,12 @@ private fun CharactersList(
     onCharacterClick: (String) -> Unit,
     onIntent: (CharactersIntent) -> Unit
 ) {
-    val onRefresh = remember(onIntent) {
-        { onIntent(CharactersIntent.RefreshCharacters) }
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
+    val onRefresh = remember(onIntent, performHaptic) {
+        {
+            performHaptic()
+            onIntent(CharactersIntent.RefreshCharacters)
+        }
     }
 
     PullToRefreshBox(
@@ -582,7 +586,7 @@ private fun CharactersList(
                 start = 16.dp,
                 end = 16.dp,
                 top = 8.dp,
-                bottom = 16.dp
+                bottom = 88.dp
             ),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {

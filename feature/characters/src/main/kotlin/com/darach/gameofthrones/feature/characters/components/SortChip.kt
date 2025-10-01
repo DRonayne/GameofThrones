@@ -21,8 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -35,11 +33,11 @@ fun SortChip(
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val haptic = LocalHapticFeedback.current
+    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
 
     Box(modifier = modifier) {
-        SortFilterChip(currentSortOption, haptic) { expanded = true }
-        SortOptionsDropdown(expanded, currentSortOption, haptic, onSortOptionChange) {
+        SortFilterChip(currentSortOption, performHaptic) { expanded = true }
+        SortOptionsDropdown(expanded, currentSortOption, performHaptic, onSortOptionChange) {
             expanded = false
         }
     }
@@ -48,13 +46,13 @@ fun SortChip(
 @Composable
 private fun SortFilterChip(
     currentSortOption: SortOption,
-    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    performHaptic: () -> Unit,
     onExpand: () -> Unit
 ) {
     FilterChip(
         selected = currentSortOption != SortOption.NAME_ASC,
         onClick = {
-            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            performHaptic()
             onExpand()
         },
         label = {
@@ -87,7 +85,7 @@ private fun SortFilterChip(
 private fun SortOptionsDropdown(
     expanded: Boolean,
     currentSortOption: SortOption,
-    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    performHaptic: () -> Unit,
     onSortOptionChange: (SortOption) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -96,7 +94,7 @@ private fun SortOptionsDropdown(
             DropdownMenuItem(
                 text = { Text(getSortOptionLabel(sortOption)) },
                 onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    performHaptic()
                     onSortOptionChange(sortOption)
                     onDismiss()
                 },

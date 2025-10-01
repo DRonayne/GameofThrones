@@ -657,7 +657,7 @@ private fun SettingsContentDarkPreview() {
                     themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.DARK,
                     useDynamicColors = false,
                     cacheExpirationHours = 48,
-                    searchHistory = List(25) { "Search $it" },
+                    searchHistory = List(25) { "Search $it" }
                 ),
                 appVersion = "1.0.0",
                 buildNumber = "42",
@@ -684,7 +684,7 @@ private fun SettingsContentSyncingPreview() {
                     themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.LIGHT,
                     useDynamicColors = true,
                     cacheExpirationHours = 24,
-                    searchHistory = List(10) { "Search $it" },
+                    searchHistory = List(10) { "Search $it" }
                 ),
                 appVersion = "1.0.0",
                 buildNumber = "42",
@@ -712,7 +712,7 @@ private fun SettingsContentTabletPreview() {
                     themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.SYSTEM,
                     useDynamicColors = true,
                     cacheExpirationHours = 24,
-                    searchHistory = List(30) { "Search $it" },
+                    searchHistory = List(30) { "Search $it" }
                 ),
                 appVersion = "1.0.0",
                 buildNumber = "42",
