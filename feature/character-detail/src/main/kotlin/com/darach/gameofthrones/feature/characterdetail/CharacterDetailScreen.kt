@@ -417,6 +417,23 @@ private fun CharacterDetails(
     paddingValues: PaddingValues,
     sharedTransitionData: SharedTransitionData? = null
 ) {
+    val configuration = androidx.compose.ui.platform.LocalConfiguration.current
+    val isTablet = configuration.screenWidthDp >= 600
+
+    if (isTablet) {
+        TabletCharacterDetails(character, paddingValues, sharedTransitionData)
+    } else {
+        PhoneCharacterDetails(character, paddingValues, sharedTransitionData)
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun PhoneCharacterDetails(
+    character: Character,
+    paddingValues: PaddingValues,
+    sharedTransitionData: SharedTransitionData?
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
@@ -448,6 +465,69 @@ private fun CharacterDetails(
                     actors = character.playedBy.filter { it.isNotBlank() },
                     actorImageUrls = character.actorImageUrls
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun TabletCharacterDetails(
+    character: Character,
+    paddingValues: PaddingValues,
+    sharedTransitionData: SharedTransitionData?
+) {
+    androidx.compose.foundation.layout.Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                start = 24.dp,
+                end = 24.dp,
+                top = paddingValues.calculateTopPadding() + 16.dp,
+                bottom = paddingValues.calculateBottomPadding() + 16.dp
+            ),
+        horizontalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // Left column: Hero section (40% width)
+        Box(
+            modifier = Modifier
+                .weight(0.4f)
+                .fillMaxSize()
+        ) {
+            androidx.compose.foundation.lazy.LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item { HeroSection(character, sharedTransitionData) }
+                if (character.playedBy.any { it.isNotBlank() }) {
+                    item {
+                        ActorsSection(
+                            actors = character.playedBy.filter { it.isNotBlank() },
+                            actorImageUrls = character.actorImageUrls
+                        )
+                    }
+                }
+            }
+        }
+
+        // Right column: Details (60% width)
+        androidx.compose.foundation.lazy.LazyColumn(
+            modifier = Modifier
+                .weight(0.6f)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item { BasicInfoSection(character) }
+
+            if (character.titles.any { it.isNotBlank() }) {
+                item { TitlesSection(character.titles.filter { it.isNotBlank() }) }
+            }
+
+            if (character.aliases.any { it.isNotBlank() }) {
+                item { AliasesSection(character.aliases.filter { it.isNotBlank() }) }
+            }
+
+            if (character.tvSeriesSeasons.isNotEmpty()) {
+                item { TVSeriesSection(character.tvSeriesSeasons) }
             }
         }
     }

@@ -109,6 +109,23 @@ private fun ComparisonContent(
     modifier: Modifier = Modifier,
     sharedTransitionData: SharedTransitionData? = null
 ) {
+    val configuration = androidx.compose.ui.platform.LocalConfiguration.current
+    val isTablet = configuration.screenWidthDp >= 600
+
+    if (isTablet) {
+        TabletComparisonContent(comparisonResult, modifier, sharedTransitionData)
+    } else {
+        PhoneComparisonContent(comparisonResult, modifier, sharedTransitionData)
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun PhoneComparisonContent(
+    comparisonResult: ComparisonResult,
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
+) {
     val scrollState = rememberScrollState()
     val character1 = comparisonResult.characters.getOrNull(0)
     val character2 = comparisonResult.characters.getOrNull(1)
@@ -138,6 +155,186 @@ private fun ComparisonContent(
 
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun TabletComparisonContent(
+    comparisonResult: ComparisonResult,
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
+) {
+    val scrollState = rememberScrollState()
+    val character1 = comparisonResult.characters.getOrNull(0)
+    val character2 = comparisonResult.characters.getOrNull(1)
+
+    Row(
+        modifier = modifier
+            .fillMaxSize()
+            .testTag(TestTags.COMPARISON_RESULT_TABLE)
+            .padding(24.dp),
+        horizontalArrangement = Arrangement.spacedBy(32.dp)
+    ) {
+        TabletCharacterColumn(
+            character = character1,
+            attributes = comparisonResult.attributes,
+            characterIndex = 0,
+            scrollState = scrollState,
+            sharedTransitionData = sharedTransitionData,
+            modifier = Modifier.weight(0.3f)
+        )
+
+        TabletVSDivider(modifier = Modifier.weight(0.1f))
+
+        TabletCharacterColumn(
+            character = character2,
+            attributes = comparisonResult.attributes,
+            characterIndex = 1,
+            scrollState = scrollState,
+            sharedTransitionData = sharedTransitionData,
+            modifier = Modifier.weight(0.3f)
+        )
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+@Suppress("LongParameterList")
+private fun TabletCharacterColumn(
+    character: com.darach.gameofthrones.core.model.Character?,
+    attributes: List<ComparisonAttribute>,
+    characterIndex: Int,
+    scrollState: androidx.compose.foundation.ScrollState,
+    sharedTransitionData: SharedTransitionData?,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        CharacterPortraitWithTransition(character, sharedTransitionData)
+        CharacterNameWithTransition(character, sharedTransitionData)
+
+        attributes.forEach { attribute ->
+            attribute.values.getOrNull(characterIndex)?.let { value ->
+                TabletAttributeCard(
+                    label = attribute.name,
+                    value = value,
+                    isDifferent = attribute.hasDifference
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TabletVSDivider(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "VS",
+            style = MaterialTheme.typography.displayMedium,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+private fun TabletAttributeCard(
+    label: String,
+    value: AttributeValue,
+    isDifferent: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isDifferent) {
+                MaterialTheme.colorScheme.surfaceVariant
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            TabletAttributeCardLabel(label)
+
+            if (value.actorData.isNotEmpty()) {
+                TabletActorDataDisplay(value.actorData)
+            } else {
+                TabletTextValueDisplay(value)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TabletAttributeCardLabel(label: String) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+private fun TabletActorDataDisplay(actorData: List<ActorInfo>) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        actorData.forEach { actor ->
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                PortraitImage(
+                    imageUrl = actor.imageUrl,
+                    contentDescription = actor.name,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = actor.name,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TabletTextValueDisplay(value: AttributeValue) {
+    val textColor = when {
+        value.isEmpty -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+        value.isDifferent -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.onSurface
+    }
+
+    Text(
+        text = value.value,
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = if (value.isDifferent) FontWeight.Bold else FontWeight.Normal,
+        color = textColor,
+        textAlign = TextAlign.Center,
+        maxLines = 3,
+        overflow = TextOverflow.Ellipsis
+    )
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)

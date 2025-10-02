@@ -2,6 +2,7 @@ package com.darach.gameofthrones.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -131,7 +132,10 @@ private fun GoTNavigationRail(
     NavigationRail(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        header = {
+            Spacer(modifier = Modifier.weight(0.3f))
+        }
     ) {
         destinations.forEach { destination ->
             val selected = currentDestination?.hasRoute(destination.toRoute()::class) == true
@@ -151,6 +155,7 @@ private fun GoTNavigationRail(
                 label = { Text(destination.label) }
             )
         }
+        Spacer(modifier = Modifier.weight(0.7f))
     }
 }
 
