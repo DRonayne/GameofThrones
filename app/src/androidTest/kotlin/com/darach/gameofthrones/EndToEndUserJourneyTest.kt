@@ -565,32 +565,58 @@ class EndToEndUserJourneyTest {
             }
         }
 
-        // Step 3: Apply filter for alive characters
-        val aliveNodes = composeTestRule
-            .onAllNodesWithText("Alive", substring = true)
-            .fetchSemanticsNodes()
+        // Step 3: Apply filter for alive characters via filter bottom sheet
+        val filterButton = composeTestRule
+            .onNodeWithContentDescription("Filter options", useUnmergedTree = true)
 
-        if (aliveNodes.isNotEmpty()) {
-            composeTestRule
-                .onNodeWithText("Alive")
-                .performClick()
-
+        if (filterButton.fetchSemanticsNode(null) != null) {
+            filterButton.performClick()
             composeTestRule.waitForIdle()
+
+            // Now find and click alive filter in the bottom sheet
+            val aliveNodes = composeTestRule
+                .onAllNodesWithText("Alive", substring = true)
+                .fetchSemanticsNodes()
+
+            if (aliveNodes.isNotEmpty()) {
+                composeTestRule
+                    .onAllNodesWithText("Alive", substring = true)
+                    .onFirst()
+                    .performClick()
+
+                composeTestRule.waitForIdle()
+            }
+
+            // Step 4: Apply gender filter
+            val maleNodes = composeTestRule
+                .onAllNodesWithText("Male", substring = true)
+                .fetchSemanticsNodes()
+
+            if (maleNodes.isNotEmpty()) {
+                composeTestRule
+                    .onAllNodesWithText("Male", substring = true)
+                    .onFirst()
+                    .performClick()
+
+                composeTestRule.waitForIdle()
+            }
+
+            // Close bottom sheet
+            val closeButtons = composeTestRule
+                .onAllNodesWithText("Close", substring = true)
+                .fetchSemanticsNodes()
+
+            if (closeButtons.isNotEmpty()) {
+                composeTestRule
+                    .onNodeWithText("Close")
+                    .performClick()
+                composeTestRule.waitForIdle()
+            }
         }
 
-        // Step 4: Apply gender filter
-        val maleNodes = composeTestRule
-            .onAllNodesWithText("Male", substring = true)
-            .fetchSemanticsNodes()
-
-        if (maleNodes.isNotEmpty()) {
-            composeTestRule
-                .onAllNodesWithText("Male")
-                .onFirst()
-                .performClick()
-
-            composeTestRule.waitForIdle()
-        }
+        // Wait a bit for filters to be applied
+        composeTestRule.waitForIdle()
+        Thread.sleep(1000)
 
         // Step 5: View a filtered character
         val characterCards = composeTestRule
@@ -618,25 +644,6 @@ class EndToEndUserJourneyTest {
 
             composeTestRule
                 .onNodeWithContentDescription("Navigate back", useUnmergedTree = true)
-                .performClick()
-
-            composeTestRule.waitForIdle()
-        }
-
-        // Step 6: Clear all filters
-        if (aliveNodes.isNotEmpty()) {
-            composeTestRule
-                .onAllNodesWithText("Alive")
-                .onFirst()
-                .performClick()
-
-            composeTestRule.waitForIdle()
-        }
-
-        if (maleNodes.isNotEmpty()) {
-            composeTestRule
-                .onAllNodesWithText("Male")
-                .onFirst()
                 .performClick()
 
             composeTestRule.waitForIdle()

@@ -3,6 +3,7 @@ package com.darach.gameofthrones
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -177,41 +178,69 @@ class MainUserFlowTest {
                 .size > 5
         }
 
-        // Try to open filter (if available)
-        val filterNodes = composeTestRule
-            .onAllNodesWithText("Filter", substring = true, ignoreCase = true)
-            .fetchSemanticsNodes()
+        // Open filter bottom sheet
+        val filterButton = composeTestRule
+            .onNodeWithContentDescription("Filter options", useUnmergedTree = true)
 
-        if (filterNodes.isNotEmpty()) {
-            composeTestRule
-                .onNodeWithContentDescription("Filter options")
-                .performClick()
-
+        if (filterButton.fetchSemanticsNode(null) != null) {
+            filterButton.performClick()
             composeTestRule.waitForIdle()
 
-            // Close filter
-            val closeNodes = composeTestRule
-                .onAllNodesWithText("Close", substring = true, ignoreCase = true)
+            // Try to find and click alive filter in the bottom sheet
+            val aliveNodes = composeTestRule
+                .onAllNodesWithText("Alive", substring = true)
                 .fetchSemanticsNodes()
 
-            if (closeNodes.isNotEmpty()) {
+            if (aliveNodes.isNotEmpty()) {
                 composeTestRule
-                    .onNodeWithContentDescription("Close")
+                    .onAllNodesWithText("Alive", substring = true)
+                    .onFirst()
                     .performClick()
+
+                composeTestRule.waitForIdle()
+
+                // Close bottom sheet
+                val closeButtons = composeTestRule
+                    .onAllNodesWithText("Close", substring = true)
+                    .fetchSemanticsNodes()
+
+                if (closeButtons.isNotEmpty()) {
+                    composeTestRule
+                        .onNodeWithText("Close")
+                        .performClick()
+                    composeTestRule.waitForIdle()
+                }
+
+                // Wait a bit for filter to be applied
+                composeTestRule.waitForIdle()
+                Thread.sleep(1000)
             }
         }
 
         // Try to open sort (if available)
-        val sortNodes = composeTestRule
-            .onAllNodesWithText("Sort", substring = true, ignoreCase = true)
+        val sortChips = composeTestRule
+            .onAllNodesWithText("Sort:", substring = true)
             .fetchSemanticsNodes()
 
-        if (sortNodes.isNotEmpty()) {
+        if (sortChips.isNotEmpty()) {
             composeTestRule
-                .onNodeWithContentDescription("Sort options")
+                .onAllNodesWithText("Sort:", substring = true)
+                .onFirst()
                 .performClick()
-
             composeTestRule.waitForIdle()
+
+            // Select an option if the menu opened
+            val nameAscNodes = composeTestRule
+                .onAllNodesWithText("Name (A-Z)", substring = true)
+                .fetchSemanticsNodes()
+
+            if (nameAscNodes.isNotEmpty()) {
+                composeTestRule
+                    .onNodeWithText("Name (A-Z)")
+                    .performClick()
+
+                composeTestRule.waitForIdle()
+            }
         }
     }
 

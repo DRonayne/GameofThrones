@@ -235,32 +235,48 @@ class CharacterListFlowTest {
                 .size > 5
         }
 
-        // Try to find and click alive filter
-        val aliveNodes = composeTestRule
-            .onAllNodesWithText("Alive", substring = true)
-            .fetchSemanticsNodes()
+        // Open filter bottom sheet first
+        val filterButton = composeTestRule
+            .onNodeWithContentDescription("Filter options", useUnmergedTree = true)
 
-        if (aliveNodes.isNotEmpty()) {
-            composeTestRule
-                .onNodeWithText("Alive")
-                .performClick()
-
+        if (filterButton.fetchSemanticsNode(null) != null) {
+            filterButton.performClick()
             composeTestRule.waitForIdle()
 
-            // Verify filter is applied
-            composeTestRule.waitUntil(timeoutMillis = 3000) {
+            // Now find and click alive filter in the bottom sheet
+            val aliveNodes = composeTestRule
+                .onAllNodesWithText("Alive", substring = true)
+                .fetchSemanticsNodes()
+
+            if (aliveNodes.isNotEmpty()) {
+                // Find the one that is a filter chip (clickable but not in character card)
                 composeTestRule
-                    .onAllNodesWithText("", substring = true)
+                    .onAllNodesWithText("Alive", substring = true)
+                    .onFirst()
+                    .performClick()
+
+                composeTestRule.waitForIdle()
+
+                // Close bottom sheet if needed
+                val applyButtons = composeTestRule
+                    .onAllNodesWithText("Apply", substring = true)
                     .fetchSemanticsNodes()
-                    .isNotEmpty()
+
+                if (applyButtons.isNotEmpty()) {
+                    composeTestRule
+                        .onNodeWithText("Apply")
+                        .performClick()
+                    composeTestRule.waitForIdle()
+                }
+
+                // Verify filter is applied
+                composeTestRule.waitUntil(timeoutMillis = 3000) {
+                    composeTestRule
+                        .onAllNodesWithText("", substring = true)
+                        .fetchSemanticsNodes()
+                        .isNotEmpty()
+                }
             }
-
-            // Click again to deselect
-            composeTestRule
-                .onNodeWithText("Alive")
-                .performClick()
-
-            composeTestRule.waitForIdle()
         }
     }
 
