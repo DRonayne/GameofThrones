@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -71,7 +72,13 @@ fun ComparisonScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Character Comparison") },
+                title = {
+                    Text(
+                        stringResource(
+                            com.darach.gameofthrones.core.ui.R.string.character_comparison
+                        )
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -79,7 +86,9 @@ fun ComparisonScreen(
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(
+                                com.darach.gameofthrones.core.ui.R.string.back
+                            )
                         )
                     }
                 }
@@ -238,7 +247,7 @@ private fun TabletVSDivider(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "VS",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.vs),
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.ExtraBold,
             color = MaterialTheme.colorScheme.primary
@@ -352,7 +361,7 @@ private fun TaleOfTheTapeHeader(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "TALE OF THE TAPE",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.tale_of_the_tape),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
@@ -718,7 +727,7 @@ private fun ErrorState(error: String, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Error",
+                text = stringResource(com.darach.gameofthrones.core.ui.R.string.error),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.error
             )
@@ -740,7 +749,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "No comparison data available",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.no_comparison_data),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

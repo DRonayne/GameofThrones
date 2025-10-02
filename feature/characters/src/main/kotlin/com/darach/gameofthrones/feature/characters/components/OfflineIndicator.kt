@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 /**
@@ -77,11 +78,13 @@ fun OfflineIndicator(isOffline: Boolean, modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     imageVector = Icons.Default.CloudOff,
-                    contentDescription = "Offline",
+                    contentDescription = stringResource(
+                        com.darach.gameofthrones.core.ui.R.string.offline
+                    ),
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
-                    text = "Offline",
+                    text = stringResource(com.darach.gameofthrones.core.ui.R.string.offline),
                     style = MaterialTheme.typography.labelLarge
                 )
             }

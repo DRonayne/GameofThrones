@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -224,7 +225,7 @@ private fun FavoritesFilterChip(
         exit = shrinkHorizontally() + fadeOut()
     ) {
         CompactFilterChip(
-            label = "Favorites",
+            label = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_favorites),
             icon = Icons.Default.Favorite,
             onDismiss = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -249,7 +250,13 @@ private fun StatusFilterChip(
             exit = shrinkHorizontally() + fadeOut()
         ) {
             CompactFilterChip(
-                label = if (isDead) "Deceased" else "Alive",
+                label = stringResource(
+                    if (isDead) {
+                        com.darach.gameofthrones.core.ui.R.string.filter_deceased
+                    } else {
+                        com.darach.gameofthrones.core.ui.R.string.filter_alive
+                    }
+                ),
                 onDismiss = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onFilterChange(CharactersIntent.FilterCharacters(filter.copy(isDead = null)))
@@ -271,7 +278,7 @@ private fun AppearancesFilterChip(
         exit = shrinkHorizontally() + fadeOut()
     ) {
         CompactFilterChip(
-            label = "TV Appearances",
+            label = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_tv_appearances),
             onDismiss = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 onFilterChange(
@@ -342,7 +349,10 @@ private fun SeasonsFilterChips(
             label = "Season $season chip"
         ) {
             CompactFilterChip(
-                label = "S$season",
+                label = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.filter_season,
+                    season
+                ),
                 onDismiss = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onFilterChange(
@@ -381,7 +391,10 @@ private fun CompactFilterChip(
         trailingIcon = {
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Remove $label filter",
+                contentDescription = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.remove_filter,
+                    label
+                ),
                 modifier = Modifier.size(16.dp)
             )
         }
@@ -390,10 +403,17 @@ private fun CompactFilterChip(
 
 @Composable
 private fun AllFiltersChip(onOpenFilterSheet: () -> Unit) {
+    val filterOptionsDescription = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_options)
+
     androidx.compose.material3.FilterChip(
         selected = false,
         onClick = onOpenFilterSheet,
-        label = { Text("All Filters", style = MaterialTheme.typography.labelMedium) },
+        label = {
+            Text(
+                stringResource(com.darach.gameofthrones.core.ui.R.string.filter_all),
+                style = MaterialTheme.typography.labelMedium
+            )
+        },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.FilterList,
@@ -402,7 +422,7 @@ private fun AllFiltersChip(onOpenFilterSheet: () -> Unit) {
             )
         },
         modifier = Modifier.semantics {
-            contentDescription = "Filter options"
+            contentDescription = filterOptionsDescription
         }
     )
 }
@@ -416,6 +436,15 @@ private fun RecentSearchChips(
     val haptic = LocalHapticFeedback.current
 
     searchHistory.forEach { query ->
+        val recentSearchDescription = stringResource(
+            com.darach.gameofthrones.core.ui.R.string.recent_search,
+            query
+        )
+        val removeSearchDescription = stringResource(
+            com.darach.gameofthrones.core.ui.R.string.remove_search,
+            query
+        )
+
         AnimatedVisibility(
             visible = true,
             enter = expandHorizontally() + fadeIn(),
@@ -445,13 +474,13 @@ private fun RecentSearchChips(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Remove search: $query",
+                            contentDescription = removeSearchDescription,
                             modifier = Modifier.size(16.dp)
                         )
                     }
                 },
                 modifier = Modifier.semantics {
-                    contentDescription = "Recent search: $query"
+                    contentDescription = recentSearchDescription
                 }
             )
         }
@@ -690,13 +719,15 @@ private fun CharactersList(
 
 @Composable
 private fun LoadingState(modifier: Modifier = Modifier) {
+    val loadingDescription = stringResource(com.darach.gameofthrones.core.ui.R.string.loading_characters)
+
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
             modifier = Modifier.semantics {
-                contentDescription = "Loading characters"
+                contentDescription = loadingDescription
             }
         )
     }
@@ -718,7 +749,7 @@ private fun ErrorState(error: String, onRetry: () -> Unit, modifier: Modifier = 
             modifier = Modifier.padding(bottom = 16.dp)
         )
         Text(
-            text = "Error",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.error),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.error
         )
@@ -731,7 +762,7 @@ private fun ErrorState(error: String, onRetry: () -> Unit, modifier: Modifier = 
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = onRetry) {
-            Text("Retry")
+            Text(stringResource(com.darach.gameofthrones.core.ui.R.string.retry))
         }
     }
 }

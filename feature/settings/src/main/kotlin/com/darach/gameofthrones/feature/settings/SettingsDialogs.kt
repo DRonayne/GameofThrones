@@ -5,13 +5,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 @Composable
 internal fun ClearHistoryDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     ConfirmationDialog(
-        title = "Clear Search History?",
-        message = "This will remove all your search history.",
+        title = stringResource(
+            com.darach.gameofthrones.core.ui.R.string.clear_search_history_dialog_title
+        ),
+        message = stringResource(
+            com.darach.gameofthrones.core.ui.R.string.clear_search_history_dialog_message
+        ),
         onConfirm = {
             onConfirm()
             onDismiss()
@@ -23,9 +28,12 @@ internal fun ClearHistoryDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
 @Composable
 internal fun ClearAllDataDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     ConfirmationDialog(
-        title = "Clear All Data?",
-        message = "This will reset all preferences to defaults and clear all cached data. " +
-            "This action cannot be undone.",
+        title = stringResource(
+            com.darach.gameofthrones.core.ui.R.string.clear_all_data_dialog_title
+        ),
+        message = stringResource(
+            com.darach.gameofthrones.core.ui.R.string.clear_all_data_dialog_message
+        ),
         onConfirm = {
             onConfirm()
             onDismiss()
@@ -50,7 +58,7 @@ internal fun ConfirmationDialog(
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text(
-                    text = "Confirm",
+                    text = stringResource(com.darach.gameofthrones.core.ui.R.string.confirm),
                     color = if (destructive) {
                         MaterialTheme.colorScheme.error
                     } else {
@@ -61,7 +69,7 @@ internal fun ConfirmationDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(com.darach.gameofthrones.core.ui.R.string.cancel))
             }
         }
     )

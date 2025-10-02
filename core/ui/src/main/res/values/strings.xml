@@ -1,0 +1,201 @@
+<resources>
+    <string name="app_name">Game of Thrones</string>
+
+    <!-- Navigation -->
+    <string name="nav_characters">Characters</string>
+    <string name="nav_characters_description">Browse characters</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_favorites_description">View favorite characters</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_settings_description">App settings</string>
+
+    <!-- Search -->
+    <string name="search_placeholder">Search characters</string>
+    <string name="search_content_description">Search</string>
+    <string name="clear_search">Clear search</string>
+    <string name="remove_search">Remove search: %s</string>
+    <string name="recent_search">Recent search: %s</string>
+
+    <!-- Filter Labels -->
+    <string name="filter_favorites">Favorites</string>
+    <string name="filter_deceased">Deceased</string>
+    <string name="filter_alive">Alive</string>
+    <string name="filter_tv_appearances">TV Appearances</string>
+    <string name="filter_all">All Filters</string>
+    <string name="filter_options">Filter options</string>
+    <string name="remove_filter">Remove %s filter</string>
+    <string name="remove_favorites_filter">Remove favorites filter</string>
+    <string name="filter_season">S%d</string>
+    <string name="filter_season_label">Season %d</string>
+
+    <!-- Filter Sections -->
+    <string name="filters">Filters</string>
+    <string name="filter_status">Status</string>
+    <string name="filter_gender">Gender</string>
+    <string name="filter_culture">Culture</string>
+    <string name="filter_seasons">Seasons</string>
+    <string name="clear_all">Clear all</string>
+    <string name="close">Close</string>
+
+    <!-- Gender Filters -->
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+
+    <!-- Sort Options -->
+    <string name="sort_label">Sort: %s</string>
+    <string name="sort_options">Sort options</string>
+    <string name="sort_name_asc">Name (A-Z)</string>
+    <string name="sort_name_desc">Name (Z-A)</string>
+    <string name="sort_culture_asc">Culture (A-Z)</string>
+    <string name="sort_culture_desc">Culture (Z-A)</string>
+    <string name="sort_death_oldest">Death Date (Oldest First)</string>
+    <string name="sort_death_newest">Death Date (Newest First)</string>
+    <string name="sort_seasons_fewest">Seasons Count (Fewest First)</string>
+    <string name="sort_seasons_most">Seasons Count (Most First)</string>
+    <string name="sort_favorites_first">Favorites First</string>
+
+    <!-- Sort Options - Short Labels -->
+    <string name="sort_name_asc_short">Name ↑</string>
+    <string name="sort_name_desc_short">Name ↓</string>
+    <string name="sort_culture_asc_short">Culture ↑</string>
+    <string name="sort_culture_desc_short">Culture ↓</string>
+    <string name="sort_death_oldest_short">Death ↑</string>
+    <string name="sort_death_newest_short">Death ↓</string>
+    <string name="sort_seasons_fewest_short">Seasons ↑</string>
+    <string name="sort_seasons_most_short">Seasons ↓</string>
+    <string name="sort_favorites_first_short">Fav ★</string>
+
+    <!-- Character Status -->
+    <string name="status_deceased">Deceased</string>
+    <string name="status_alive">Alive</string>
+    <string name="status_deceased_symbol">✝ Deceased</string>
+    <string name="status_dead">Dead</string>
+
+    <!-- Common Actions -->
+    <string name="retry">Retry</string>
+    <string name="error">Error</string>
+    <string name="loading">Loading</string>
+    <string name="back">Back</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="undo">Undo</string>
+
+    <!-- Characters Screen -->
+    <string name="loading_characters">Loading characters</string>
+    <string name="no_characters_found">No characters found</string>
+    <string name="no_characters_match_filters">No characters match your filters</string>
+
+    <!-- Offline -->
+    <string name="offline">Offline</string>
+
+    <!-- Character Detail -->
+    <string name="navigate_back">Navigate back</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="added_to_favorites">Added to favorites</string>
+    <string name="removed_from_favorites">Removed from favorites</string>
+    <string name="loading_character_details">Loading character details</string>
+    <string name="loading_character">Loading character…</string>
+
+    <!-- Character Detail Sections -->
+    <string name="basic_information">Basic Information</string>
+    <string name="label_gender">Gender</string>
+    <string name="label_culture">Culture</string>
+    <string name="label_born">Born</string>
+    <string name="label_died">Died</string>
+    <string name="titles_section">Titles (%d)</string>
+    <string name="also_known_as">Also Known As</string>
+    <string name="tv_series_appearances">TV Series Appearances</string>
+    <string name="season_roman">Season %s</string>
+    <string name="played_by">Played By</string>
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Favorites (%d)</string>
+    <string name="favorites_selected">%d selected</string>
+    <string name="cancel_selection">Cancel selection</string>
+    <string name="compare_selected">Compare %d selected characters</string>
+    <string name="select_2_to_compare">Select 2 characters to compare, %d selected</string>
+    <string name="remove_selected_favorites">Remove %d selected favorites</string>
+    <string name="more_options">More options</string>
+    <string name="deselect_all">Deselect All</string>
+    <string name="select_all">Select All</string>
+    <string name="loading_favorites">Loading favorites</string>
+    <string name="favorites_count">%d favorites</string>
+    <string name="no_favorites_yet">No Favorites Yet</string>
+    <string name="no_favorites_description">Discover and save your favorite Game of Thrones characters</string>
+    <string name="no_favorites_description_long">No favorites yet. Discover and save your favorite Game of Thrones characters.</string>
+    <string name="browse_characters">Browse Characters</string>
+    <string name="error_loading_favorites">Error loading favorites: %s</string>
+
+    <!-- Comparison Screen -->
+    <string name="character_comparison">Character Comparison</string>
+    <string name="vs">VS</string>
+    <string name="tale_of_the_tape">TALE OF THE TAPE</string>
+    <string name="no_comparison_data">No comparison data available</string>
+    <string name="selected">Selected</string>
+    <string name="also_known_as_alias">Also known as: %s</string>
+
+    <!-- Settings Screen -->
+    <string name="settings">Settings</string>
+    <string name="theme_section">Theme</string>
+    <string name="cache_management">Cache Management</string>
+    <string name="data_sync">Data Sync</string>
+    <string name="about">About</string>
+
+    <!-- Theme Settings -->
+    <string name="theme_mode">Theme Mode</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_light_description">Always use light theme</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dark_description">Always use dark theme</string>
+    <string name="theme_system">System Default</string>
+    <string name="theme_system_description">Follow system theme</string>
+    <string name="dynamic_colors">Dynamic Colors</string>
+    <string name="dynamic_colors_description">Use Material You dynamic colors</string>
+    <string name="dynamic_colors_info">Dynamic colors require Android 12+</string>
+
+    <!-- Cache Settings -->
+    <string name="cache_expiration">Cache Expiration</string>
+    <string name="cache_expiration_hours">%d hours</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="clear_cache_description">Remove all cached data</string>
+    <string name="clear_cache_dialog_title">Clear Cache?</string>
+    <string name="clear_cache_dialog_message">This will remove all cached character data. The app will need to download data again when you browse characters.</string>
+
+    <!-- Data Sync Settings -->
+    <string name="sync_data">Sync Data</string>
+    <string name="sync_data_description">Refresh all data from server</string>
+    <string name="sync_data_dialog_title">Sync Data?</string>
+    <string name="sync_data_dialog_message">This will refresh all data from the server.</string>
+
+    <!-- Search History Settings -->
+    <string name="search_history">Search History</string>
+    <string name="search_history_items">%d items</string>
+    <string name="clear_search_history">Clear Search History</string>
+    <string name="clear_search_history_description">Remove all search queries</string>
+    <string name="clear_search_history_dialog_title">Clear Search History?</string>
+    <string name="clear_search_history_dialog_message">This will remove all your search history.</string>
+
+    <!-- Clear All Data -->
+    <string name="clear_all_data">Clear All Data</string>
+    <string name="clear_all_data_description">Reset all preferences and clear cache</string>
+    <string name="clear_all_data_dialog_title">Clear All Data?</string>
+    <string name="clear_all_data_dialog_message">This will reset all settings, clear your cache, and remove your search history. Your favorites will be preserved.</string>
+
+    <!-- About Settings -->
+    <string name="app_version">App Version</string>
+    <string name="build_number">Build Number</string>
+    <string name="app_full_title">Game of Thrones Character Encyclopedia</string>
+    <string name="app_description">Built with Jetpack Compose and Material 3</string>
+
+    <!-- Preview/Test Content Descriptions -->
+    <string name="character_preview_1">Character 1</string>
+    <string name="character_preview_2">Character 2</string>
+    <string name="character_preview_3">Character 3</string>
+
+    <!-- Symbols/Emojis -->
+    <string name="crown_emoji">👑</string>
+    <string name="warning_emoji">⚠</string>
+</resources>

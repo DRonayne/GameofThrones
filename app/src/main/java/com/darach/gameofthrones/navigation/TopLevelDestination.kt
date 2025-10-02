@@ -1,5 +1,6 @@
 package com.darach.gameofthrones.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.GridView
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.darach.gameofthrones.R
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -27,25 +29,25 @@ object SettingsRoute
 enum class TopLevelDestination(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val label: String,
-    val contentDescription: String
+    @StringRes val labelRes: Int,
+    @StringRes val contentDescriptionRes: Int
 ) {
     CHARACTERS(
         selectedIcon = Icons.Filled.GridView,
         unselectedIcon = Icons.Outlined.GridView,
-        label = "Characters",
-        contentDescription = "Browse characters"
+        labelRes = R.string.nav_characters,
+        contentDescriptionRes = R.string.nav_characters_description
     ),
     FAVORITES(
         selectedIcon = Icons.Filled.Favorite,
         unselectedIcon = Icons.Outlined.FavoriteBorder,
-        label = "Favorites",
-        contentDescription = "View favorite characters"
+        labelRes = R.string.nav_favorites,
+        contentDescriptionRes = R.string.nav_favorites_description
     ),
     SETTINGS(
         selectedIcon = Icons.Filled.Settings,
         unselectedIcon = Icons.Outlined.Settings,
-        label = "Settings",
-        contentDescription = "App settings"
+        labelRes = R.string.nav_settings,
+        contentDescriptionRes = R.string.nav_settings_description
     )
 }

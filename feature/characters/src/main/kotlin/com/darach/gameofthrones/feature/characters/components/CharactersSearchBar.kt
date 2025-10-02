@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,11 +40,17 @@ fun CharactersSearchBar(
                 },
                 expanded = false,
                 onExpandedChange = {},
-                placeholder = { Text("Search characters") },
+                placeholder = {
+                    Text(
+                        stringResource(com.darach.gameofthrones.core.ui.R.string.search_placeholder)
+                    )
+                },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Search"
+                        contentDescription = stringResource(
+                            com.darach.gameofthrones.core.ui.R.string.search_content_description
+                        )
                     )
                 },
                 trailingIcon = {
@@ -51,7 +58,9 @@ fun CharactersSearchBar(
                         IconButton(onClick = callbacks.onClearSearch) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
-                                contentDescription = "Clear search"
+                                contentDescription = stringResource(
+                                    com.darach.gameofthrones.core.ui.R.string.clear_search
+                                )
                             )
                         }
                     }

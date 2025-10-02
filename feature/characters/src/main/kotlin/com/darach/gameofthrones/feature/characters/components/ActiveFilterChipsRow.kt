@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -45,62 +46,128 @@ fun ActiveFilterChipsRow(
 
 @Composable
 private fun ActiveFilterChips(filter: CharacterFilter, onFilterChange: (CharacterFilter) -> Unit) {
+    FavoritesFilterChip(filter, onFilterChange)
+    StatusFilterChip(filter, onFilterChange)
+    AppearancesFilterChip(filter, onFilterChange)
+    GenderFilterChip(filter, onFilterChange)
+    CultureFilterChip(filter, onFilterChange)
+    SeasonFilterChips(filter, onFilterChange)
+}
+
+@Composable
+private fun FavoritesFilterChip(
+    filter: CharacterFilter,
+    onFilterChange: (CharacterFilter) -> Unit
+) {
     if (filter.onlyFavorites) {
         DismissibleFilterChip(
-            label = "Favorites",
+            label = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_favorites),
             onDismiss = { onFilterChange(filter.copy(onlyFavorites = false)) },
-            contentDescription = "Remove favorites filter",
+            contentDescription = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.remove_favorites_filter
+            ),
             icon = Icons.Default.Favorite
         )
     }
+}
 
+@Composable
+private fun StatusFilterChip(filter: CharacterFilter, onFilterChange: (CharacterFilter) -> Unit) {
     filter.isDead?.let { isDead ->
         DismissibleFilterChip(
-            label = if (isDead) "Deceased" else "Alive",
+            label = if (isDead) {
+                stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.filter_deceased
+                )
+            } else {
+                stringResource(com.darach.gameofthrones.core.ui.R.string.filter_alive)
+            },
             onDismiss = { onFilterChange(filter.copy(isDead = null)) },
-            contentDescription = "Remove status filter"
+            contentDescription = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.remove_filter,
+                stringResource(com.darach.gameofthrones.core.ui.R.string.filter_status)
+            )
         )
     }
+}
 
+@Composable
+private fun AppearancesFilterChip(
+    filter: CharacterFilter,
+    onFilterChange: (CharacterFilter) -> Unit
+) {
     if (filter.hasAppearances == true) {
         DismissibleFilterChip(
-            label = "TV Appearances",
+            label = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_tv_appearances),
             onDismiss = { onFilterChange(filter.copy(hasAppearances = null)) },
-            contentDescription = "Remove TV appearances filter"
+            contentDescription = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.remove_filter,
+                stringResource(com.darach.gameofthrones.core.ui.R.string.filter_tv_appearances)
+            )
         )
     }
+}
 
+@Composable
+private fun GenderFilterChip(filter: CharacterFilter, onFilterChange: (CharacterFilter) -> Unit) {
     filter.gender?.let { gender ->
         DismissibleFilterChip(
             label = gender,
             onDismiss = { onFilterChange(filter.copy(gender = null)) },
-            contentDescription = "Remove gender filter"
+            contentDescription = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.remove_filter,
+                stringResource(com.darach.gameofthrones.core.ui.R.string.filter_gender)
+            )
         )
     }
+}
 
+@Composable
+private fun CultureFilterChip(filter: CharacterFilter, onFilterChange: (CharacterFilter) -> Unit) {
     filter.culture?.let { culture ->
         DismissibleFilterChip(
             label = culture,
             onDismiss = { onFilterChange(filter.copy(culture = null)) },
-            contentDescription = "Remove culture filter"
+            contentDescription = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.remove_filter,
+                stringResource(com.darach.gameofthrones.core.ui.R.string.filter_culture)
+            )
         )
     }
+}
 
+@Composable
+private fun SeasonFilterChips(filter: CharacterFilter, onFilterChange: (CharacterFilter) -> Unit) {
     filter.seasons.forEach { season ->
         DismissibleFilterChip(
-            label = "Season $season",
+            label = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.filter_season_label,
+                season
+            ),
             onDismiss = { onFilterChange(filter.copy(seasons = filter.seasons - season)) },
-            contentDescription = "Remove season $season filter"
+            contentDescription = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.remove_filter,
+                stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.filter_season_label,
+                    season
+                )
+            )
         )
     }
 }
 
 @Composable
 private fun AllFiltersChip(onOpenAllFilters: () -> Unit) {
+    val filterOptionsDescription = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_options)
+
     FilterChip(
         selected = false,
         onClick = onOpenAllFilters,
-        label = { androidx.compose.material3.Text("All Filters") },
+        label = {
+            androidx.compose.material3.Text(
+                stringResource(com.darach.gameofthrones.core.ui.R.string.filter_all)
+            )
+        },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.FilterList,
@@ -108,7 +175,7 @@ private fun AllFiltersChip(onOpenAllFilters: () -> Unit) {
             )
         },
         modifier = Modifier.semantics {
-            contentDescription = "Open all filters"
+            contentDescription = filterOptionsDescription
         }
     )
 }

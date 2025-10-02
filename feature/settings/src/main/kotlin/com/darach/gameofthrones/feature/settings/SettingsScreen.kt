@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -96,59 +98,101 @@ internal fun SettingsContent(
         modifier = modifier,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .testTag(TestTags.SETTINGS_CONTENT)
-                .verticalScroll(rememberScrollState())
-                .padding(paddingValues)
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Settings",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
-            )
+        SettingsContentColumn(
+            state = state,
+            onIntent = onIntent,
+            paddingValues = paddingValues
+        )
+    }
+}
 
-            Spacer(modifier = Modifier.height(24.dp))
+@Composable
+private fun SettingsContentColumn(
+    state: SettingsState,
+    onIntent: (SettingsIntent) -> Unit,
+    paddingValues: PaddingValues
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag(TestTags.SETTINGS_CONTENT)
+            .verticalScroll(rememberScrollState())
+            .padding(paddingValues)
+            .padding(16.dp)
+    ) {
+        SettingsTitle()
+        Spacer(modifier = Modifier.height(24.dp))
+        ThemeSettingsSection(state, onIntent)
+        Spacer(modifier = Modifier.height(16.dp))
+        CacheSettingsSection(state, onIntent)
+        Spacer(modifier = Modifier.height(16.dp))
+        DataSyncSettingsSection(state, onIntent)
+        Spacer(modifier = Modifier.height(16.dp))
+        AboutSettingsSection(state)
+    }
+}
 
-            SettingsSection(title = "Theme", icon = Icons.Default.Palette) {
-                ThemeSettingsContent(
-                    themeMode = state.themeMode,
-                    useDynamicColors = state.useDynamicColors,
-                    onThemeModeChange = { onIntent(SettingsIntent.UpdateThemeMode(it)) },
-                    onDynamicColorsChange = { onIntent(SettingsIntent.UpdateDynamicColors(it)) }
-                )
-            }
+@Composable
+private fun SettingsTitle() {
+    Text(
+        text = stringResource(com.darach.gameofthrones.core.ui.R.string.settings),
+        style = MaterialTheme.typography.headlineLarge,
+        fontWeight = FontWeight.Bold
+    )
+}
 
-            Spacer(modifier = Modifier.height(16.dp))
+@Composable
+private fun ThemeSettingsSection(state: SettingsState, onIntent: (SettingsIntent) -> Unit) {
+    SettingsSection(
+        title = stringResource(com.darach.gameofthrones.core.ui.R.string.theme_section),
+        icon = Icons.Default.Palette
+    ) {
+        ThemeSettingsContent(
+            themeMode = state.themeMode,
+            useDynamicColors = state.useDynamicColors,
+            onThemeModeChange = { onIntent(SettingsIntent.UpdateThemeMode(it)) },
+            onDynamicColorsChange = { onIntent(SettingsIntent.UpdateDynamicColors(it)) }
+        )
+    }
+}
 
-            SettingsSection(title = "Cache Management", icon = Icons.Default.Storage) {
-                CacheSettingsContent(
-                    cacheExpirationHours = state.cacheExpirationHours,
-                    onClearCache = { onIntent(SettingsIntent.ClearCache) },
-                    isLoading = state.isLoading
-                )
-            }
+@Composable
+private fun CacheSettingsSection(state: SettingsState, onIntent: (SettingsIntent) -> Unit) {
+    SettingsSection(
+        title = stringResource(com.darach.gameofthrones.core.ui.R.string.cache_management),
+        icon = Icons.Default.Storage
+    ) {
+        CacheSettingsContent(
+            cacheExpirationHours = state.cacheExpirationHours,
+            onClearCache = { onIntent(SettingsIntent.ClearCache) },
+            isLoading = state.isLoading
+        )
+    }
+}
 
-            Spacer(modifier = Modifier.height(16.dp))
+@Composable
+private fun DataSyncSettingsSection(state: SettingsState, onIntent: (SettingsIntent) -> Unit) {
+    SettingsSection(
+        title = stringResource(com.darach.gameofthrones.core.ui.R.string.data_sync),
+        icon = Icons.Default.Sync
+    ) {
+        DataSyncContent(
+            searchHistorySize = state.searchHistorySize,
+            onSyncData = { onIntent(SettingsIntent.SyncData) },
+            onClearSearchHistory = { onIntent(SettingsIntent.ClearSearchHistory) },
+            onClearAllData = { onIntent(SettingsIntent.ClearAllData) },
+            isSyncing = state.isSyncing
+        )
+    }
+}
 
-            SettingsSection(title = "Data Sync", icon = Icons.Default.Sync) {
-                DataSyncContent(
-                    searchHistorySize = state.searchHistorySize,
-                    onSyncData = { onIntent(SettingsIntent.SyncData) },
-                    onClearSearchHistory = { onIntent(SettingsIntent.ClearSearchHistory) },
-                    onClearAllData = { onIntent(SettingsIntent.ClearAllData) },
-                    isSyncing = state.isSyncing
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsSection(title = "About", icon = Icons.Default.Info) {
-                AboutContent(appVersion = state.appVersion, buildNumber = state.buildNumber)
-            }
-        }
+@Composable
+private fun AboutSettingsSection(state: SettingsState) {
+    SettingsSection(
+        title = stringResource(com.darach.gameofthrones.core.ui.R.string.about),
+        icon = Icons.Default.Info
+    ) {
+        AboutContent(appVersion = state.appVersion, buildNumber = state.buildNumber)
     }
 }
 
@@ -199,30 +243,36 @@ private fun ThemeSettingsContent(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Theme Mode",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.theme_mode),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Medium
         )
 
         ThemeModeOption(
-            title = "Light",
-            subtitle = "Always use light theme",
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.theme_light),
+            subtitle = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.theme_light_description
+            ),
             icon = Icons.Default.Brightness7,
             selected = themeMode == ThemeMode.LIGHT,
             onClick = { onThemeModeChange(ThemeMode.LIGHT) }
         )
 
         ThemeModeOption(
-            title = "Dark",
-            subtitle = "Always use dark theme",
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.theme_dark),
+            subtitle = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.theme_dark_description
+            ),
             icon = Icons.Default.Brightness4,
             selected = themeMode == ThemeMode.DARK,
             onClick = { onThemeModeChange(ThemeMode.DARK) }
         )
 
         ThemeModeOption(
-            title = "System Default",
-            subtitle = "Follow system theme",
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.theme_system),
+            subtitle = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.theme_system_description
+            ),
             icon = Icons.Default.BrightnessAuto,
             selected = themeMode == ThemeMode.SYSTEM,
             onClick = { onThemeModeChange(ThemeMode.SYSTEM) }
@@ -234,14 +284,18 @@ private fun ThemeSettingsContent(
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             SettingsToggle(
-                title = "Dynamic Colors",
-                subtitle = "Use Material You dynamic colors",
+                title = stringResource(com.darach.gameofthrones.core.ui.R.string.dynamic_colors),
+                subtitle = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.dynamic_colors_description
+                ),
                 checked = useDynamicColors,
                 onCheckedChange = onDynamicColorsChange
             )
         } else {
             Text(
-                text = "Dynamic colors require Android 12+",
+                text = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.dynamic_colors_info
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -311,8 +365,11 @@ private fun CacheSettingsContent(
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         SettingsItem(
-            title = "Cache Expiration",
-            subtitle = "$cacheExpirationHours hours",
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.cache_expiration),
+            subtitle = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.cache_expiration_hours,
+                cacheExpirationHours
+            ),
             icon = Icons.Default.Refresh
         )
 
@@ -322,8 +379,10 @@ private fun CacheSettingsContent(
 
         SettingsButtonContent(
             config = SettingsButtonConfig(
-                title = "Clear Cache",
-                subtitle = "Remove all cached data",
+                title = stringResource(com.darach.gameofthrones.core.ui.R.string.clear_cache),
+                subtitle = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.clear_cache_description
+                ),
                 icon = Icons.Default.Clear,
                 onClick = { showClearDialog = true },
                 enabled = !isLoading
@@ -333,9 +392,12 @@ private fun CacheSettingsContent(
 
     if (showClearDialog) {
         ConfirmationDialog(
-            title = "Clear Cache?",
-            message = "This will remove all cached character data. " +
-                "The data will be re-downloaded when needed.",
+            title = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.clear_cache_dialog_title
+            ),
+            message = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.clear_cache_dialog_message
+            ),
             onConfirm = {
                 onClearCache()
                 showClearDialog = false
@@ -387,8 +449,10 @@ private fun DataSyncActions(
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         SettingsButtonContent(
             config = SettingsButtonConfig(
-                title = "Sync Data",
-                subtitle = "Refresh all data from server",
+                title = stringResource(com.darach.gameofthrones.core.ui.R.string.sync_data),
+                subtitle = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.sync_data_description
+                ),
                 icon = Icons.Default.Sync,
                 onClick = onSyncData,
                 enabled = !isSyncing,
@@ -398,15 +462,22 @@ private fun DataSyncActions(
         )
 
         SettingsItem(
-            title = "Search History",
-            subtitle = "$searchHistorySize items",
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.search_history),
+            subtitle = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.search_history_items,
+                searchHistorySize
+            ),
             icon = Icons.Default.Storage
         )
 
         SettingsButtonContent(
             config = SettingsButtonConfig(
-                title = "Clear Search History",
-                subtitle = "Remove all search queries",
+                title = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.clear_search_history
+                ),
+                subtitle = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.clear_search_history_description
+                ),
                 icon = Icons.Default.Clear,
                 onClick = onShowClearHistoryDialog
             )
@@ -416,8 +487,10 @@ private fun DataSyncActions(
 
         SettingsButtonContent(
             config = SettingsButtonConfig(
-                title = "Clear All Data",
-                subtitle = "Reset all preferences and clear cache",
+                title = stringResource(com.darach.gameofthrones.core.ui.R.string.clear_all_data),
+                subtitle = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.clear_all_data_description
+                ),
                 icon = Icons.Default.Delete,
                 onClick = onShowClearAllDialog,
                 destructive = true,
@@ -465,25 +538,25 @@ private fun AboutContent(appVersion: String, buildNumber: String) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         SettingsItem(
-            title = "App Version",
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.app_version),
             subtitle = appVersion,
             icon = Icons.Default.Info
         )
 
         SettingsItem(
-            title = "Build Number",
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.build_number),
             subtitle = buildNumber,
             icon = Icons.Default.Info
         )
 
         Text(
-            text = "Game of Thrones Character Encyclopedia",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.app_full_title),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Text(
-            text = "Built with Jetpack Compose and Material 3",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.app_description),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

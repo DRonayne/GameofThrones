@@ -52,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -138,9 +139,15 @@ private fun FavoritesTopBar(
         title = {
             Text(
                 text = if (state.selectedIds.isEmpty()) {
-                    "Favorites (${state.favorites.size})"
+                    stringResource(
+                        com.darach.gameofthrones.core.ui.R.string.favorites_title,
+                        state.favorites.size
+                    )
                 } else {
-                    "${state.selectedIds.size} selected"
+                    stringResource(
+                        com.darach.gameofthrones.core.ui.R.string.favorites_selected,
+                        state.selectedIds.size
+                    )
                 }
             )
         },
@@ -149,7 +156,9 @@ private fun FavoritesTopBar(
                 IconButton(onClick = callbacks.onCancelClick) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Cancel selection"
+                        contentDescription = stringResource(
+                            com.darach.gameofthrones.core.ui.R.string.cancel_selection
+                        )
                     )
                 }
             }
@@ -164,15 +173,27 @@ private fun FavoritesTopBar(
 
 @Composable
 private fun TopBarActions(state: FavoritesState, callbacks: FavoritesTopBarCallbacks) {
+    val compareDescription = if (state.selectedIds.size == 2) {
+        stringResource(
+            com.darach.gameofthrones.core.ui.R.string.compare_selected,
+            state.selectedIds.size
+        )
+    } else {
+        stringResource(
+            com.darach.gameofthrones.core.ui.R.string.select_2_to_compare,
+            state.selectedIds.size
+        )
+    }
+    val deleteDescription = stringResource(
+        com.darach.gameofthrones.core.ui.R.string.remove_selected_favorites,
+        state.selectedIds.size
+    )
+
     Row {
         IconButton(
             onClick = callbacks.onCompareClick,
             modifier = Modifier.semantics {
-                contentDescription = if (state.selectedIds.size == 2) {
-                    "Compare ${state.selectedIds.size} selected characters"
-                } else {
-                    "Select 2 characters to compare, ${state.selectedIds.size} selected"
-                }
+                contentDescription = compareDescription
             }
         ) {
             Icon(
@@ -188,7 +209,7 @@ private fun TopBarActions(state: FavoritesState, callbacks: FavoritesTopBarCallb
         IconButton(
             onClick = callbacks.onDeleteClick,
             modifier = Modifier.semantics {
-                contentDescription = "Remove ${state.selectedIds.size} selected favorites"
+                contentDescription = deleteDescription
             }
         ) {
             Icon(
@@ -209,7 +230,9 @@ private fun SelectionOverflowMenu(state: FavoritesState, callbacks: FavoritesTop
         IconButton(onClick = { showMenu = true }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = "More options"
+                contentDescription = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.more_options
+                )
             )
         }
 
@@ -219,7 +242,9 @@ private fun SelectionOverflowMenu(state: FavoritesState, callbacks: FavoritesTop
         ) {
             if (allSelected) {
                 DropdownMenuItem(
-                    text = { Text("Deselect All") },
+                    text = {
+                        Text(stringResource(com.darach.gameofthrones.core.ui.R.string.deselect_all))
+                    },
                     onClick = {
                         callbacks.onDeselectAllClick()
                         showMenu = false
@@ -227,7 +252,9 @@ private fun SelectionOverflowMenu(state: FavoritesState, callbacks: FavoritesTop
                 )
             } else {
                 DropdownMenuItem(
-                    text = { Text("Select All") },
+                    text = {
+                        Text(stringResource(com.darach.gameofthrones.core.ui.R.string.select_all))
+                    },
                     onClick = {
                         callbacks.onSelectAllClick()
                         showMenu = false
@@ -247,6 +274,10 @@ internal fun FavoritesContent(
     modifier: Modifier = Modifier,
     sharedTransitionData: SharedTransitionData? = null
 ) {
+    val loadingDescription = stringResource(
+        com.darach.gameofthrones.core.ui.R.string.loading_favorites
+    )
+
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -256,7 +287,7 @@ internal fun FavoritesContent(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .semantics {
-                            contentDescription = "Loading favorites"
+                            contentDescription = loadingDescription
                         }
                 )
             }
@@ -294,13 +325,17 @@ private fun FavoritesGrid(
 ) {
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
     val columns = calculateGridColumns(windowAdaptiveInfo)
+    val gridDescription = stringResource(
+        com.darach.gameofthrones.core.ui.R.string.favorites_count,
+        favorites.size
+    )
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
         modifier = modifier
             .fillMaxSize()
             .semantics {
-                contentDescription = "${favorites.size} favorites"
+                contentDescription = gridDescription
             },
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -377,13 +412,15 @@ private fun EmptyFavoritesState(
     modifier: Modifier = Modifier
 ) {
     val (scale, alpha) = rememberHeartPulseAnimation()
+    val emptyStateDescription = stringResource(
+        com.darach.gameofthrones.core.ui.R.string.no_favorites_description_long
+    )
 
     Column(
         modifier = modifier
             .padding(32.dp)
             .semantics {
-                contentDescription =
-                    "No favorites yet. Discover and save your favorite Game of Thrones characters."
+                contentDescription = emptyStateDescription
             },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -402,14 +439,16 @@ private fun EmptyFavoritesState(
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "No Favorites Yet",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.no_favorites_yet),
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Discover and save your favorite Game of Thrones characters",
+            text = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.no_favorites_description
+            ),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -422,7 +461,7 @@ private fun EmptyFavoritesState(
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.size(8.dp))
-            Text("Browse Characters")
+            Text(stringResource(com.darach.gameofthrones.core.ui.R.string.browse_characters))
         }
     }
 }
@@ -439,7 +478,7 @@ private fun ErrorState(message: String, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Error",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.error),
             style = MaterialTheme.typography.headlineSmall
         )
         Spacer(modifier = Modifier.height(8.dp))

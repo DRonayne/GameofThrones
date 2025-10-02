@@ -78,6 +78,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -145,16 +146,21 @@ private fun FavoriteSnackbarEffect(
     val scope = rememberCoroutineScope()
     var previousFavoriteState by remember { mutableStateOf<Boolean?>(null) }
 
+    val addedMessage = stringResource(com.darach.gameofthrones.core.ui.R.string.added_to_favorites)
+    val removedMessage =
+        stringResource(com.darach.gameofthrones.core.ui.R.string.removed_from_favorites)
+    val undoLabel = stringResource(com.darach.gameofthrones.core.ui.R.string.undo)
+
     LaunchedEffect(isFavorite) {
         if (previousFavoriteState != null && previousFavoriteState != isFavorite &&
             isFavorite != null
         ) {
-            val message = if (isFavorite) "Added to favorites" else "Removed from favorites"
+            val message = if (isFavorite) addedMessage else removedMessage
 
             scope.launch {
                 val result = snackbarHostState.showSnackbar(
                     message = message,
-                    actionLabel = "Undo",
+                    actionLabel = undoLabel,
                     duration = SnackbarDuration.Short
                 )
                 if (result == SnackbarResult.ActionPerformed) {
@@ -273,7 +279,9 @@ private fun BackNavigationIcon(onBackClick: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Navigate back"
+            contentDescription = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.navigate_back
+            )
         )
     }
 }
@@ -299,9 +307,9 @@ private fun FavoriteActionButton(isFavorite: Boolean, onFavoriteClick: () -> Uni
                 Icons.Outlined.FavoriteBorder
             },
             contentDescription = if (isFavorite) {
-                "Remove from favorites"
+                stringResource(com.darach.gameofthrones.core.ui.R.string.remove_from_favorites)
             } else {
-                "Add to favorites"
+                stringResource(com.darach.gameofthrones.core.ui.R.string.add_to_favorites)
             },
             tint = if (isFavorite) {
                 MaterialTheme.colorScheme.error
@@ -343,6 +351,9 @@ private fun CharacterDetailTopBar(
 
 @Composable
 private fun LoadingContent(paddingValues: PaddingValues) {
+    val loadingDescription = stringResource(
+        com.darach.gameofthrones.core.ui.R.string.loading_character_details
+    )
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -356,11 +367,13 @@ private fun LoadingContent(paddingValues: PaddingValues) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(64.dp)
-                    .semantics { contentDescription = "Loading character details" },
+                    .semantics {
+                        contentDescription = loadingDescription
+                    },
                 strokeWidth = 6.dp
             )
             Text(
-                text = "Loading character...",
+                text = stringResource(com.darach.gameofthrones.core.ui.R.string.loading_character),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -405,7 +418,10 @@ private fun ErrorContent(error: String, onRetryClick: () -> Unit, paddingValues:
                 shape = RoundedCornerShape(12.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
             ) {
-                Text("Retry", fontWeight = FontWeight.SemiBold)
+                Text(
+                    stringResource(com.darach.gameofthrones.core.ui.R.string.retry),
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
     }
@@ -564,7 +580,9 @@ private fun HeroSection(character: Character, sharedTransitionData: SharedTransi
                         modifier = Modifier.shadow(4.dp, RoundedCornerShape(20.dp))
                     ) {
                         Text(
-                            text = "✝ Deceased",
+                            text = stringResource(
+                                com.darach.gameofthrones.core.ui.R.string.status_deceased_symbol
+                            ),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.error,
@@ -631,23 +649,39 @@ private fun BasicInfoSection(character: Character) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Basic Information",
+                text = stringResource(com.darach.gameofthrones.core.ui.R.string.basic_information),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
 
             if (character.gender.isNotBlank()) {
-                InfoRow(label = "Gender", value = character.gender, emoji = "⚧")
+                InfoRow(
+                    label = stringResource(com.darach.gameofthrones.core.ui.R.string.label_gender),
+                    value = character.gender,
+                    emoji = "⚧"
+                )
             }
             if (character.culture.isNotBlank()) {
-                InfoRow(label = "Culture", value = character.culture, emoji = "🏰")
+                InfoRow(
+                    label = stringResource(com.darach.gameofthrones.core.ui.R.string.label_culture),
+                    value = character.culture,
+                    emoji = "🏰"
+                )
             }
             if (character.born.isNotBlank()) {
-                InfoRow(label = "Born", value = character.born, emoji = "🎂")
+                InfoRow(
+                    label = stringResource(com.darach.gameofthrones.core.ui.R.string.label_born),
+                    value = character.born,
+                    emoji = "🎂"
+                )
             }
             if (character.died.isNotBlank()) {
-                InfoRow(label = "Died", value = character.died, emoji = "✝")
+                InfoRow(
+                    label = stringResource(com.darach.gameofthrones.core.ui.R.string.label_died),
+                    value = character.died,
+                    emoji = "✝"
+                )
             }
         }
     }
@@ -730,7 +764,13 @@ private fun ExpandableHeader(
         ) {
             Icon(
                 imageVector = Icons.Default.ExpandMore,
-                contentDescription = if (isExpanded) "Collapse" else "Expand",
+                contentDescription = if (isExpanded) {
+                    stringResource(
+                        com.darach.gameofthrones.core.ui.R.string.collapse
+                    )
+                } else {
+                    stringResource(com.darach.gameofthrones.core.ui.R.string.expand)
+                },
                 modifier = Modifier.rotate(rotation),
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -753,7 +793,10 @@ private fun TitlesSection(titles: List<String>) {
                 .padding(20.dp)
         ) {
             ExpandableHeader(
-                title = "Titles (${titles.size})",
+                title = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.titles_section,
+                    titles.size
+                ),
                 isExpanded = isExpanded,
                 onToggle = { isExpanded = !isExpanded }
             )
@@ -811,7 +854,7 @@ private fun AliasesSection(aliases: List<String>) {
                 .padding(20.dp)
         ) {
             Text(
-                text = "Also Known As",
+                text = stringResource(com.darach.gameofthrones.core.ui.R.string.also_known_as),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -859,7 +902,9 @@ private fun TVSeriesSection(seasons: List<Int>) {
                 .padding(20.dp)
         ) {
             Text(
-                text = "TV Series Appearances",
+                text = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.tv_series_appearances
+                ),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -876,7 +921,10 @@ private fun TVSeriesSection(seasons: List<Int>) {
                         shadowElevation = 3.dp
                     ) {
                         Text(
-                            text = "Season ${RomanNumeralConverter.toRomanNumeral(season)}",
+                            text = stringResource(
+                                com.darach.gameofthrones.core.ui.R.string.season_roman,
+                                RomanNumeralConverter.toRomanNumeral(season)
+                            ),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -898,7 +946,7 @@ private fun ActorsSection(actors: List<String>, actorImageUrls: Map<String, Stri
                 .padding(20.dp)
         ) {
             Text(
-                text = "Played By",
+                text = stringResource(com.darach.gameofthrones.core.ui.R.string.played_by),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary

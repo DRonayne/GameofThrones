@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -242,13 +243,18 @@ private fun GridCardSeasonBadges(seasons: List<Int>, modifier: Modifier = Modifi
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         seasons.sorted().take(8).forEach { season ->
+            val seasonDescription = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.filter_season_label,
+                season
+            )
+
             Surface(
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                 modifier = Modifier
                     .padding(horizontal = 2.dp)
                     .semantics {
-                        contentDescription = "Season $season"
+                        contentDescription = seasonDescription
                     }
             ) {
                 Text(
@@ -296,11 +302,13 @@ private fun GridCardFavoriteIcon(isFavorite: Boolean, modifier: Modifier = Modif
             } else {
                 Icons.Outlined.FavoriteBorder
             },
-            contentDescription = if (isFavorite) {
-                "Remove from favorites"
-            } else {
-                "Add to favorites"
-            },
+            contentDescription = stringResource(
+                if (isFavorite) {
+                    com.darach.gameofthrones.core.ui.R.string.remove_from_favorites
+                } else {
+                    com.darach.gameofthrones.core.ui.R.string.add_to_favorites
+                }
+            ),
             tint = if (isFavorite) {
                 MaterialTheme.colorScheme.error
             } else {
@@ -332,7 +340,9 @@ private fun GridCardDeathBadge(deathDate: String, modifier: Modifier = Modifier)
                 modifier = Modifier.size(12.dp)
             )
             Text(
-                text = deathDate.ifBlank { "Deceased" },
+                text = deathDate.ifBlank {
+                    stringResource(com.darach.gameofthrones.core.ui.R.string.status_deceased)
+                },
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
@@ -348,7 +358,7 @@ private fun GridCardAliveBadge(modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         Text(
-            text = "Alive",
+            text = stringResource(com.darach.gameofthrones.core.ui.R.string.status_alive),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
@@ -544,11 +554,13 @@ private fun FavoriteButton(
             } else {
                 Icons.Outlined.FavoriteBorder
             },
-            contentDescription = if (character.isFavorite) {
-                "Remove from favorites"
-            } else {
-                "Add to favorites"
-            },
+            contentDescription = stringResource(
+                if (character.isFavorite) {
+                    com.darach.gameofthrones.core.ui.R.string.remove_from_favorites
+                } else {
+                    com.darach.gameofthrones.core.ui.R.string.add_to_favorites
+                }
+            ),
             tint = if (character.isFavorite) {
                 MaterialTheme.colorScheme.error
             } else {
@@ -594,11 +606,16 @@ private fun CharacterCardAlias(alias: String?, modifier: Modifier = Modifier) {
 
 @Composable
 private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
+    val seasonDescription = stringResource(
+        com.darach.gameofthrones.core.ui.R.string.filter_season_label,
+        season
+    )
+
     Surface(
         shape = AssistChipDefaults.shape,
         color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.semantics {
-            contentDescription = "Season $season"
+            contentDescription = seasonDescription
         }
     ) {
         Text(
@@ -635,7 +652,9 @@ private fun DeathIndicator(modifier: Modifier = Modifier) {
 
     Icon(
         imageVector = Icons.Default.Close,
-        contentDescription = "Deceased",
+        contentDescription = stringResource(
+            com.darach.gameofthrones.core.ui.R.string.status_deceased
+        ),
         tint = MaterialTheme.colorScheme.error,
         modifier = modifier.graphicsLayer(alpha = alpha.value)
     )

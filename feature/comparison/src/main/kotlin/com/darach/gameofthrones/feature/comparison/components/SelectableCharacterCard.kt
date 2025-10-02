@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
@@ -84,7 +85,9 @@ fun SelectableCharacterCard(
             if (isSelected) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Selected",
+                    contentDescription = stringResource(
+                        com.darach.gameofthrones.core.ui.R.string.selected
+                    ),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -158,7 +161,10 @@ private fun CharacterCardAlias(alias: String?, modifier: Modifier = Modifier) {
         Column(modifier = modifier) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Also known as: $alias",
+                text = stringResource(
+                    com.darach.gameofthrones.core.ui.R.string.also_known_as_alias,
+                    alias
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -186,7 +192,9 @@ private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
 private fun DeathIndicator(modifier: Modifier = Modifier) {
     androidx.compose.material3.Icon(
         imageVector = androidx.compose.material.icons.Icons.Default.Close,
-        contentDescription = "Deceased",
+        contentDescription = stringResource(
+            com.darach.gameofthrones.core.ui.R.string.status_deceased
+        ),
         tint = MaterialTheme.colorScheme.error,
         modifier = modifier
     )

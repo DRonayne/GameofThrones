@@ -18,6 +18,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -103,6 +104,9 @@ private fun GoTBottomNavigationBar(
     ) {
         destinations.forEach { destination ->
             val selected = currentDestination?.hasRoute(destination.toRoute()::class) == true
+            val contentDescriptionText = stringResource(destination.contentDescriptionRes)
+            val labelText = stringResource(destination.labelRes)
+
             NavigationBarItem(
                 selected = selected,
                 onClick = { onNavigateToDestination(destination) },
@@ -113,10 +117,10 @@ private fun GoTBottomNavigationBar(
                         } else {
                             destination.unselectedIcon
                         },
-                        contentDescription = destination.contentDescription
+                        contentDescription = contentDescriptionText
                     )
                 },
-                label = { Text(destination.label) }
+                label = { Text(labelText) }
             )
         }
     }
@@ -139,6 +143,9 @@ private fun GoTNavigationRail(
     ) {
         destinations.forEach { destination ->
             val selected = currentDestination?.hasRoute(destination.toRoute()::class) == true
+            val contentDescriptionText = stringResource(destination.contentDescriptionRes)
+            val labelText = stringResource(destination.labelRes)
+
             NavigationRailItem(
                 selected = selected,
                 onClick = { onNavigateToDestination(destination) },
@@ -149,10 +156,10 @@ private fun GoTNavigationRail(
                         } else {
                             destination.unselectedIcon
                         },
-                        contentDescription = destination.contentDescription
+                        contentDescription = contentDescriptionText
                     )
                 },
-                label = { Text(destination.label) }
+                label = { Text(labelText) }
             )
         }
         Spacer(modifier = Modifier.weight(0.7f))

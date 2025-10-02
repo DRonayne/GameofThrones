@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -51,6 +52,8 @@ private fun SortFilterChip(
     performHaptic: () -> Unit,
     onExpand: () -> Unit
 ) {
+    val sortOptionsDescription = stringResource(com.darach.gameofthrones.core.ui.R.string.sort_options)
+
     FilterChip(
         selected = currentSortOption != SortOption.NAME_ASC,
         onClick = {
@@ -59,11 +62,17 @@ private fun SortFilterChip(
         },
         label = {
             AnimatedContent(
-                targetState = getSortOptionShortLabel(currentSortOption),
+                targetState = currentSortOption,
                 transitionSpec = { fadeIn() togetherWith fadeOut() },
                 label = "Sort label animation"
-            ) { label ->
-                Text("Sort: $label", style = MaterialTheme.typography.labelMedium)
+            ) { sortOption ->
+                Text(
+                    stringResource(
+                        com.darach.gameofthrones.core.ui.R.string.sort_label,
+                        getSortOptionShortLabel(sortOption)
+                    ),
+                    style = MaterialTheme.typography.labelMedium
+                )
             }
         },
         leadingIcon = {
@@ -78,7 +87,7 @@ private fun SortFilterChip(
             )
         },
         modifier = Modifier.semantics {
-            contentDescription = "Sort options"
+            contentDescription = sortOptionsDescription
         }
     )
 }
@@ -110,28 +119,62 @@ private fun SortOptionsDropdown(
     }
 }
 
+@Composable
 private fun getSortOptionLabel(sortOption: SortOption): String = when (sortOption) {
-    SortOption.NAME_ASC -> "Name (A-Z)"
-    SortOption.NAME_DESC -> "Name (Z-A)"
-    SortOption.CULTURE_ASC -> "Culture (A-Z)"
-    SortOption.CULTURE_DESC -> "Culture (Z-A)"
-    SortOption.DEATH_DATE_ASC -> "Death Date (Oldest First)"
-    SortOption.DEATH_DATE_DESC -> "Death Date (Newest First)"
-    SortOption.SEASONS_COUNT_ASC -> "Seasons Count (Fewest First)"
-    SortOption.SEASONS_COUNT_DESC -> "Seasons Count (Most First)"
-    SortOption.FAVORITE_FIRST -> "Favorites First"
+    SortOption.NAME_ASC -> stringResource(com.darach.gameofthrones.core.ui.R.string.sort_name_asc)
+    SortOption.NAME_DESC -> stringResource(com.darach.gameofthrones.core.ui.R.string.sort_name_desc)
+    SortOption.CULTURE_ASC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_culture_asc
+    )
+    SortOption.CULTURE_DESC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_culture_desc
+    )
+    SortOption.DEATH_DATE_ASC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_death_oldest
+    )
+    SortOption.DEATH_DATE_DESC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_death_newest
+    )
+    SortOption.SEASONS_COUNT_ASC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_seasons_fewest
+    )
+    SortOption.SEASONS_COUNT_DESC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_seasons_most
+    )
+    SortOption.FAVORITE_FIRST -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_favorites_first
+    )
 }
 
+@Composable
 private fun getSortOptionShortLabel(sortOption: SortOption): String = when (sortOption) {
-    SortOption.NAME_ASC -> "Name A-Z"
-    SortOption.NAME_DESC -> "Name Z-A"
-    SortOption.CULTURE_ASC -> "Culture A-Z"
-    SortOption.CULTURE_DESC -> "Culture Z-A"
-    SortOption.DEATH_DATE_ASC -> "Death ↑"
-    SortOption.DEATH_DATE_DESC -> "Death ↓"
-    SortOption.SEASONS_COUNT_ASC -> "Seasons ↑"
-    SortOption.SEASONS_COUNT_DESC -> "Seasons ↓"
-    SortOption.FAVORITE_FIRST -> "Favorites"
+    SortOption.NAME_ASC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_name_asc_short
+    )
+    SortOption.NAME_DESC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_name_desc_short
+    )
+    SortOption.CULTURE_ASC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_culture_asc_short
+    )
+    SortOption.CULTURE_DESC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_culture_desc_short
+    )
+    SortOption.DEATH_DATE_ASC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_death_oldest_short
+    )
+    SortOption.DEATH_DATE_DESC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_death_newest_short
+    )
+    SortOption.SEASONS_COUNT_ASC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_seasons_fewest_short
+    )
+    SortOption.SEASONS_COUNT_DESC -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_seasons_most_short
+    )
+    SortOption.FAVORITE_FIRST -> stringResource(
+        com.darach.gameofthrones.core.ui.R.string.sort_favorites_first_short
+    )
 }
 
 // Previews

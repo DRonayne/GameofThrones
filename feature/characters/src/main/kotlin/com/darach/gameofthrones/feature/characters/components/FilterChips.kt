@@ -26,6 +26,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
@@ -49,20 +50,26 @@ fun FilterChips(
         Spacer(modifier = Modifier.height(8.dp))
 
         // Status filters
-        FilterSection(title = "Status") {
+        FilterSection(
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_status)
+        ) {
             FavoritesFilterChip(currentFilter = currentFilter, onFilterChange = onFilterChange)
             DeathFilterChips(currentFilter = currentFilter, onFilterChange = onFilterChange)
             AppearancesFilterChip(currentFilter = currentFilter, onFilterChange = onFilterChange)
         }
 
         // Gender filters
-        FilterSection(title = "Gender") {
+        FilterSection(
+            title = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_gender)
+        ) {
             GenderFilterChips(currentFilter = currentFilter, onFilterChange = onFilterChange)
         }
 
         // Culture filters
         if (availableCultures.isNotEmpty()) {
-            FilterSection(title = "Culture") {
+            FilterSection(
+                title = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_culture)
+            ) {
                 CultureFilterChips(
                     currentFilter = currentFilter,
                     onFilterChange = onFilterChange,
@@ -73,7 +80,9 @@ fun FilterChips(
 
         // Season filters
         if (availableSeasons.isNotEmpty()) {
-            FilterSection(title = "Seasons") {
+            FilterSection(
+                title = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_seasons)
+            ) {
                 SeasonFilterChips(
                     currentFilter = currentFilter,
                     onFilterChange = onFilterChange,
@@ -131,7 +140,7 @@ private fun FilterHeader(
             }
         ) {
             Text(
-                text = "Filters",
+                text = stringResource(com.darach.gameofthrones.core.ui.R.string.filters),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -142,7 +151,7 @@ private fun FilterHeader(
                 onClick = { onFilterChange(CharacterFilter()) }
             ) {
                 Text(
-                    text = "Clear all",
+                    text = stringResource(com.darach.gameofthrones.core.ui.R.string.clear_all),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -160,7 +169,7 @@ private fun FavoritesFilterChip(
         onClick = {
             onFilterChange(currentFilter.copy(onlyFavorites = !currentFilter.onlyFavorites))
         },
-        label = "Favorites"
+        label = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_favorites)
     )
 }
 
@@ -184,7 +193,7 @@ private fun DeathFilterChips(
                 )
             )
         },
-        label = "Deceased"
+        label = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_deceased)
     )
 
     SelectableFilterChip(
@@ -202,7 +211,7 @@ private fun DeathFilterChips(
                 )
             )
         },
-        label = "Alive"
+        label = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_alive)
     )
 }
 
@@ -226,7 +235,7 @@ private fun AppearancesFilterChip(
                 )
             )
         },
-        label = "TV Appearances"
+        label = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_tv_appearances)
     )
 }
 
@@ -250,7 +259,7 @@ private fun GenderFilterChips(
                 )
             )
         },
-        label = "Male"
+        label = stringResource(com.darach.gameofthrones.core.ui.R.string.gender_male)
     )
 
     SelectableFilterChip(
@@ -268,7 +277,7 @@ private fun GenderFilterChips(
                 )
             )
         },
-        label = "Female"
+        label = stringResource(com.darach.gameofthrones.core.ui.R.string.gender_female)
     )
 }
 
@@ -310,7 +319,10 @@ private fun SeasonFilterChips(
                 }
                 onFilterChange(currentFilter.copy(seasons = newSeasons))
             },
-            label = "Season $season"
+            label = stringResource(
+                com.darach.gameofthrones.core.ui.R.string.filter_season_label,
+                season
+            )
         )
     }
 }
