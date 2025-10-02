@@ -158,7 +158,8 @@ private fun SeasonFilterChips(filter: CharacterFilter, onFilterChange: (Characte
 
 @Composable
 private fun AllFiltersChip(onOpenAllFilters: () -> Unit) {
-    val filterOptionsDescription = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_options)
+    val filterOptionsDescription =
+        stringResource(com.darach.gameofthrones.core.ui.R.string.filter_options)
 
     FilterChip(
         selected = false,

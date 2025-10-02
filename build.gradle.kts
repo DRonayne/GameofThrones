@@ -13,6 +13,30 @@ plugins {
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.kover) apply false
+    id("dev.iurysouza.modulegraph") version "0.12.1"
+}
+
+moduleGraphConfig {
+    readmePath.set("${rootDir}/README.md")
+    heading.set("### Module Graph")
+    setStyleByModuleType.set(true)
+    theme.set(
+        dev.iurysouza.modulegraph.Theme.BASE(
+            mapOf(
+                "primaryTextColor" to "#fff",
+                "primaryColor" to "#5a4f7c",
+                "primaryBorderColor" to "#5a4f7c",
+                "lineColor" to "#f5a623",
+                "tertiaryColor" to "#40375c",
+                "fontSize" to "12px",
+            ),
+            focusColor = "#FA8140",
+            moduleTypes = listOf(
+                dev.iurysouza.modulegraph.ModuleType.AndroidApp("#3CD483"),
+                dev.iurysouza.modulegraph.ModuleType.AndroidLibrary("#292B2B"),
+            )
+        )
+    )
 }
 
 subprojects {

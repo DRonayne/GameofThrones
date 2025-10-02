@@ -403,7 +403,8 @@ private fun CompactFilterChip(
 
 @Composable
 private fun AllFiltersChip(onOpenFilterSheet: () -> Unit) {
-    val filterOptionsDescription = stringResource(com.darach.gameofthrones.core.ui.R.string.filter_options)
+    val filterOptionsDescription =
+        stringResource(com.darach.gameofthrones.core.ui.R.string.filter_options)
 
     androidx.compose.material3.FilterChip(
         selected = false,
@@ -719,7 +720,8 @@ private fun CharactersList(
 
 @Composable
 private fun LoadingState(modifier: Modifier = Modifier) {
-    val loadingDescription = stringResource(com.darach.gameofthrones.core.ui.R.string.loading_characters)
+    val loadingDescription =
+        stringResource(com.darach.gameofthrones.core.ui.R.string.loading_characters)
 
     Box(
         modifier = modifier.fillMaxSize(),

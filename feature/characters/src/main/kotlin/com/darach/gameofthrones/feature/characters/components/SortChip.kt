@@ -52,7 +52,8 @@ private fun SortFilterChip(
     performHaptic: () -> Unit,
     onExpand: () -> Unit
 ) {
-    val sortOptionsDescription = stringResource(com.darach.gameofthrones.core.ui.R.string.sort_options)
+    val sortOptionsDescription =
+        stringResource(com.darach.gameofthrones.core.ui.R.string.sort_options)
 
     FilterChip(
         selected = currentSortOption != SortOption.NAME_ASC,
