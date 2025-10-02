@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import com.darach.gameofthrones.core.analytics.AnalyticsService
 import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.common.performance.PerformanceMonitor
+import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
+import com.darach.gameofthrones.core.data.preferences.UserPreferences
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
@@ -48,6 +50,7 @@ class CharactersViewModelTest {
     private lateinit var sortCharactersUseCase: SortCharactersUseCase
     private lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
     private lateinit var refreshCharactersUseCase: RefreshCharactersUseCase
+    private lateinit var preferencesDataSource: PreferencesDataSource
     private lateinit var analyticsService: AnalyticsService
     private lateinit var crashReportingService: CrashReportingService
     private lateinit var networkMonitor: NetworkMonitor
@@ -110,6 +113,7 @@ class CharactersViewModelTest {
         sortCharactersUseCase = mockk()
         toggleFavoriteUseCase = mockk()
         refreshCharactersUseCase = mockk()
+        preferencesDataSource = mockk(relaxed = true)
         analyticsService = mockk(relaxed = true)
         crashReportingService = mockk(relaxed = true)
         networkMonitor = mockk(relaxed = true)
@@ -118,6 +122,7 @@ class CharactersViewModelTest {
         every { sortCharactersUseCase(any(), any()) } answers { firstArg() }
         every { networkMonitor.isOnline } returns flowOf(true)
         every { networkMonitor.isCurrentlyOnline() } returns true
+        every { preferencesDataSource.userPreferences } returns flowOf(UserPreferences())
     }
 
     @After
@@ -275,17 +280,17 @@ class CharactersViewModelTest {
     fun `search adds query to history`() = runTest {
         every { getCharactersUseCase(any()) } returns flowOf(Result.success(testCharacters))
         every { searchCharactersUseCase(any()) } returns flowOf(testCharacters)
+        coEvery { preferencesDataSource.addSearchQuery(any()) } returns Unit
 
         viewModel = createViewModel()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.handleIntent(CharactersIntent.SearchCharacters("Jon"))
+        // Use a query with minimum length (3 characters)
+        viewModel.handleIntent(CharactersIntent.SearchCharacters("Jon Snow"))
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.state.test {
-            val state = awaitItem()
-            assertTrue(state.searchHistory.contains("Jon"))
-        }
+        // Verify the query was saved to preferences
+        coVerify { preferencesDataSource.addSearchQuery("Jon Snow") }
     }
 
     @Test
@@ -587,6 +592,7 @@ class CharactersViewModelTest {
         sortCharactersUseCase = sortCharactersUseCase,
         toggleFavoriteUseCase = toggleFavoriteUseCase,
         refreshCharactersUseCase = refreshCharactersUseCase,
+        preferencesDataSource = preferencesDataSource,
         serviceProvider = CharactersServiceProvider(
             analyticsService = analyticsService,
             crashReportingService = crashReportingService,

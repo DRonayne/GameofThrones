@@ -18,4 +18,8 @@ interface CharacterRepository {
     suspend fun refreshCharacters(): Result<Unit>
 
     suspend fun getCharacterCount(): Int
+
+    suspend fun clearCache(): Result<Unit>
+
+    suspend fun clearAllData(): Result<Unit>
 }

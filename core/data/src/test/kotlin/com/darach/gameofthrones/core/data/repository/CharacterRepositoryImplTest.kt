@@ -80,6 +80,7 @@ class CharacterRepositoryImplTest {
         coEvery { characterDao.getCharacterCount() } returns 0
         coEvery { apiService.getCharacters() } returns listOf(testDto)
         coEvery { characterDao.refreshCharacters(any()) } returns Unit
+        every { characterDao.observeAllCharacters() } returns flowOf(listOf(testEntity))
 
         // When
         repository.observeCharacters(forceRefresh = false).test {
@@ -118,6 +119,7 @@ class CharacterRepositoryImplTest {
         coEvery { characterDao.getCharacterCount() } returns 1
         coEvery { apiService.getCharacters() } returns listOf(testDto)
         coEvery { characterDao.refreshCharacters(any()) } returns Unit
+        every { characterDao.observeAllCharacters() } returns flowOf(listOf(testEntity))
 
         // When
         repository.observeCharacters(forceRefresh = true).test {
@@ -271,5 +273,90 @@ class CharacterRepositoryImplTest {
 
         // Then
         assertEquals(42, count)
+    }
+
+    @Test
+    fun `clearCache deletes all characters successfully`() = runTest {
+        // Given
+        coEvery { characterDao.deleteAllCharacters() } returns Unit
+
+        // When
+        val result = repository.clearCache()
+
+        // Then
+        assertTrue(result.isSuccess)
+        coVerify { characterDao.deleteAllCharacters() }
+    }
+
+    @Test
+    fun `clearCache returns error on failure`() = runTest {
+        // Given
+        coEvery { characterDao.deleteAllCharacters() } throws Exception("Database error")
+
+        // When
+        val result = repository.clearCache()
+
+        // Then
+        assertTrue(result.isFailure)
+    }
+
+    @Test
+    fun `clearAllData deletes all characters successfully`() = runTest {
+        // Given
+        coEvery { characterDao.deleteAllCharacters() } returns Unit
+
+        // When
+        val result = repository.clearAllData()
+
+        // Then
+        assertTrue(result.isSuccess)
+        coVerify { characterDao.deleteAllCharacters() }
+    }
+
+    @Test
+    fun `clearAllData returns error on failure`() = runTest {
+        // Given
+        coEvery { characterDao.deleteAllCharacters() } throws Exception("Database error")
+
+        // When
+        val result = repository.clearAllData()
+
+        // Then
+        assertTrue(result.isFailure)
+    }
+
+    @Test
+    fun `observeCharacters auto-refreshes when cache becomes empty`() = runTest {
+        // Given - cache starts with data
+        coEvery { characterDao.getCharacterCount() } returns 1
+        coEvery { apiService.getCharacters() } returns listOf(testDto)
+        coEvery { characterDao.refreshCharacters(any()) } returns Unit
+
+        // Emit populated list first, then empty (cache cleared), then populated again
+        every { characterDao.observeAllCharacters() } returns
+            flowOf(listOf(testEntity), emptyList(), listOf(testEntity))
+
+        // When
+        repository.observeCharacters(forceRefresh = false).test {
+            // Then - first emission with data
+            val firstResult = awaitItem()
+            assertTrue(firstResult.isSuccess)
+            assertEquals(1, firstResult.getOrNull()?.size)
+
+            // Second emission (empty list triggers auto-refresh)
+            val secondResult = awaitItem()
+            assertTrue(secondResult.isSuccess)
+            assertEquals(0, secondResult.getOrNull()?.size)
+
+            // Third emission after refresh
+            val thirdResult = awaitItem()
+            assertTrue(thirdResult.isSuccess)
+            assertEquals(1, thirdResult.getOrNull()?.size)
+
+            // Verify refresh was triggered
+            coVerify { apiService.getCharacters() }
+            coVerify { characterDao.refreshCharacters(any()) }
+            awaitComplete()
+        }
     }
 }

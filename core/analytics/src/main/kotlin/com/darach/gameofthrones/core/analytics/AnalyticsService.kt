@@ -69,6 +69,9 @@ object AnalyticsEvents {
     // Settings events
     const val THEME_CHANGED = "theme_changed"
     const val DYNAMIC_COLORS_TOGGLED = "dynamic_colors_toggled"
+    const val CACHE_CLEARED = "cache_cleared"
+    const val DATA_SYNCED = "data_synced"
+    const val ALL_DATA_CLEARED = "all_data_cleared"
 
     // Data events
     const val DATA_REFRESH = "data_refresh"
@@ -100,6 +103,7 @@ object AnalyticsParams {
     // Settings params
     const val THEME_MODE = "theme_mode"
     const val DYNAMIC_COLORS_ENABLED = "dynamic_colors_enabled"
+    const val OPERATION = "operation"
 
     // Error params
     const val ERROR_MESSAGE = "error_message"

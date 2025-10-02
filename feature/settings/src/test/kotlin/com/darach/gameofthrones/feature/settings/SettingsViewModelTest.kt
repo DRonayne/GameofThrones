@@ -11,6 +11,7 @@ import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
 import com.darach.gameofthrones.core.data.preferences.ThemeMode
 import com.darach.gameofthrones.core.data.preferences.UserPreferences
+import com.darach.gameofthrones.core.domain.repository.CharacterRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -37,6 +38,7 @@ class SettingsViewModelTest {
 
     private lateinit var viewModel: SettingsViewModel
     private lateinit var preferencesDataSource: PreferencesDataSource
+    private lateinit var characterRepository: CharacterRepository
     private lateinit var analyticsService: AnalyticsService
     private lateinit var crashReportingService: CrashReportingService
     private lateinit var context: Context
@@ -60,6 +62,7 @@ class SettingsViewModelTest {
         every { android.util.Log.w(any(), any<String>(), any<Throwable>()) } returns 0
 
         preferencesDataSource = mockk(relaxed = true)
+        characterRepository = mockk(relaxed = true)
         analyticsService = mockk(relaxed = true)
         crashReportingService = mockk(relaxed = true)
         context = mockk(relaxed = true)
@@ -94,6 +97,7 @@ class SettingsViewModelTest {
 
         viewModel = SettingsViewModel(
             preferencesDataSource,
+            characterRepository,
             analyticsService,
             crashReportingService,
             context
@@ -163,7 +167,11 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `handleIntent ClearCache shows success message`() = runTest {
+    fun `handleIntent ClearCache calls repository and shows success message`() = runTest {
+        coEvery {
+            characterRepository.clearCache()
+        } returns Result.success(Unit)
+
         viewModel.state.test {
             skipItems(1) // Skip initial state
 
@@ -173,6 +181,10 @@ class SettingsViewModelTest {
             val state = expectMostRecentItem()
             assertNotNull(state.message)
             assertTrue(state.message!!.contains("cleared"))
+        }
+
+        coVerify {
+            characterRepository.clearCache()
         }
     }
 
@@ -191,42 +203,53 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `handleIntent SyncData shows syncing state`() = runTest {
+    fun `handleIntent SyncData calls repository and shows syncing state`() = runTest {
+        coEvery {
+            characterRepository.refreshCharacters()
+        } returns Result.success(Unit)
+
         viewModel.state.test {
             skipItems(1) // Skip initial state
 
             viewModel.handleIntent(SettingsIntent.SyncData)
-            testDispatcher.scheduler.advanceTimeBy(500)
-
-            // Should be syncing
-            val syncingState = expectMostRecentItem()
-            assertTrue(syncingState.isSyncing)
-
             testDispatcher.scheduler.advanceUntilIdle()
 
             // Should complete syncing
             val completedState = expectMostRecentItem()
             assertFalse(completedState.isSyncing)
             assertNotNull(completedState.message)
+            assertTrue(completedState.message!!.contains("synced"))
+        }
+
+        coVerify {
+            characterRepository.refreshCharacters()
         }
     }
 
     @Test
-    fun `handleIntent ClearAllData clears all preferences`() = runTest {
+    fun `handleIntent ClearAllData clears preferences and cache`() = runTest {
         coEvery {
             preferencesDataSource.clearAllPreferences()
         } returns Unit
+        coEvery {
+            characterRepository.clearAllData()
+        } returns Result.success(Unit)
 
         viewModel.handleIntent(SettingsIntent.ClearAllData)
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify {
             preferencesDataSource.clearAllPreferences()
+            characterRepository.clearAllData()
         }
     }
 
     @Test
     fun `dismissMessage clears message`() = runTest {
+        coEvery {
+            characterRepository.clearCache()
+        } returns Result.success(Unit)
+
         viewModel.state.test {
             skipItems(1) // Skip initial state
 
@@ -280,6 +303,7 @@ class SettingsViewModelTest {
 
         val errorViewModel = SettingsViewModel(
             preferencesDataSource,
+            characterRepository,
             analyticsService,
             crashReportingService,
             context
@@ -291,6 +315,63 @@ class SettingsViewModelTest {
 
             assertEquals("Unknown", state.appVersion)
             assertEquals("Unknown", state.buildNumber)
+        }
+    }
+
+    @Test
+    fun `handleIntent ClearCache handles error gracefully`() = runTest {
+        coEvery {
+            characterRepository.clearCache()
+        } returns Result.failure(Exception("Database error"))
+
+        viewModel.state.test {
+            skipItems(1) // Skip initial state
+
+            viewModel.handleIntent(SettingsIntent.ClearCache)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val state = expectMostRecentItem()
+            assertNotNull(state.message)
+            assertTrue(state.message!!.contains("Failed"))
+        }
+    }
+
+    @Test
+    fun `handleIntent SyncData handles error gracefully`() = runTest {
+        coEvery {
+            characterRepository.refreshCharacters()
+        } returns Result.failure(Exception("Network error"))
+
+        viewModel.state.test {
+            skipItems(1) // Skip initial state
+
+            viewModel.handleIntent(SettingsIntent.SyncData)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val state = expectMostRecentItem()
+            assertNotNull(state.message)
+            assertTrue(state.message!!.contains("Failed"))
+        }
+    }
+
+    @Test
+    fun `handleIntent ClearAllData handles error gracefully`() = runTest {
+        coEvery {
+            preferencesDataSource.clearAllPreferences()
+        } returns Unit
+        coEvery {
+            characterRepository.clearAllData()
+        } returns Result.failure(Exception("Database error"))
+
+        viewModel.state.test {
+            skipItems(1) // Skip initial state
+
+            viewModel.handleIntent(SettingsIntent.ClearAllData)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val state = expectMostRecentItem()
+            assertNotNull(state.message)
+            assertTrue(state.message!!.contains("Failed"))
         }
     }
 }

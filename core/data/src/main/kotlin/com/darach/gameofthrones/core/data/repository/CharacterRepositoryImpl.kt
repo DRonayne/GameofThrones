@@ -13,8 +13,13 @@ import com.darach.gameofthrones.core.network.util.safeApiCall
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 
 @Singleton
 class CharacterRepositoryImpl @Inject constructor(
@@ -32,13 +37,19 @@ class CharacterRepositoryImpl @Inject constructor(
                 is NetworkResult.Success -> {
                     val characters = networkResult.data
                     characterDao.refreshCharacters(characters.map { it.toEntity() })
-                    emit(Result.success(characters))
+                    // After fetching and saving, observe the database for reactive updates
+                    emitAll(
+                        characterDao.observeAllCharacters()
+                            .map { entities -> Result.success(entities.map { it.toDomain() }) }
+                    )
                 }
                 is NetworkResult.Error -> {
                     if (cachedCount > 0) {
-                        val cachedCharacters = characterDao.observeAllCharacters()
-                            .map { entities -> entities.map { it.toDomain() } }
-                        cachedCharacters.collect { emit(Result.success(it)) }
+                        // Fallback to cache if network fails but we have cached data
+                        emitAll(
+                            characterDao.observeAllCharacters()
+                                .map { entities -> Result.success(entities.map { it.toDomain() }) }
+                        )
                     } else {
                         emit(Result.failure(Exception(networkResult.message)))
                     }
@@ -46,9 +57,19 @@ class CharacterRepositoryImpl @Inject constructor(
                 is NetworkResult.Loading -> {}
             }
         } else {
-            characterDao.observeAllCharacters()
-                .map { entities -> entities.map { it.toDomain() } }
-                .collect { emit(Result.success(it)) }
+            // Observe database - if cache gets cleared (becomes empty), auto-refresh
+            var hasRefreshed = false
+            emitAll(
+                characterDao.observeAllCharacters()
+                    .onEach { entities ->
+                        // If cache becomes empty and we haven't already refreshed, trigger refresh
+                        if (entities.isEmpty() && !hasRefreshed) {
+                            hasRefreshed = true
+                            refreshCharacters()
+                        }
+                    }
+                    .map { entities -> Result.success(entities.map { it.toDomain() }) }
+            )
         }
     }
 
@@ -97,6 +118,24 @@ class CharacterRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCharacterCount(): Int = characterDao.getCharacterCount()
+
+    override suspend fun clearCache(): Result<Unit> = performanceMonitor.trace(
+        traceName = "clear_cache",
+        attributes = mapOf("operation" to "clear_cache")
+    ) {
+        runCatching {
+            characterDao.deleteAllCharacters()
+        }
+    }
+
+    override suspend fun clearAllData(): Result<Unit> = performanceMonitor.trace(
+        traceName = "clear_all_data",
+        attributes = mapOf("operation" to "clear_all_data")
+    ) {
+        runCatching {
+            characterDao.deleteAllCharacters()
+        }
+    }
 
     private suspend fun fetchCharactersFromApi(): List<Character> {
         val dtos = apiService.getCharacters()

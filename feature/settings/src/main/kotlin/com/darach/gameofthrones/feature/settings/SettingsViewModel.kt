@@ -13,6 +13,7 @@ import com.darach.gameofthrones.core.analytics.UserProperties
 import com.darach.gameofthrones.core.common.crash.CrashReportingService
 import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
 import com.darach.gameofthrones.core.data.preferences.ThemeMode
+import com.darach.gameofthrones.core.domain.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val preferencesDataSource: PreferencesDataSource,
+    private val characterRepository: CharacterRepository,
     private val analyticsService: AnalyticsService,
     private val crashReportingService: CrashReportingService,
     @param:ApplicationContext private val context: Context
@@ -132,11 +134,22 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 isLoading.value = true
-                // Cache clearing would be handled by a repository/use case
-                // For now, just show a message
-                message.value = "Cache cleared successfully"
+                characterRepository.clearCache().fold(
+                    onSuccess = {
+                        message.value = "Cache cleared successfully"
+                        analyticsService.logEvent(
+                            AnalyticsEvents.CACHE_CLEARED,
+                            mapOf(AnalyticsParams.OPERATION to "clear_cache")
+                        )
+                    },
+                    onFailure = { error ->
+                        message.value = "Failed to clear cache: ${error.message}"
+                        crashReportingService.logException(error)
+                    }
+                )
             }.onFailure { error ->
                 message.value = "Failed to clear cache: ${error.message}"
+                crashReportingService.logException(error)
             }.also {
                 isLoading.value = false
             }
@@ -158,12 +171,22 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 isSyncing.value = true
-                // Data sync would be handled by a repository/use case
-                // Simulate sync operation
-                kotlinx.coroutines.delay(1000)
-                message.value = "Data synced successfully"
+                characterRepository.refreshCharacters().fold(
+                    onSuccess = {
+                        message.value = "Data synced successfully"
+                        analyticsService.logEvent(
+                            AnalyticsEvents.DATA_SYNCED,
+                            mapOf(AnalyticsParams.OPERATION to "sync_data")
+                        )
+                    },
+                    onFailure = { error ->
+                        message.value = "Failed to sync data: ${error.message}"
+                        crashReportingService.logException(error)
+                    }
+                )
             }.onFailure { error ->
                 message.value = "Failed to sync data: ${error.message}"
+                crashReportingService.logException(error)
             }.also {
                 isSyncing.value = false
             }
@@ -174,10 +197,24 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 isLoading.value = true
+                // Clear both preferences and character cache
                 preferencesDataSource.clearAllPreferences()
-                message.value = "All preferences cleared"
+                characterRepository.clearAllData().fold(
+                    onSuccess = {
+                        message.value = "All data cleared successfully"
+                        analyticsService.logEvent(
+                            AnalyticsEvents.ALL_DATA_CLEARED,
+                            mapOf(AnalyticsParams.OPERATION to "clear_all_data")
+                        )
+                    },
+                    onFailure = { error ->
+                        message.value = "Failed to clear all data: ${error.message}"
+                        crashReportingService.logException(error)
+                    }
+                )
             }.onFailure { error ->
                 message.value = "Failed to clear data: ${error.message}"
+                crashReportingService.logException(error)
             }.also {
                 isLoading.value = false
             }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.darach.gameofthrones.core.analytics.AnalyticsEvents
 import com.darach.gameofthrones.core.analytics.AnalyticsParams
+import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.RefreshCharactersUseCase
@@ -31,6 +32,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -44,6 +46,7 @@ class CharactersViewModel @Inject constructor(
     private val sortCharactersUseCase: SortCharactersUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val refreshCharactersUseCase: RefreshCharactersUseCase,
+    private val preferencesDataSource: PreferencesDataSource,
     private val serviceProvider: CharactersServiceProvider,
     networkMonitor: NetworkMonitor
 ) : ViewModel() {
@@ -69,8 +72,16 @@ class CharactersViewModel @Inject constructor(
     private val isLoading = MutableStateFlow(false)
     private val isRefreshing = MutableStateFlow(false)
     private val errorMessage = MutableStateFlow<String?>(null)
-    private val searchHistory = MutableStateFlow<List<String>>(emptyList())
     private val searchQuerySharedFlow = MutableSharedFlow<String>(replay = 1)
+
+    // Load search history from preferences
+    private val searchHistory = preferencesDataSource.userPreferences
+        .map { it.searchHistory }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private val filteredCharacters = combine(
         baseCharacters,
@@ -254,7 +265,7 @@ class CharactersViewModel @Inject constructor(
             .distinctUntilChanged()
             .onEach { query ->
                 if (query.length >= MIN_SEARCH_HISTORY_LENGTH) {
-                    searchHistory.value = addToSearchHistory(query)
+                    preferencesDataSource.addSearchQuery(query)
                 }
             }
             .launchIn(viewModelScope)
@@ -328,34 +339,34 @@ class CharactersViewModel @Inject constructor(
         }
     }
 
-    private fun addToSearchHistory(query: String): List<String> {
-        val currentHistory = searchHistory.value.toMutableList()
-        if (query.isNotBlank() && !currentHistory.contains(query)) {
-            currentHistory.add(0, query)
-            if (currentHistory.size > MAX_SEARCH_HISTORY) {
-                currentHistory.removeAt(currentHistory.size - 1)
-            }
-        }
-        return currentHistory
-    }
-
     private fun removeSearchHistoryItem(query: String) {
-        val updatedHistory = searchHistory.value.filter { it != query }
-        searchHistory.value = updatedHistory
+        viewModelScope.launch {
+            // Manually update preferences by getting current history, removing item, and saving
+            val currentHistory = searchHistory.value.toMutableList()
+            currentHistory.remove(query)
 
-        analyticsService.logEvent(
-            AnalyticsEvents.SEARCH_HISTORY_ITEM_REMOVED,
-            mapOf(AnalyticsParams.SEARCH_QUERY to query)
-        )
+            // Clear and re-add all items to update preferences
+            preferencesDataSource.clearSearchHistory()
+            currentHistory.forEach { item ->
+                preferencesDataSource.addSearchQuery(item)
+            }
+
+            analyticsService.logEvent(
+                AnalyticsEvents.SEARCH_HISTORY_ITEM_REMOVED,
+                mapOf(AnalyticsParams.SEARCH_QUERY to query)
+            )
+        }
     }
 
     private fun clearSearchHistory() {
-        searchHistory.value = emptyList()
+        viewModelScope.launch {
+            preferencesDataSource.clearSearchHistory()
 
-        analyticsService.logEvent(
-            AnalyticsEvents.SEARCH_HISTORY_CLEARED,
-            emptyMap()
-        )
+            analyticsService.logEvent(
+                AnalyticsEvents.SEARCH_HISTORY_CLEARED,
+                emptyMap()
+            )
+        }
     }
 
     private fun extractUniqueCultures(characters: List<Character>): List<String> =
@@ -371,6 +382,5 @@ class CharactersViewModel @Inject constructor(
         private const val SEARCH_DEBOUNCE_MS = 300L
         private const val SEARCH_HISTORY_DEBOUNCE_MS = 1000L
         private const val MIN_SEARCH_HISTORY_LENGTH = 3
-        private const val MAX_SEARCH_HISTORY = 10
     }
 }
