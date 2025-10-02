@@ -1,3 +1,5 @@
+<div align="center">
+<img src="app/src/main/1024.png" width="200" alt="Game of Thrones App Icon"/>
 
 # Game of Thrones App
 
@@ -44,6 +46,10 @@ An Android app showcasing enterprise-level architecture and 2025 best practices.
 ## 📱 Screenshots
 
 <div align="center"> <table> <tr> <td><img src="screenshots/phone_search.png" width="200"/><br/><strong>Search & Filter</strong></td> <td><img src="screenshots/phone_details.png" width="200"/><br/><strong>Character Details</strong></td> <td><img src="screenshots/phone_favorites.png" width="200"/><br/><strong>Favourites</strong></td> <td><img src="screenshots/phone_comparison.png" width="200"/><br/><strong>Comparison</strong></td> </tr> </table> </div>
+
+### Tablet Layout
+
+<div align="center"> <table> <tr> <td><img src="screenshots/tablet_search.png" width="400"/><br/><strong>Search & Filter</strong></td> <td><img src="screenshots/tablet_details.png" width="400"/><br/><strong>Character Details</strong></td> </tr> </table> </div>
 
 ---
 
