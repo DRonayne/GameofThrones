@@ -53,7 +53,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
+import com.darach.gameofthrones.core.domain.usecase.SortOption
 import com.darach.gameofthrones.core.ui.performance.TrackScreenLoadTime
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import com.darach.gameofthrones.feature.characters.CharactersViewModel
 import com.darach.gameofthrones.feature.characters.components.CharacterGridCard
@@ -198,10 +201,7 @@ private fun SearchAndFilterControls(
 }
 
 @Composable
-private fun ActiveFilterChips(
-    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
-    onFilterChange: (CharactersIntent) -> Unit
-) {
+private fun ActiveFilterChips(filter: CharacterFilter, onFilterChange: (CharactersIntent) -> Unit) {
     val haptic = LocalHapticFeedback.current
 
     FavoritesFilterChip(filter, haptic, onFilterChange)
@@ -214,7 +214,7 @@ private fun ActiveFilterChips(
 
 @Composable
 private fun FavoritesFilterChip(
-    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    filter: CharacterFilter,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onFilterChange: (CharactersIntent) -> Unit
 ) {
@@ -238,7 +238,7 @@ private fun FavoritesFilterChip(
 
 @Composable
 private fun StatusFilterChip(
-    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    filter: CharacterFilter,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onFilterChange: (CharactersIntent) -> Unit
 ) {
@@ -261,7 +261,7 @@ private fun StatusFilterChip(
 
 @Composable
 private fun AppearancesFilterChip(
-    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    filter: CharacterFilter,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onFilterChange: (CharactersIntent) -> Unit
 ) {
@@ -284,7 +284,7 @@ private fun AppearancesFilterChip(
 
 @Composable
 private fun GenderFilterChip(
-    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    filter: CharacterFilter,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onFilterChange: (CharactersIntent) -> Unit
 ) {
@@ -307,7 +307,7 @@ private fun GenderFilterChip(
 
 @Composable
 private fun CultureFilterChip(
-    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    filter: CharacterFilter,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onFilterChange: (CharactersIntent) -> Unit
 ) {
@@ -330,7 +330,7 @@ private fun CultureFilterChip(
 
 @Composable
 private fun SeasonsFilterChips(
-    filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter,
+    filter: CharacterFilter,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onFilterChange: (CharactersIntent) -> Unit
 ) {
@@ -465,13 +465,13 @@ private fun RecentSearchChips(
 )
 @Composable
 private fun SearchAndFilterControlsNoFiltersPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SearchAndFilterControls(
             state = CharactersState(
                 searchQuery = "",
                 searchHistory = emptyList(),
-                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(),
-                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.NAME_ASC
+                filter = CharacterFilter(),
+                sortOption = SortOption.NAME_ASC
             ),
             onIntent = {},
             onOpenFilterSheet = {}
@@ -485,13 +485,13 @@ private fun SearchAndFilterControlsNoFiltersPreview() {
 )
 @Composable
 private fun SearchAndFilterControlsWithSearchPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SearchAndFilterControls(
             state = CharactersState(
                 searchQuery = "Jon Snow",
                 searchHistory = listOf("Jon Snow", "Arya Stark"),
-                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(),
-                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.NAME_ASC
+                filter = CharacterFilter(),
+                sortOption = SortOption.NAME_ASC
             ),
             onIntent = {},
             onOpenFilterSheet = {}
@@ -505,19 +505,19 @@ private fun SearchAndFilterControlsWithSearchPreview() {
 )
 @Composable
 private fun SearchAndFilterControlsMultipleFiltersPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SearchAndFilterControls(
             state = CharactersState(
                 searchQuery = "",
                 searchHistory = emptyList(),
-                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(
+                filter = CharacterFilter(
                     onlyFavorites = true,
                     isDead = false,
                     gender = "Female",
                     culture = "Northmen",
                     seasons = listOf(1, 2, 3)
                 ),
-                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.FAVORITE_FIRST
+                sortOption = SortOption.FAVORITE_FIRST
             ),
             onIntent = {},
             onOpenFilterSheet = {}
@@ -532,12 +532,12 @@ private fun SearchAndFilterControlsMultipleFiltersPreview() {
 )
 @Composable
 private fun SearchAndFilterControlsDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SearchAndFilterControls(
             state = CharactersState(
                 searchQuery = "Daenerys",
                 searchHistory = emptyList(),
-                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(
+                filter = CharacterFilter(
                     isDead = true,
                     culture = "Valyrian"
                 ),
@@ -557,17 +557,17 @@ private fun SearchAndFilterControlsDarkPreview() {
 )
 @Composable
 private fun SearchAndFilterControlsTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SearchAndFilterControls(
             state = CharactersState(
                 searchQuery = "",
                 searchHistory = emptyList(),
-                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(
+                filter = CharacterFilter(
                     gender = "Male",
                     hasAppearances = true,
                     seasons = listOf(1, 2, 3, 4, 5, 6, 7, 8)
                 ),
-                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.CULTURE_ASC
+                sortOption = SortOption.CULTURE_ASC
             ),
             onIntent = {},
             onOpenFilterSheet = {}
@@ -581,12 +581,12 @@ private fun SearchAndFilterControlsTabletPreview() {
 )
 @Composable
 private fun SearchAndFilterControlsScrollingPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SearchAndFilterControls(
             state = CharactersState(
                 searchQuery = "Stark",
                 searchHistory = emptyList(),
-                filter = com.darach.gameofthrones.core.domain.usecase.CharacterFilter(
+                filter = CharacterFilter(
                     onlyFavorites = true,
                     isDead = false,
                     gender = "Female",
@@ -594,7 +594,7 @@ private fun SearchAndFilterControlsScrollingPreview() {
                     hasAppearances = true,
                     seasons = listOf(1, 2, 3, 4, 5)
                 ),
-                sortOption = com.darach.gameofthrones.core.domain.usecase.SortOption.NAME_DESC
+                sortOption = SortOption.NAME_DESC
             ),
             onIntent = {},
             onOpenFilterSheet = {}
@@ -765,7 +765,7 @@ private fun EmptyState(message: String, modifier: Modifier = Modifier) {
 )
 @Composable
 private fun LoadingStatePreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         LoadingState()
     }
 }
@@ -776,7 +776,7 @@ private fun LoadingStatePreview() {
 )
 @Composable
 private fun ErrorStatePreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ErrorState(
             error = "Failed to load characters. Please check your connection and try again.",
             onRetry = {}
@@ -790,7 +790,7 @@ private fun ErrorStatePreview() {
 )
 @Composable
 private fun EmptyStatePreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         EmptyState(message = "No characters found")
     }
 }
@@ -802,7 +802,7 @@ private fun EmptyStatePreview() {
 )
 @Composable
 private fun EmptyStateDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         EmptyState(message = "No characters match your filters")
     }
 }
@@ -814,7 +814,7 @@ private fun EmptyStateDarkPreview() {
 )
 @Composable
 private fun ErrorStateTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ErrorState(
             error = "Network error occurred",
             onRetry = {}

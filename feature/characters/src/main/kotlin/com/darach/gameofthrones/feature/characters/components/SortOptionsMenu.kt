@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.darach.gameofthrones.core.domain.usecase.SortOption
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 @Composable
 fun SortOptionsMenu(
@@ -102,7 +103,7 @@ private fun getSortOptionLabel(sortOption: SortOption): String = when (sortOptio
 )
 @Composable
 private fun SortOptionsMenuNameAscPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SortOptionsMenu(
             currentSortOption = SortOption.NAME_ASC,
             onSortOptionChange = {}
@@ -116,7 +117,7 @@ private fun SortOptionsMenuNameAscPreview() {
 )
 @Composable
 private fun SortOptionsMenuFavoritePreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SortOptionsMenu(
             currentSortOption = SortOption.FAVORITE_FIRST,
             onSortOptionChange = {}
@@ -131,7 +132,7 @@ private fun SortOptionsMenuFavoritePreview() {
 )
 @Composable
 private fun SortOptionsMenuDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SortOptionsMenu(
             currentSortOption = SortOption.SEASONS_COUNT_DESC,
             onSortOptionChange = {}
@@ -146,7 +147,7 @@ private fun SortOptionsMenuDarkPreview() {
 )
 @Composable
 private fun SortOptionsMenuTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SortOptionsMenu(
             currentSortOption = SortOption.CULTURE_ASC,
             onSortOptionChange = {}

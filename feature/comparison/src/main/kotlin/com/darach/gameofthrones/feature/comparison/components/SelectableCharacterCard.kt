@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.test.TestTags
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 /**
  * Character card with selection mode support.
@@ -265,7 +266,7 @@ private val sampleCerseiLannister = Character(
 )
 @Composable
 private fun SelectableCharacterCardUnselectedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SelectableCharacterCard(
             character = sampleTyrionLannister,
             isSelected = false,
@@ -281,7 +282,7 @@ private fun SelectableCharacterCardUnselectedPreview() {
 )
 @Composable
 private fun SelectableCharacterCardSelectedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SelectableCharacterCard(
             character = sampleDaenerysTargaryen,
             isSelected = true,
@@ -297,7 +298,7 @@ private fun SelectableCharacterCardSelectedPreview() {
 )
 @Composable
 private fun SelectableCharacterCardDisabledPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SelectableCharacterCard(
             character = sampleTyrionLannister,
             isSelected = false,
@@ -313,7 +314,7 @@ private fun SelectableCharacterCardDisabledPreview() {
 )
 @Composable
 private fun SelectableCharacterCardDeceasedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SelectableCharacterCard(
             character = sampleCerseiLannister,
             isSelected = false,
@@ -330,7 +331,7 @@ private fun SelectableCharacterCardDeceasedPreview() {
 )
 @Composable
 private fun SelectableCharacterCardDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SelectableCharacterCard(
             character = sampleDaenerysTargaryen,
             isSelected = true,
@@ -347,7 +348,7 @@ private fun SelectableCharacterCardDarkPreview() {
 )
 @Composable
 private fun SelectableCharacterCardTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SelectableCharacterCard(
             character = sampleTyrionLannister,
             isSelected = false,

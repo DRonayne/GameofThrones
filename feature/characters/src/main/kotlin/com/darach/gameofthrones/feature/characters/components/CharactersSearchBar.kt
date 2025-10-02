@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +72,7 @@ fun CharactersSearchBar(
 )
 @Composable
 private fun CharactersSearchBarEmptyPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharactersSearchBar(
             query = "",
             searchHistory = emptyList(),
@@ -90,7 +91,7 @@ private fun CharactersSearchBarEmptyPreview() {
 )
 @Composable
 private fun CharactersSearchBarWithQueryPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharactersSearchBar(
             query = "Jon Snow",
             searchHistory = emptyList(),
@@ -110,7 +111,7 @@ private fun CharactersSearchBarWithQueryPreview() {
 )
 @Composable
 private fun CharactersSearchBarDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharactersSearchBar(
             query = "Arya Stark",
             searchHistory = emptyList(),
@@ -130,7 +131,7 @@ private fun CharactersSearchBarDarkPreview() {
 )
 @Composable
 private fun CharactersSearchBarTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharactersSearchBar(
             query = "Daenerys Targaryen",
             searchHistory = emptyList(),

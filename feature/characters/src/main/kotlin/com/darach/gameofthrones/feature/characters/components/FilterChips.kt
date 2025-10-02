@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -342,7 +343,7 @@ private const val MAX_CULTURE_CHIPS = 10
 )
 @Composable
 private fun FilterChipsNoFiltersPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FilterChips(
             currentFilter = CharacterFilter(),
             onFilterChange = {}
@@ -356,7 +357,7 @@ private fun FilterChipsNoFiltersPreview() {
 )
 @Composable
 private fun FilterChipsMultipleFiltersPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FilterChips(
             currentFilter = CharacterFilter(
                 onlyFavorites = true,
@@ -377,7 +378,7 @@ private fun FilterChipsMultipleFiltersPreview() {
 )
 @Composable
 private fun FilterChipsWithCulturesPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FilterChips(
             currentFilter = CharacterFilter(
                 culture = "Northmen",
@@ -404,7 +405,7 @@ private fun FilterChipsWithCulturesPreview() {
 )
 @Composable
 private fun FilterChipsDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FilterChips(
             currentFilter = CharacterFilter(
                 onlyFavorites = true,
@@ -425,7 +426,7 @@ private fun FilterChipsDarkPreview() {
 )
 @Composable
 private fun FilterChipsTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FilterChips(
             currentFilter = CharacterFilter(
                 gender = "Male",

@@ -16,6 +16,9 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import com.darach.gameofthrones.core.domain.usecase.SortOption
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.characters.components.CharacterCard
+import com.darach.gameofthrones.feature.characters.components.CharactersSearchBar
+import com.darach.gameofthrones.feature.characters.components.SearchBarCallbacks
+import com.darach.gameofthrones.feature.characters.components.SortOptionsMenu
 import org.junit.Rule
 import org.junit.Test
 
@@ -170,7 +173,7 @@ class AccessibilityTest {
     fun sortButton_hasContentDescription() {
         composeTestRule.setContent {
             MaterialTheme {
-                com.darach.gameofthrones.feature.characters.components.SortOptionsMenu(
+                SortOptionsMenu(
                     currentSortOption = SortOption.NAME_ASC,
                     onSortOptionChange = {}
                 )
@@ -208,15 +211,14 @@ class AccessibilityTest {
     fun searchBar_hasProperSemantics() {
         composeTestRule.setContent {
             MaterialTheme {
-                com.darach.gameofthrones.feature.characters.components.CharactersSearchBar(
+                CharactersSearchBar(
                     query = "",
                     searchHistory = emptyList(),
-                    callbacks = com.darach.gameofthrones.feature.characters.components
-                        .SearchBarCallbacks(
-                            onQueryChange = {},
-                            onSearch = {},
-                            onClearSearch = {}
-                        )
+                    callbacks = SearchBarCallbacks(
+                        onQueryChange = {},
+                        onSearch = {},
+                        onClearSearch = {}
+                    )
                 )
             }
         }
@@ -232,15 +234,14 @@ class AccessibilityTest {
     fun searchBar_clearButton_hasContentDescription() {
         composeTestRule.setContent {
             MaterialTheme {
-                com.darach.gameofthrones.feature.characters.components.CharactersSearchBar(
+                CharactersSearchBar(
                     query = "Jon",
                     searchHistory = emptyList(),
-                    callbacks = com.darach.gameofthrones.feature.characters.components
-                        .SearchBarCallbacks(
-                            onQueryChange = {},
-                            onSearch = {},
-                            onClearSearch = {}
-                        )
+                    callbacks = SearchBarCallbacks(
+                        onQueryChange = {},
+                        onSearch = {},
+                        onClearSearch = {}
+                    )
                 )
             }
         }

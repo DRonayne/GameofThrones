@@ -55,7 +55,9 @@ import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
+import com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback
 import com.darach.gameofthrones.core.ui.test.TestTags
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import kotlinx.coroutines.delay
 
@@ -68,7 +70,7 @@ fun CharacterGridCard(
     modifier: Modifier = Modifier,
     sharedTransitionData: SharedTransitionData? = null
 ) {
-    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
+    val performHaptic = rememberHapticFeedback()
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
@@ -135,7 +137,7 @@ private fun GridCardPortrait(
     modifier: Modifier = Modifier,
     sharedTransitionData: SharedTransitionData? = null
 ) {
-    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
+    val performHaptic = rememberHapticFeedback()
 
     Box(
         modifier = modifier
@@ -363,7 +365,7 @@ fun CharacterCard(
     modifier: Modifier = Modifier,
     sharedTransitionData: SharedTransitionData? = null
 ) {
-    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
+    val performHaptic = rememberHapticFeedback()
     Card(
         onClick = {
             performHaptic()
@@ -501,7 +503,7 @@ private fun FavoriteButton(
     onFavoriteClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
+    val performHaptic = rememberHapticFeedback()
     val scale = remember { Animatable(1f) }
 
     val onClick = remember(character.id, onFavoriteClick, performHaptic) {
@@ -744,7 +746,7 @@ private fun CharacterCardDeceasedPreview() {
 )
 @Composable
 private fun CharacterGridCardPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharacterGridCard(
             character = Character(
                 id = "1",
@@ -779,7 +781,7 @@ private fun CharacterGridCardPreview() {
 )
 @Composable
 private fun CharacterGridCardFavoritePreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharacterGridCard(
             character = Character(
                 id = "2",
@@ -814,7 +816,7 @@ private fun CharacterGridCardFavoritePreview() {
 )
 @Composable
 private fun CharacterGridCardDeceasedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharacterGridCard(
             character = Character(
                 id = "3",
@@ -849,7 +851,7 @@ private fun CharacterGridCardDeceasedPreview() {
 )
 @Composable
 private fun CharacterGridCardLongNamePreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharacterGridCard(
             character = Character(
                 id = "4",
@@ -884,7 +886,7 @@ private fun CharacterGridCardLongNamePreview() {
 )
 @Composable
 private fun CharacterGridCardFewSeasonsPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharacterGridCard(
             character = Character(
                 id = "5",
@@ -920,7 +922,7 @@ private fun CharacterGridCardFewSeasonsPreview() {
 )
 @Composable
 private fun CharacterGridCardDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         CharacterGridCard(
             character = Character(
                 id = "6",

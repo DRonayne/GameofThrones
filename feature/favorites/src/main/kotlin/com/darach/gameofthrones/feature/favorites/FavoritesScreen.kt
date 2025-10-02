@@ -60,6 +60,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import com.darach.gameofthrones.core.model.Character
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
+import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import com.darach.gameofthrones.feature.favorites.FavoritesViewModel
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCard
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCardCallbacks
@@ -73,7 +75,7 @@ fun FavoritesScreen(
     onBrowseCharactersClick: () -> Unit,
     modifier: Modifier = Modifier,
     onCompareCharacters: (String, String) -> Unit = { _, _ -> },
-    sharedTransitionData: com.darach.gameofthrones.core.ui.transition.SharedTransitionData? = null,
+    sharedTransitionData: SharedTransitionData? = null,
     viewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -243,7 +245,7 @@ internal fun FavoritesContent(
     onCardClick: (String) -> Unit,
     onBrowseCharactersClick: () -> Unit,
     modifier: Modifier = Modifier,
-    sharedTransitionData: com.darach.gameofthrones.core.ui.transition.SharedTransitionData? = null
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     Box(
         modifier = modifier.fillMaxSize()
@@ -288,7 +290,7 @@ private fun FavoritesGrid(
     selectedIds: Set<String>,
     onCardClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    sharedTransitionData: com.darach.gameofthrones.core.ui.transition.SharedTransitionData? = null
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
     val columns = calculateGridColumns(windowAdaptiveInfo)
@@ -457,7 +459,7 @@ private fun ErrorState(message: String, modifier: Modifier = Modifier) {
 )
 @Composable
 private fun FavoritesContentEmptyPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoritesContent(
             state = FavoritesState(isEmpty = true),
             onCardClick = {},
@@ -472,7 +474,7 @@ private fun FavoritesContentEmptyPreview() {
 )
 @Composable
 private fun FavoritesContentLoadingPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoritesContent(
             state = FavoritesState(isLoading = true),
             onCardClick = {},
@@ -487,7 +489,7 @@ private fun FavoritesContentLoadingPreview() {
 )
 @Composable
 private fun FavoritesContentErrorPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoritesContent(
             state = FavoritesState(error = "Failed to load favorites"),
             onCardClick = {},
@@ -504,7 +506,7 @@ private fun FavoritesContentErrorPreview() {
 )
 @Composable
 private fun FavoritesGridCompactPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoritesContent(
             state = FavoritesState(
                 favorites = generateSampleCharacters(),
@@ -524,7 +526,7 @@ private fun FavoritesGridCompactPreview() {
 )
 @Composable
 private fun FavoritesGridMediumPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoritesContent(
             state = FavoritesState(
                 favorites = generateSampleCharacters(),
@@ -544,7 +546,7 @@ private fun FavoritesGridMediumPreview() {
 )
 @Composable
 private fun FavoritesGridExpandedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoritesContent(
             state = FavoritesState(
                 favorites = generateSampleCharacters(),

@@ -1,12 +1,14 @@
 package com.darach.gameofthrones.feature.comparison
 
+import com.darach.gameofthrones.core.model.Character
+
 /**
  * Lightweight preview data for ComparisonScreen previews.
  * Separated to prevent memory leaks in preview compilation.
  */
 internal object ComparisonPreviewData {
 
-    val jonSnow = com.darach.gameofthrones.core.model.Character(
+    val jonSnow = Character(
         id = "583",
         name = "Jon Snow",
         gender = "Male",
@@ -28,7 +30,7 @@ internal object ComparisonPreviewData {
         isDead = false
     )
 
-    val aryaStark = com.darach.gameofthrones.core.model.Character(
+    val aryaStark = Character(
         id = "148",
         name = "Arya Stark",
         gender = "Female",

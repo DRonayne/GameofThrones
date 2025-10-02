@@ -25,6 +25,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.usecase.SortOption
+import com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 @Composable
 fun SortChip(
@@ -33,7 +35,7 @@ fun SortChip(
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
+    val performHaptic = rememberHapticFeedback()
 
     Box(modifier = modifier) {
         SortFilterChip(currentSortOption, performHaptic) { expanded = true }
@@ -139,7 +141,7 @@ private fun getSortOptionShortLabel(sortOption: SortOption): String = when (sort
 )
 @Composable
 private fun SortChipNameAscPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SortChip(
             currentSortOption = SortOption.NAME_ASC,
             onSortOptionChange = {}
@@ -153,7 +155,7 @@ private fun SortChipNameAscPreview() {
 )
 @Composable
 private fun SortChipFavoritesPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SortChip(
             currentSortOption = SortOption.FAVORITE_FIRST,
             onSortOptionChange = {}
@@ -168,7 +170,7 @@ private fun SortChipFavoritesPreview() {
 )
 @Composable
 private fun SortChipDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SortChip(
             currentSortOption = SortOption.SEASONS_COUNT_DESC,
             onSortOptionChange = {}
@@ -183,7 +185,7 @@ private fun SortChipDarkPreview() {
 )
 @Composable
 private fun SortChipTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SortChip(
             currentSortOption = SortOption.CULTURE_ASC,
             onSortOptionChange = {}

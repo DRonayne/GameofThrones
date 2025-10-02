@@ -88,6 +88,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import kotlinx.coroutines.launch
 
@@ -933,7 +934,7 @@ private fun ActorsSection(actors: List<String>, actorImageUrls: Map<String, Stri
 )
 @Composable
 private fun LoadingContentPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         LoadingContent(paddingValues = androidx.compose.foundation.layout.PaddingValues(16.dp))
     }
 }
@@ -944,7 +945,7 @@ private fun LoadingContentPreview() {
 )
 @Composable
 private fun ErrorContentPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ErrorContent(
             error = "Character not found",
             onRetryClick = {},

@@ -6,11 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.darach.gameofthrones.core.analytics.AnalyticsEvents
 import com.darach.gameofthrones.core.analytics.AnalyticsParams
 import com.darach.gameofthrones.core.data.preferences.PreferencesDataSource
+import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
 import com.darach.gameofthrones.core.domain.usecase.FilterCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.GetCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.RefreshCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SearchCharactersUseCase
 import com.darach.gameofthrones.core.domain.usecase.SortCharactersUseCase
+import com.darach.gameofthrones.core.domain.usecase.SortOption
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.network.util.NetworkMonitor
@@ -64,9 +66,9 @@ class CharactersViewModel @Inject constructor(
     private val baseCharacters = MutableStateFlow<List<Character>>(emptyList())
     private val searchResultCharacters = MutableStateFlow<List<Character>>(emptyList())
     private val filterFlow =
-        MutableStateFlow(com.darach.gameofthrones.core.domain.usecase.CharacterFilter())
+        MutableStateFlow(CharacterFilter())
     private val sortOptionFlow =
-        MutableStateFlow(com.darach.gameofthrones.core.domain.usecase.SortOption.NAME_ASC)
+        MutableStateFlow(SortOption.NAME_ASC)
     private val searchQueryStateFlow = MutableStateFlow("")
     private val isSearchActive = MutableStateFlow(false)
     private val isLoading = MutableStateFlow(false)
@@ -294,9 +296,7 @@ class CharactersViewModel @Inject constructor(
         analyticsService.logEvent(AnalyticsEvents.SEARCH_CLEARED)
     }
 
-    private fun filterCharacters(
-        filter: com.darach.gameofthrones.core.domain.usecase.CharacterFilter
-    ) {
+    private fun filterCharacters(filter: CharacterFilter) {
         filterFlow.value = filter
         analyticsService.logEvent(
             AnalyticsEvents.FILTER_APPLIED,
@@ -307,9 +307,7 @@ class CharactersViewModel @Inject constructor(
         )
     }
 
-    private fun sortCharacters(
-        sortOption: com.darach.gameofthrones.core.domain.usecase.SortOption
-    ) {
+    private fun sortCharacters(sortOption: SortOption) {
         sortOptionFlow.value = sortOption
         analyticsService.logEvent(
             AnalyticsEvents.SORT_APPLIED,

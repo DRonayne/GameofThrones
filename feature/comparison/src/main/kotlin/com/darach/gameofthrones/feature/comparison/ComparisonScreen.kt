@@ -44,8 +44,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
 import com.darach.gameofthrones.core.ui.test.TestTags
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 
 /**
@@ -201,7 +203,7 @@ private fun TabletComparisonContent(
 @Composable
 @Suppress("LongParameterList")
 private fun TabletCharacterColumn(
-    character: com.darach.gameofthrones.core.model.Character?,
+    character: Character?,
     attributes: List<ComparisonAttribute>,
     characterIndex: Int,
     scrollState: androidx.compose.foundation.ScrollState,
@@ -340,8 +342,8 @@ private fun TabletTextValueDisplay(value: AttributeValue) {
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun TaleOfTheTapeHeader(
-    character1: com.darach.gameofthrones.core.model.Character?,
-    character2: com.darach.gameofthrones.core.model.Character?,
+    character1: Character?,
+    character2: Character?,
     modifier: Modifier = Modifier,
     sharedTransitionData: SharedTransitionData? = null
 ) {
@@ -389,7 +391,7 @@ private fun TaleOfTheTapeHeader(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun CharacterColumn(
-    character: com.darach.gameofthrones.core.model.Character?,
+    character: Character?,
     modifier: Modifier = Modifier,
     sharedTransitionData: SharedTransitionData? = null
 ) {
@@ -414,7 +416,7 @@ private fun CharacterColumn(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun CharacterPortraitWithTransition(
-    character: com.darach.gameofthrones.core.model.Character?,
+    character: Character?,
     sharedTransitionData: SharedTransitionData?
 ) {
     val imageModifier = createCharacterImageModifier(character, sharedTransitionData)
@@ -429,7 +431,7 @@ private fun CharacterPortraitWithTransition(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun createCharacterImageModifier(
-    character: com.darach.gameofthrones.core.model.Character?,
+    character: Character?,
     sharedTransitionData: SharedTransitionData?
 ): Modifier = if (sharedTransitionData != null && character != null) {
     with(sharedTransitionData.sharedTransitionScope) {
@@ -460,7 +462,7 @@ private fun createCharacterImageModifier(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun CharacterNameWithTransition(
-    character: com.darach.gameofthrones.core.model.Character?,
+    character: Character?,
     sharedTransitionData: SharedTransitionData?
 ) {
     val nameModifier = createCharacterNameModifier(character, sharedTransitionData)
@@ -479,7 +481,7 @@ private fun CharacterNameWithTransition(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun createCharacterNameModifier(
-    character: com.darach.gameofthrones.core.model.Character?,
+    character: Character?,
     sharedTransitionData: SharedTransitionData?
 ): Modifier = if (sharedTransitionData != null && character != null) {
     with(sharedTransitionData.sharedTransitionScope) {
@@ -752,7 +754,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 )
 @Composable
 private fun ComparisonScreenLoadingPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ComparisonScreen(
             comparisonResult = null,
             isLoading = true,
@@ -768,7 +770,7 @@ private fun ComparisonScreenLoadingPreview() {
 )
 @Composable
 private fun ComparisonScreenWithDataPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ComparisonScreen(
             comparisonResult = ComparisonPreviewData.comparisonResult,
             isLoading = false,
@@ -784,7 +786,7 @@ private fun ComparisonScreenWithDataPreview() {
 )
 @Composable
 private fun ComparisonScreenErrorPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ComparisonScreen(
             comparisonResult = null,
             isLoading = false,
@@ -800,7 +802,7 @@ private fun ComparisonScreenErrorPreview() {
 )
 @Composable
 private fun ComparisonScreenEmptyPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ComparisonScreen(
             comparisonResult = null,
             isLoading = false,
@@ -817,7 +819,7 @@ private fun ComparisonScreenEmptyPreview() {
 )
 @Composable
 private fun ComparisonScreenDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ComparisonScreen(
             comparisonResult = ComparisonPreviewData.comparisonResult,
             isLoading = false,
@@ -834,7 +836,7 @@ private fun ComparisonScreenDarkPreview() {
 )
 @Composable
 private fun ComparisonScreenTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ComparisonScreen(
             comparisonResult = ComparisonPreviewData.comparisonResult,
             isLoading = false,

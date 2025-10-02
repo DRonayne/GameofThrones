@@ -21,6 +21,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.darach.gameofthrones.core.domain.usecase.CharacterFilter
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 @Composable
 fun ActiveFilterChipsRow(
@@ -156,7 +157,7 @@ private fun DismissibleFilterChip(
 )
 @Composable
 private fun ActiveFilterChipsMultipleFiltersPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ActiveFilterChipsRow(
             filter = CharacterFilter(
                 onlyFavorites = true,
@@ -178,7 +179,7 @@ private fun ActiveFilterChipsMultipleFiltersPreview() {
 )
 @Composable
 private fun ActiveFilterChipsNoFiltersPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ActiveFilterChipsRow(
             filter = CharacterFilter(),
             onFilterChange = {},
@@ -194,7 +195,7 @@ private fun ActiveFilterChipsNoFiltersPreview() {
 )
 @Composable
 private fun ActiveFilterChipsDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ActiveFilterChipsRow(
             filter = CharacterFilter(
                 onlyFavorites = true,
@@ -214,7 +215,7 @@ private fun ActiveFilterChipsDarkPreview() {
 )
 @Composable
 private fun ActiveFilterChipsTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ActiveFilterChipsRow(
             filter = CharacterFilter(
                 gender = "Female",

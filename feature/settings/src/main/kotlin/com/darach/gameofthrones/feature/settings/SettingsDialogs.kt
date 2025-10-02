@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 @Composable
 internal fun ClearHistoryDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
@@ -73,7 +74,7 @@ internal fun ConfirmationDialog(
 )
 @Composable
 private fun ClearHistoryDialogPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ClearHistoryDialog(
             onConfirm = {},
             onDismiss = {}
@@ -87,7 +88,7 @@ private fun ClearHistoryDialogPreview() {
 )
 @Composable
 private fun ClearAllDataDialogPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ClearAllDataDialog(
             onConfirm = {},
             onDismiss = {}
@@ -101,7 +102,7 @@ private fun ClearAllDataDialogPreview() {
 )
 @Composable
 private fun ConfirmationDialogPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ConfirmationDialog(
             title = "Sync Data?",
             message = "This will refresh all data from the server.",
@@ -118,7 +119,7 @@ private fun ConfirmationDialogPreview() {
 )
 @Composable
 private fun ConfirmationDialogDestructivePreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ConfirmationDialog(
             title = "Delete Everything?",
             message = "This action cannot be undone. All your data will be permanently deleted.",
@@ -136,7 +137,7 @@ private fun ConfirmationDialogDestructivePreview() {
 )
 @Composable
 private fun ClearHistoryDialogDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ClearHistoryDialog(
             onConfirm = {},
             onDismiss = {}
@@ -151,7 +152,7 @@ private fun ClearHistoryDialogDarkPreview() {
 )
 @Composable
 private fun ClearAllDataDialogTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         ClearAllDataDialog(
             onConfirm = {},
             onDismiss = {}

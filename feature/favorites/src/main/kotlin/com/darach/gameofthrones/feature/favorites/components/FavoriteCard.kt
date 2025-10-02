@@ -47,6 +47,7 @@ import androidx.compose.ui.zIndex
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
 import com.darach.gameofthrones.core.ui.test.TestTags
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
@@ -332,7 +333,7 @@ private val sampleJonSnow = Character(
 )
 @Composable
 private fun FavoriteCardUnselectedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoriteCard(
             character = sampleJonSnow,
             isSelected = false,
@@ -349,7 +350,7 @@ private fun FavoriteCardUnselectedPreview() {
 )
 @Composable
 private fun FavoriteCardSelectedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoriteCard(
             character = sampleJonSnow,
             isSelected = true,
@@ -367,7 +368,7 @@ private fun FavoriteCardSelectedPreview() {
 )
 @Composable
 private fun FavoriteCardDarkUnselectedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoriteCard(
             character = sampleJonSnow,
             isSelected = false,
@@ -385,7 +386,7 @@ private fun FavoriteCardDarkUnselectedPreview() {
 )
 @Composable
 private fun FavoriteCardDarkSelectedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         FavoriteCard(
             character = sampleJonSnow,
             isSelected = true,

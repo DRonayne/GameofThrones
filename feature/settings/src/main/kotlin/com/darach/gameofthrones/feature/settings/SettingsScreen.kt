@@ -57,7 +57,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darach.gameofthrones.core.data.preferences.ThemeMode
+import com.darach.gameofthrones.core.data.preferences.UserPreferences
 import com.darach.gameofthrones.core.ui.test.TestTags
+import com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme
 
 /**
  * Settings screen with theme management, cache controls, and app information.
@@ -625,11 +627,11 @@ private fun SettingsButtonContent(
 )
 @Composable
 private fun SettingsContentPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SettingsContent(
             state = SettingsState(
-                userPreferences = com.darach.gameofthrones.core.data.preferences.UserPreferences(
-                    themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.SYSTEM,
+                userPreferences = UserPreferences(
+                    themeMode = ThemeMode.SYSTEM,
                     useDynamicColors = true,
                     cacheExpirationHours = 24,
                     searchHistory = List(15) { "Search $it" }
@@ -653,11 +655,11 @@ private fun SettingsContentPreview() {
 )
 @Composable
 private fun SettingsContentDarkPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SettingsContent(
             state = SettingsState(
-                userPreferences = com.darach.gameofthrones.core.data.preferences.UserPreferences(
-                    themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.DARK,
+                userPreferences = UserPreferences(
+                    themeMode = ThemeMode.DARK,
                     useDynamicColors = false,
                     cacheExpirationHours = 48,
                     searchHistory = List(25) { "Search $it" }
@@ -680,11 +682,11 @@ private fun SettingsContentDarkPreview() {
 )
 @Composable
 private fun SettingsContentSyncingPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SettingsContent(
             state = SettingsState(
-                userPreferences = com.darach.gameofthrones.core.data.preferences.UserPreferences(
-                    themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.LIGHT,
+                userPreferences = UserPreferences(
+                    themeMode = ThemeMode.LIGHT,
                     useDynamicColors = true,
                     cacheExpirationHours = 24,
                     searchHistory = List(10) { "Search $it" }
@@ -708,11 +710,11 @@ private fun SettingsContentSyncingPreview() {
 )
 @Composable
 private fun SettingsContentTabletPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
+    GameOfThronesTheme {
         SettingsContent(
             state = SettingsState(
-                userPreferences = com.darach.gameofthrones.core.data.preferences.UserPreferences(
-                    themeMode = com.darach.gameofthrones.core.data.preferences.ThemeMode.SYSTEM,
+                userPreferences = UserPreferences(
+                    themeMode = ThemeMode.SYSTEM,
                     useDynamicColors = true,
                     cacheExpirationHours = 24,
                     searchHistory = List(30) { "Search $it" }
