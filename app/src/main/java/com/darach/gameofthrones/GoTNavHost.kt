@@ -64,7 +64,10 @@ fun GoTNavHost(
                     onCharacterClick = { characterId ->
                         navController.navigate(CharacterDetailRoute(characterId))
                     },
-                    onBackClick = { navController.navigateUp() }
+                    onBackClick = { navController.navigateUp() },
+                    onBrowseCharactersClick = {
+                        navController.navigate(CharactersRoute)
+                    }
                 )
             }
 

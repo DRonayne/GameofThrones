@@ -166,6 +166,5 @@ private fun NavHostController.navigateToTopLevelDestination(destination: TopLeve
 private fun TopLevelDestination.toRoute(): Any = when (this) {
     TopLevelDestination.CHARACTERS -> CharactersRoute
     TopLevelDestination.FAVORITES -> FavoritesRoute
-    TopLevelDestination.COMPARISON -> ComparisonRoute
     TopLevelDestination.SETTINGS -> SettingsRoute
 }

@@ -1,8 +1,6 @@
 package com.darach.gameofthrones.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.CompareArrows
-import androidx.compose.material.icons.automirrored.outlined.CompareArrows
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Home
@@ -43,12 +41,6 @@ enum class TopLevelDestination(
         unselectedIcon = Icons.Outlined.FavoriteBorder,
         label = "Favorites",
         contentDescription = "View favorite characters"
-    ),
-    COMPARISON(
-        selectedIcon = Icons.AutoMirrored.Filled.CompareArrows,
-        unselectedIcon = Icons.AutoMirrored.Outlined.CompareArrows,
-        label = "Compare",
-        contentDescription = "Compare characters"
     ),
     SETTINGS(
         selectedIcon = Icons.Filled.Settings,

@@ -1,36 +1,46 @@
 package com.darach.gameofthrones.feature.favorites.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.darach.gameofthrones.core.domain.util.RomanNumeralConverter
+import androidx.compose.ui.zIndex
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
 import com.darach.gameofthrones.core.ui.test.TestTags
@@ -39,207 +49,136 @@ import com.darach.gameofthrones.core.ui.test.TestTags
 @Composable
 fun FavoriteCard(
     character: Character,
-    isSelectionMode: Boolean,
     isSelected: Boolean,
     callbacks: FavoriteCardCallbacks,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    val haptics = LocalHapticFeedback.current
+
+    Column(
         modifier = modifier
-            .fillMaxWidth()
             .testTag(TestTags.FAVORITE_CARD)
-            .combinedClickable(
-                onClick = {
-                    if (isSelectionMode) {
-                        callbacks.onToggleSelection()
-                    } else {
-                        callbacks.onCharacterClick()
-                    }
-                },
-                onLongClick = {
-                    if (!isSelectionMode) {
-                        callbacks.onToggleSelection()
-                    }
+            .semantics(mergeDescendants = true) {
+                contentDescription = if (isSelected) {
+                    "${character.name}, selected"
+                } else {
+                    character.name
                 }
-            ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isSelected) 8.dp else 2.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
+                stateDescription = if (isSelected) "Selected" else "Not selected"
             }
-        )
+            .clickable {
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                callbacks.onToggleSelection()
+            }
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        FavoriteCardContent(
+        FavoriteCardImage(
             character = character,
-            isSelectionMode = isSelectionMode,
+            isSelected = isSelected
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        FavoriteCardName(name = character.name)
+    }
+}
+
+@Composable
+private fun FavoriteCardImage(
+    character: Character,
+    isSelected: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val borderWidth by animateDpAsState(
+        targetValue = if (isSelected) 4.dp else 1.5.dp,
+        label = "border_width"
+    )
+
+    val borderColor by animateColorAsState(
+        targetValue = if (isSelected) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.outlineVariant
+        },
+        label = "border_color"
+    )
+
+    val elevation by animateDpAsState(
+        targetValue = if (isSelected) 4.dp else 1.dp,
+        label = "elevation"
+    )
+
+    Box(
+        modifier = modifier
+            .size(96.dp)
+            .shadow(
+                elevation = elevation,
+                shape = CircleShape
+            )
+            .border(
+                width = borderWidth,
+                color = borderColor,
+                shape = CircleShape
+            )
+            .padding(2.dp)
+    ) {
+        PortraitImage(
+            imageUrl = character.characterImageUrl,
+            contentDescription = character.name,
+            modifier = Modifier
+                .size(92.dp)
+                .clip(CircleShape)
+        )
+
+        SelectionCheckmark(
             isSelected = isSelected,
-            callbacks = callbacks
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .zIndex(1f)
         )
     }
 }
 
 @Composable
-private fun FavoriteCardContent(
-    character: Character,
-    isSelectionMode: Boolean,
-    isSelected: Boolean,
-    callbacks: FavoriteCardCallbacks,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            PortraitImage(
-                imageUrl = character.characterImageUrl,
-                contentDescription = character.name,
-                modifier = Modifier.width(80.dp)
-            )
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                FavoriteCardHeader(
-                    character = character,
-                    isSelectionMode = isSelectionMode,
-                    onRemoveFavorite = callbacks.onRemoveFavorite
-                )
-
-                FavoriteCardSeasonBadges(seasons = character.tvSeriesSeasons)
-
-                FavoriteCardCulture(culture = character.culture)
-            }
-        }
-
-        if (isSelectionMode) {
-            Checkbox(
-                checked = isSelected,
-                onCheckedChange = { callbacks.onToggleSelection() },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun FavoriteCardHeader(
-    character: Character,
-    isSelectionMode: Boolean,
-    onRemoveFavorite: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = character.name.ifBlank { "Unknown" },
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            if (character.isDead) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "\u271D",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "Deceased",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
-        }
-
-        if (!isSelectionMode) {
-            IconButton(
-                onClick = onRemoveFavorite,
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Remove from favorites",
-                    tint = MaterialTheme.colorScheme.error
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun FavoriteCardSeasonBadges(seasons: List<Int>, modifier: Modifier = Modifier) {
-    if (seasons.isNotEmpty()) {
-        Column(modifier = modifier) {
-            Spacer(modifier = Modifier.height(12.dp))
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                seasons.sorted().take(4).forEach { season ->
-                    SeasonBadge(season = season)
-                }
-                if (seasons.size > 4) {
-                    AssistChip(
-                        onClick = { },
-                        label = {
-                            Text(
-                                text = "+${seasons.size - 4}",
-                                style = MaterialTheme.typography.labelMedium
-                            )
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun SeasonBadge(season: Int, modifier: Modifier = Modifier) {
-    AssistChip(
-        onClick = { },
-        label = {
-            Text(
-                text = RomanNumeralConverter.toRomanNumeral(season),
-                style = MaterialTheme.typography.labelMedium
-            )
-        },
+private fun SelectionCheckmark(isSelected: Boolean, modifier: Modifier = Modifier) {
+    AnimatedVisibility(
+        visible = isSelected,
+        enter = scaleIn() + fadeIn(),
+        exit = scaleOut() + fadeOut(),
         modifier = modifier
-    )
+    ) {
+        Icon(
+            imageVector = Icons.Default.CheckCircle,
+            contentDescription = "Selected",
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .size(28.dp)
+                .background(
+                    MaterialTheme.colorScheme.surface,
+                    shape = CircleShape
+                )
+                .padding(2.dp)
+        )
+    }
 }
 
 @Composable
-private fun FavoriteCardCulture(culture: String, modifier: Modifier = Modifier) {
-    if (culture.isNotBlank()) {
-        Column(modifier = modifier) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = culture,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+private fun FavoriteCardName(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = name.ifBlank { "Unknown" },
+        style = MaterialTheme.typography.bodySmall,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
+                shape = RoundedCornerShape(8.dp)
             )
-        }
-    }
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+    )
 }
 
 // Sample data for previews
@@ -265,168 +204,72 @@ private val sampleJonSnow = Character(
     isDead = false
 )
 
-private val sampleAryaStark = Character(
-    id = "148",
-    name = "Arya Stark",
-    gender = "Female",
-    culture = "Northmen",
-    born = "In 289 AC",
-    died = "",
-    titles = listOf("Princess"),
-    aliases = listOf("Arya Horseface", "Arya Underfoot", "Cat of the Canals", "No One"),
-    father = "",
-    mother = "",
-    spouse = "",
-    allegiances = listOf(),
-    books = listOf(),
-    povBooks = listOf(),
-    tvSeries = listOf("Season 1", "Season 2", "Season 3", "Season 4", "Season 5"),
-    tvSeriesSeasons = listOf(1, 2, 3, 4, 5, 6, 7, 8),
-    playedBy = listOf("Maisie Williams"),
-    isFavorite = true,
-    isDead = false
-)
-
-private val sampleNedStark = Character(
-    id = "339",
-    name = "Eddard Stark",
-    gender = "Male",
-    culture = "Northmen",
-    born = "In 263 AC",
-    died = "In 299 AC, at King's Landing",
-    titles = listOf("Lord of Winterfell", "Warden of the North", "Hand of the King"),
-    aliases = listOf("Ned", "The Ned", "The Quiet Wolf"),
-    father = "",
-    mother = "",
-    spouse = "Catelyn Tully",
-    allegiances = listOf(),
-    books = listOf(),
-    povBooks = listOf(),
-    tvSeries = listOf("Season 1"),
-    tvSeriesSeasons = listOf(1),
-    playedBy = listOf("Sean Bean"),
-    isFavorite = true,
-    isDead = true
-)
-
 // Previews
 @androidx.compose.ui.tooling.preview.Preview(
-    name = "Favorite Card - Normal Mode Alive",
+    name = "Favorite Card - Unselected",
     showBackground = true
 )
 @Composable
-private fun FavoriteCardNormalAlivePreview() {
+private fun FavoriteCardUnselectedPreview() {
     com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
         FavoriteCard(
             character = sampleJonSnow,
-            isSelectionMode = false,
             isSelected = false,
             callbacks = FavoriteCardCallbacks(
-                onCharacterClick = {},
-                onToggleSelection = {},
-                onRemoveFavorite = {}
+                onToggleSelection = {}
             )
         )
     }
 }
 
 @androidx.compose.ui.tooling.preview.Preview(
-    name = "Favorite Card - Normal Mode Deceased",
+    name = "Favorite Card - Selected",
     showBackground = true
 )
 @Composable
-private fun FavoriteCardNormalDeceasedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
-        FavoriteCard(
-            character = sampleNedStark,
-            isSelectionMode = false,
-            isSelected = false,
-            callbacks = FavoriteCardCallbacks(
-                onCharacterClick = {},
-                onToggleSelection = {},
-                onRemoveFavorite = {}
-            )
-        )
-    }
-}
-
-@androidx.compose.ui.tooling.preview.Preview(
-    name = "Favorite Card - Selection Mode Unselected",
-    showBackground = true
-)
-@Composable
-private fun FavoriteCardSelectionUnselectedPreview() {
-    com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
-        FavoriteCard(
-            character = sampleAryaStark,
-            isSelectionMode = true,
-            isSelected = false,
-            callbacks = FavoriteCardCallbacks(
-                onCharacterClick = {},
-                onToggleSelection = {},
-                onRemoveFavorite = {}
-            )
-        )
-    }
-}
-
-@androidx.compose.ui.tooling.preview.Preview(
-    name = "Favorite Card - Selection Mode Selected",
-    showBackground = true
-)
-@Composable
-private fun FavoriteCardSelectionSelectedPreview() {
+private fun FavoriteCardSelectedPreview() {
     com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
         FavoriteCard(
             character = sampleJonSnow,
-            isSelectionMode = true,
             isSelected = true,
             callbacks = FavoriteCardCallbacks(
-                onCharacterClick = {},
-                onToggleSelection = {},
-                onRemoveFavorite = {}
+                onToggleSelection = {}
             )
         )
     }
 }
 
 @androidx.compose.ui.tooling.preview.Preview(
-    name = "Favorite Card - Dark Mode",
+    name = "Favorite Card - Dark Mode Unselected",
     showBackground = true,
     uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-private fun FavoriteCardDarkPreview() {
+private fun FavoriteCardDarkUnselectedPreview() {
     com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
         FavoriteCard(
-            character = sampleNedStark,
-            isSelectionMode = false,
+            character = sampleJonSnow,
             isSelected = false,
             callbacks = FavoriteCardCallbacks(
-                onCharacterClick = {},
-                onToggleSelection = {},
-                onRemoveFavorite = {}
+                onToggleSelection = {}
             )
         )
     }
 }
 
 @androidx.compose.ui.tooling.preview.Preview(
-    name = "Favorite Card - Tablet",
+    name = "Favorite Card - Dark Mode Selected",
     showBackground = true,
-    device = "spec:width=1280dp,height=800dp,dpi=240"
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-private fun FavoriteCardTabletPreview() {
+private fun FavoriteCardDarkSelectedPreview() {
     com.darach.gameofthrones.core.ui.theme.GameOfThronesTheme {
         FavoriteCard(
-            character = sampleAryaStark,
-            isSelectionMode = false,
-            isSelected = false,
+            character = sampleJonSnow,
+            isSelected = true,
             callbacks = FavoriteCardCallbacks(
-                onCharacterClick = {},
-                onToggleSelection = {},
-                onRemoveFavorite = {}
+                onToggleSelection = {}
             )
         )
     }
