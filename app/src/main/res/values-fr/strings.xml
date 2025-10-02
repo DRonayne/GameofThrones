@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Game of Thrones</string>
+
+    <!-- Navigation -->
+    <string name="nav_characters">Personnages</string>
+    <string name="nav_characters_description">Écran des personnages</string>
+    <string name="nav_favorites">Favoris</string>
+    <string name="nav_favorites_description">Écran des favoris</string>
+    <string name="nav_settings">Paramètres</string>
+    <string name="nav_settings_description">Écran des paramètres</string>
+</resources>

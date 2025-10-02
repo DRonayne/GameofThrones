@@ -1,0 +1,201 @@
+<resources>
+    <string name="app_name">Game of Thrones</string>
+
+    <!-- Navigation -->
+    <string name="nav_characters">Personnages</string>
+    <string name="nav_characters_description">Parcourir les personnages</string>
+    <string name="nav_favorites">Favoris</string>
+    <string name="nav_favorites_description">Voir les personnages favoris</string>
+    <string name="nav_settings">Paramètres</string>
+    <string name="nav_settings_description">Paramètres de l\'application</string>
+
+    <!-- Search -->
+    <string name="search_placeholder">Rechercher des personnages</string>
+    <string name="search_content_description">Rechercher</string>
+    <string name="clear_search">Effacer la recherche</string>
+    <string name="remove_search">Supprimer la recherche : %s</string>
+    <string name="recent_search">Recherche récente : %s</string>
+
+    <!-- Filter Labels -->
+    <string name="filter_favorites">Favoris</string>
+    <string name="filter_deceased">Décédé</string>
+    <string name="filter_alive">Vivant</string>
+    <string name="filter_tv_appearances">Apparitions TV</string>
+    <string name="filter_all">Tous les filtres</string>
+    <string name="filter_options">Options de filtre</string>
+    <string name="remove_filter">Supprimer le filtre %s</string>
+    <string name="remove_favorites_filter">Supprimer le filtre des favoris</string>
+    <string name="filter_season">S%d</string>
+    <string name="filter_season_label">Saison %d</string>
+
+    <!-- Filter Sections -->
+    <string name="filters">Filtres</string>
+    <string name="filter_status">Statut</string>
+    <string name="filter_gender">Genre</string>
+    <string name="filter_culture">Culture</string>
+    <string name="filter_seasons">Saisons</string>
+    <string name="clear_all">Tout effacer</string>
+    <string name="close">Fermer</string>
+
+    <!-- Gender Filters -->
+    <string name="gender_male">Homme</string>
+    <string name="gender_female">Femme</string>
+
+    <!-- Sort Options -->
+    <string name="sort_label">Trier : %s</string>
+    <string name="sort_options">Options de tri</string>
+    <string name="sort_name_asc">Nom (A-Z)</string>
+    <string name="sort_name_desc">Nom (Z-A)</string>
+    <string name="sort_culture_asc">Culture (A-Z)</string>
+    <string name="sort_culture_desc">Culture (Z-A)</string>
+    <string name="sort_death_oldest">Date de décès (Plus ancien d\'abord)</string>
+    <string name="sort_death_newest">Date de décès (Plus récent d\'abord)</string>
+    <string name="sort_seasons_fewest">Nombre de saisons (Moins d\'abord)</string>
+    <string name="sort_seasons_most">Nombre de saisons (Plus d\'abord)</string>
+    <string name="sort_favorites_first">Favoris en premier</string>
+
+    <!-- Sort Options - Short Labels -->
+    <string name="sort_name_asc_short">Nom ↑</string>
+    <string name="sort_name_desc_short">Nom ↓</string>
+    <string name="sort_culture_asc_short">Culture ↑</string>
+    <string name="sort_culture_desc_short">Culture ↓</string>
+    <string name="sort_death_oldest_short">Décès ↑</string>
+    <string name="sort_death_newest_short">Décès ↓</string>
+    <string name="sort_seasons_fewest_short">Saisons ↑</string>
+    <string name="sort_seasons_most_short">Saisons ↓</string>
+    <string name="sort_favorites_first_short">Fav ★</string>
+
+    <!-- Character Status -->
+    <string name="status_deceased">Décédé</string>
+    <string name="status_alive">Vivant</string>
+    <string name="status_deceased_symbol">✝ Décédé</string>
+    <string name="status_dead">Mort</string>
+
+    <!-- Common Actions -->
+    <string name="retry">Réessayer</string>
+    <string name="error">Erreur</string>
+    <string name="loading">Chargement</string>
+    <string name="back">Retour</string>
+    <string name="confirm">Confirmer</string>
+    <string name="cancel">Annuler</string>
+    <string name="undo">Annuler</string>
+
+    <!-- Characters Screen -->
+    <string name="loading_characters">Chargement des personnages</string>
+    <string name="no_characters_found">Aucun personnage trouvé</string>
+    <string name="no_characters_match_filters">Aucun personnage ne correspond à vos filtres</string>
+
+    <!-- Offline -->
+    <string name="offline">Hors ligne</string>
+
+    <!-- Character Detail -->
+    <string name="navigate_back">Retour</string>
+    <string name="add_to_favorites">Ajouter aux favoris</string>
+    <string name="remove_from_favorites">Retirer des favoris</string>
+    <string name="added_to_favorites">Ajouté aux favoris</string>
+    <string name="removed_from_favorites">Retiré des favoris</string>
+    <string name="loading_character_details">Chargement des détails du personnage</string>
+    <string name="loading_character">Chargement du personnage…</string>
+
+    <!-- Character Detail Sections -->
+    <string name="basic_information">Informations de base</string>
+    <string name="label_gender">Genre</string>
+    <string name="label_culture">Culture</string>
+    <string name="label_born">Né(e)</string>
+    <string name="label_died">Décédé(e)</string>
+    <string name="titles_section">Titres (%d)</string>
+    <string name="also_known_as">Également connu(e) sous le nom de</string>
+    <string name="tv_series_appearances">Apparitions dans la série TV</string>
+    <string name="season_roman">Saison %s</string>
+    <string name="played_by">Interprété par</string>
+    <string name="expand">Développer</string>
+    <string name="collapse">Réduire</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Favoris (%d)</string>
+    <string name="favorites_selected">%d sélectionné(s)</string>
+    <string name="cancel_selection">Annuler la sélection</string>
+    <string name="compare_selected">Comparer %d personnages sélectionnés</string>
+    <string name="select_2_to_compare">Sélectionnez 2 personnages à comparer, %d sélectionné(s)</string>
+    <string name="remove_selected_favorites">Retirer %d favoris sélectionnés</string>
+    <string name="more_options">Plus d\'options</string>
+    <string name="deselect_all">Tout désélectionner</string>
+    <string name="select_all">Tout sélectionner</string>
+    <string name="loading_favorites">Chargement des favoris</string>
+    <string name="favorites_count">%d favoris</string>
+    <string name="no_favorites_yet">Aucun favori pour le moment</string>
+    <string name="no_favorites_description">Découvrez et sauvegardez vos personnages préférés de Game of Thrones</string>
+    <string name="no_favorites_description_long">Aucun favori pour le moment. Découvrez et sauvegardez vos personnages préférés de Game of Thrones.</string>
+    <string name="browse_characters">Parcourir les personnages</string>
+    <string name="error_loading_favorites">Erreur lors du chargement des favoris : %s</string>
+
+    <!-- Comparison Screen -->
+    <string name="character_comparison">Comparaison de personnages</string>
+    <string name="vs">VS</string>
+    <string name="tale_of_the_tape">FACE À FACE</string>
+    <string name="no_comparison_data">Aucune donnée de comparaison disponible</string>
+    <string name="selected">Sélectionné</string>
+    <string name="also_known_as_alias">Également connu(e) sous le nom de : %s</string>
+
+    <!-- Settings Screen -->
+    <string name="settings">Paramètres</string>
+    <string name="theme_section">Thème</string>
+    <string name="cache_management">Gestion du cache</string>
+    <string name="data_sync">Synchronisation des données</string>
+    <string name="about">À propos</string>
+
+    <!-- Theme Settings -->
+    <string name="theme_mode">Mode du thème</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_light_description">Toujours utiliser le thème clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="theme_dark_description">Toujours utiliser le thème sombre</string>
+    <string name="theme_system">Par défaut du système</string>
+    <string name="theme_system_description">Suivre le thème du système</string>
+    <string name="dynamic_colors">Couleurs dynamiques</string>
+    <string name="dynamic_colors_description">Utiliser les couleurs dynamiques de Material You</string>
+    <string name="dynamic_colors_info">Les couleurs dynamiques nécessitent Android 12+</string>
+
+    <!-- Cache Settings -->
+    <string name="cache_expiration">Expiration du cache</string>
+    <string name="cache_expiration_hours">%d heures</string>
+    <string name="clear_cache">Vider le cache</string>
+    <string name="clear_cache_description">Supprimer toutes les données en cache</string>
+    <string name="clear_cache_dialog_title">Vider le cache ?</string>
+    <string name="clear_cache_dialog_message">Cela supprimera toutes les données de personnages en cache. L\'application devra télécharger à nouveau les données lorsque vous parcourez les personnages.</string>
+
+    <!-- Data Sync Settings -->
+    <string name="sync_data">Synchroniser les données</string>
+    <string name="sync_data_description">Actualiser toutes les données du serveur</string>
+    <string name="sync_data_dialog_title">Synchroniser les données ?</string>
+    <string name="sync_data_dialog_message">Cela actualisera toutes les données du serveur.</string>
+
+    <!-- Search History Settings -->
+    <string name="search_history">Historique de recherche</string>
+    <string name="search_history_items">%d éléments</string>
+    <string name="clear_search_history">Effacer l\'historique de recherche</string>
+    <string name="clear_search_history_description">Supprimer toutes les requêtes de recherche</string>
+    <string name="clear_search_history_dialog_title">Effacer l\'historique de recherche ?</string>
+    <string name="clear_search_history_dialog_message">Cela supprimera tout votre historique de recherche.</string>
+
+    <!-- Clear All Data -->
+    <string name="clear_all_data">Effacer toutes les données</string>
+    <string name="clear_all_data_description">Réinitialiser toutes les préférences et vider le cache</string>
+    <string name="clear_all_data_dialog_title">Effacer toutes les données ?</string>
+    <string name="clear_all_data_dialog_message">Cela réinitialisera tous les paramètres, videra votre cache et supprimera votre historique de recherche. Vos favoris seront préservés.</string>
+
+    <!-- About Settings -->
+    <string name="app_version">Version de l\'application</string>
+    <string name="build_number">Numéro de build</string>
+    <string name="app_full_title">Encyclopédie des personnages de Game of Thrones</string>
+    <string name="app_description">Créée avec Jetpack Compose et Material 3</string>
+
+    <!-- Preview/Test Content Descriptions -->
+    <string name="character_preview_1">Personnage 1</string>
+    <string name="character_preview_2">Personnage 2</string>
+    <string name="character_preview_3">Personnage 3</string>
+
+    <!-- Symbols/Emojis -->
+    <string name="crown_emoji">👑</string>
+    <string name="warning_emoji">⚠</string>
+</resources>
