@@ -68,10 +68,10 @@ import com.darach.gameofthrones.feature.favorites.components.FavoritesTopBarCall
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    onCharacterClick: (String) -> Unit,
     @Suppress("UnusedParameter") onBackClick: () -> Unit,
     onBrowseCharactersClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onCompareCharacters: (String, String) -> Unit = { _, _ -> },
     viewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -95,7 +95,7 @@ fun FavoritesScreen(
                             0, 1 -> viewModel.handleIntent(FavoritesIntent.CompareSelected)
                             2 -> {
                                 val selectedList = state.selectedIds.toList()
-                                onCharacterClick("compare/${selectedList[0]}/${selectedList[1]}")
+                                onCompareCharacters(selectedList[0], selectedList[1])
                                 viewModel.handleIntent(FavoritesIntent.ExitSelectionMode)
                             }
                             else -> viewModel.handleIntent(FavoritesIntent.CompareSelected)

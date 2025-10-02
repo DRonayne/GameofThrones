@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -16,10 +17,7 @@ import androidx.navigation.toRoute
 import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import com.darach.gameofthrones.feature.characterdetail.CharacterDetailScreen
 import com.darach.gameofthrones.feature.characters.CharactersScreen
-import com.darach.gameofthrones.feature.comparison.ComparisonIntent
 import com.darach.gameofthrones.feature.comparison.ComparisonScreen
-import com.darach.gameofthrones.feature.comparison.ComparisonSelectionCallbacks
-import com.darach.gameofthrones.feature.comparison.ComparisonSelectionScreen
 import com.darach.gameofthrones.feature.comparison.ComparisonViewModel
 import com.darach.gameofthrones.feature.favorites.FavoritesScreen
 import com.darach.gameofthrones.feature.settings.SettingsScreen
@@ -53,20 +51,23 @@ fun GoTNavHost(
                 )
             }
 
-            composable<ComparisonRoute> {
+            composable<ComparisonRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ComparisonRoute>()
                 ComparisonRouteContent(
-                    onNavigateUp = { navController.navigateUp() }
+                    characterId1 = route.characterId1,
+                    characterId2 = route.characterId2,
+                    onBackClick = { navController.navigateUp() }
                 )
             }
 
             composable<FavoritesRoute> {
                 FavoritesScreen(
-                    onCharacterClick = { characterId ->
-                        navController.navigate(CharacterDetailRoute(characterId))
-                    },
                     onBackClick = { navController.navigateUp() },
                     onBrowseCharactersClick = {
                         navController.navigate(CharactersRoute)
+                    },
+                    onCompareCharacters = { char1Id, char2Id ->
+                        navController.navigate(ComparisonRoute(char1Id, char2Id))
                     }
                 )
             }
@@ -92,38 +93,21 @@ fun GoTNavHost(
 
 @Composable
 private fun ComparisonRouteContent(
-    onNavigateUp: () -> Unit,
+    characterId1: String,
+    characterId2: String,
+    onBackClick: () -> Unit,
     viewModel: ComparisonViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if (state.comparisonResult != null) {
-        ComparisonScreen(
-            comparisonResult = state.comparisonResult,
-            isLoading = state.isLoading,
-            error = state.error,
-            onBackClick = {
-                viewModel.handleIntent(ComparisonIntent.ExitComparison)
-            }
-        )
-    } else {
-        ComparisonSelectionScreen(
-            characters = state.favoriteCharacters,
-            selectedCharacters = state.selectedCharacters,
-            callbacks = ComparisonSelectionCallbacks(
-                onCharacterToggle = { character ->
-                    viewModel.handleIntent(
-                        ComparisonIntent.ToggleCharacterSelection(character)
-                    )
-                },
-                onClearSelection = {
-                    viewModel.handleIntent(ComparisonIntent.ClearSelection)
-                },
-                onCompareClick = {
-                    viewModel.handleIntent(ComparisonIntent.StartComparison)
-                },
-                onBackClick = onNavigateUp
-            )
-        )
+    LaunchedEffect(characterId1, characterId2) {
+        viewModel.compareCharacters(characterId1, characterId2)
     }
+
+    ComparisonScreen(
+        comparisonResult = state.comparisonResult,
+        isLoading = state.isLoading,
+        error = state.error,
+        onBackClick = onBackClick
+    )
 }

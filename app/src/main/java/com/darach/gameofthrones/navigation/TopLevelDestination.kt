@@ -19,7 +19,7 @@ object CharactersRoute
 object FavoritesRoute
 
 @Serializable
-object ComparisonRoute
+data class ComparisonRoute(val characterId1: String, val characterId2: String)
 
 @Serializable
 object SettingsRoute

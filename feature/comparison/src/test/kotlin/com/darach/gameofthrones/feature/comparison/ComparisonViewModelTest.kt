@@ -1,10 +1,9 @@
 package com.darach.gameofthrones.feature.comparison
 
 import com.darach.gameofthrones.core.analytics.AnalyticsService
-import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
+import com.darach.gameofthrones.core.domain.usecase.GetCharacterByIdUseCase
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.feature.comparison.ComparisonDiffCalculator
-import com.darach.gameofthrones.feature.comparison.ComparisonIntent
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +19,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -30,7 +28,7 @@ class ComparisonViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var viewModel: ComparisonViewModel
     private lateinit var diffCalculator: ComparisonDiffCalculator
-    private lateinit var getFavoritesUseCase: GetFavoritesUseCase
+    private lateinit var getCharacterByIdUseCase: GetCharacterByIdUseCase
     private lateinit var analyticsService: AnalyticsService
 
     private val testCharacter1 = Character(
@@ -59,19 +57,13 @@ class ComparisonViewModelTest {
         gender = "Female"
     )
 
-    private val testCharacter3 = testCharacter1.copy(
-        id = "3",
-        name = "Sansa Stark"
-    )
-
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         diffCalculator = ComparisonDiffCalculator()
-        getFavoritesUseCase = mockk()
+        getCharacterByIdUseCase = mockk()
         analyticsService = mockk(relaxed = true)
-        every { getFavoritesUseCase() } returns flowOf(emptyList())
-        viewModel = ComparisonViewModel(diffCalculator, getFavoritesUseCase, analyticsService)
+        viewModel = ComparisonViewModel(diffCalculator, getCharacterByIdUseCase, analyticsService)
     }
 
     @After
@@ -84,142 +76,60 @@ class ComparisonViewModelTest {
         val state = viewModel.state.value
 
         assertEquals(0, state.selectedCharacters.size)
-        assertFalse(state.isSelectionMode)
         assertNull(state.comparisonResult)
         assertFalse(state.isLoading)
         assertNull(state.error)
     }
 
     @Test
-    fun `enter selection mode updates state`() {
-        viewModel.handleIntent(ComparisonIntent.EnterSelectionMode)
+    fun `compareCharacters with valid IDs succeeds`() = runTest {
+        every { getCharacterByIdUseCase("1") } returns flowOf(testCharacter1)
+        every { getCharacterByIdUseCase("2") } returns flowOf(testCharacter2)
 
-        assertTrue(viewModel.state.value.isSelectionMode)
-    }
-
-    @Test
-    fun `exit selection mode clears selection`() {
-        viewModel.handleIntent(ComparisonIntent.EnterSelectionMode)
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.ExitSelectionMode)
-
-        val state = viewModel.state.value
-        assertFalse(state.isSelectionMode)
-        assertEquals(0, state.selectedCharacters.size)
-    }
-
-    @Test
-    fun `toggle character adds to selection`() {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-
-        val state = viewModel.state.value
-        assertEquals(1, state.selectedCharacters.size)
-        assertEquals(testCharacter1.id, state.selectedCharacters[0].id)
-    }
-
-    @Test
-    fun `toggle character removes from selection if already selected`() {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-
-        assertEquals(0, viewModel.state.value.selectedCharacters.size)
-    }
-
-    @Test
-    fun `cannot select more than maximum characters`() {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter2))
-
-        assertEquals(2, viewModel.state.value.selectedCharacters.size)
-
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter3))
-
-        assertEquals(2, viewModel.state.value.selectedCharacters.size)
-    }
-
-    @Test
-    fun `clear selection empties selected characters`() {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter2))
-        viewModel.handleIntent(ComparisonIntent.ClearSelection)
-
-        assertEquals(0, viewModel.state.value.selectedCharacters.size)
-    }
-
-    @Test
-    fun `start comparison with two characters succeeds`() = runTest {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter2))
-        viewModel.handleIntent(ComparisonIntent.StartComparison)
-
+        viewModel.compareCharacters("1", "2")
         advanceUntilIdle()
 
         val state = viewModel.state.value
         assertNotNull(state.comparisonResult)
         assertEquals(2, state.comparisonResult?.characters?.size)
+        assertEquals(2, state.selectedCharacters.size)
         assertFalse(state.isLoading)
         assertNull(state.error)
     }
 
     @Test
-    fun `start comparison with one character fails`() = runTest {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.StartComparison)
+    fun `compareCharacters with null character shows error`() = runTest {
+        every { getCharacterByIdUseCase("1") } returns flowOf(testCharacter1)
+        every { getCharacterByIdUseCase("2") } returns flowOf(null)
 
+        viewModel.compareCharacters("1", "2")
         advanceUntilIdle()
 
         val state = viewModel.state.value
         assertNull(state.comparisonResult)
         assertNotNull(state.error)
-        assertTrue(state.error!!.contains("2 characters"))
-    }
-
-    @Test
-    fun `exit comparison clears result and selection`() = runTest {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter2))
-        viewModel.handleIntent(ComparisonIntent.StartComparison)
-        advanceUntilIdle()
-
-        viewModel.handleIntent(ComparisonIntent.ExitComparison)
-
-        val state = viewModel.state.value
-        assertNull(state.comparisonResult)
-        assertEquals(0, state.selectedCharacters.size)
-    }
-
-    @Test
-    fun `switch character updates selection and recalculates comparison`() = runTest {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter2))
-        viewModel.handleIntent(ComparisonIntent.StartComparison)
-        advanceUntilIdle()
-
-        viewModel.handleIntent(
-            ComparisonIntent.SwitchCharacter(
-                testCharacter1,
-                testCharacter3
-            )
-        )
-        advanceUntilIdle()
-
-        val state = viewModel.state.value
-        assertNotNull(state.comparisonResult)
-        assertTrue(state.selectedCharacters.none { it.id == testCharacter1.id })
-        assertTrue(state.selectedCharacters.any { it.id == testCharacter3.id })
-    }
-
-    @Test
-    fun `start comparison completes and clears loading state`() = runTest {
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter1))
-        viewModel.handleIntent(ComparisonIntent.ToggleCharacterSelection(testCharacter2))
-        viewModel.handleIntent(ComparisonIntent.StartComparison)
-
-        advanceUntilIdle()
-
-        val state = viewModel.state.value
-        assertNotNull(state.comparisonResult)
+        assertEquals("Could not load characters for comparison", state.error)
         assertFalse(state.isLoading)
-        assertNull(state.error)
+    }
+
+    @Test
+    fun `compareCharacters handles calculator exception`() = runTest {
+        val badCalculator = mockk<ComparisonDiffCalculator>()
+        every { badCalculator.calculate(any()) } throws IllegalArgumentException("Test error")
+        every { getCharacterByIdUseCase("1") } returns flowOf(testCharacter1)
+        every { getCharacterByIdUseCase("2") } returns flowOf(testCharacter2)
+
+        val testViewModel = ComparisonViewModel(
+            badCalculator,
+            getCharacterByIdUseCase,
+            analyticsService
+        )
+        testViewModel.compareCharacters("1", "2")
+        advanceUntilIdle()
+
+        val state = testViewModel.state.value
+        assertNull(state.comparisonResult)
+        assertNotNull(state.error)
+        assertFalse(state.isLoading)
     }
 }

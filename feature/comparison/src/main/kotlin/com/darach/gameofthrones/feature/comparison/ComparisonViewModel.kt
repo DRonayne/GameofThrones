@@ -5,27 +5,26 @@ import androidx.lifecycle.viewModelScope
 import com.darach.gameofthrones.core.analytics.AnalyticsEvents
 import com.darach.gameofthrones.core.analytics.AnalyticsParams
 import com.darach.gameofthrones.core.analytics.AnalyticsService
-import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
-import com.darach.gameofthrones.core.model.Character
+import com.darach.gameofthrones.core.domain.usecase.GetCharacterByIdUseCase
 import com.darach.gameofthrones.feature.comparison.ComparisonDiffCalculator
-import com.darach.gameofthrones.feature.comparison.ComparisonIntent
 import com.darach.gameofthrones.feature.comparison.ComparisonState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
  * ViewModel for comparison feature following MVI pattern.
- * Manages selection state and comparison result calculation.
+ * Manages comparison result calculation for two characters.
  */
 @HiltViewModel
 class ComparisonViewModel @Inject constructor(
     private val diffCalculator: ComparisonDiffCalculator,
-    private val getFavoritesUseCase: GetFavoritesUseCase,
+    private val getCharacterByIdUseCase: GetCharacterByIdUseCase,
     private val analyticsService: AnalyticsService
 ) : ViewModel() {
 
@@ -37,142 +36,61 @@ class ComparisonViewModel @Inject constructor(
             screenName = "Comparison",
             screenClass = "ComparisonScreen"
         )
-        loadFavoriteCharacters()
     }
 
-    private fun loadFavoriteCharacters() {
+    /**
+     * Load and compare two characters by their IDs
+     */
+    fun compareCharacters(characterId1: String, characterId2: String) {
         viewModelScope.launch {
-            getFavoritesUseCase().collect { favorites ->
-                _state.update { it.copy(favoriteCharacters = favorites) }
-            }
-        }
-    }
-
-    fun handleIntent(intent: ComparisonIntent) {
-        when (intent) {
-            is ComparisonIntent.EnterSelectionMode -> enterSelectionMode()
-            is ComparisonIntent.ExitSelectionMode -> exitSelectionMode()
-            is ComparisonIntent.ToggleCharacterSelection -> toggleCharacterSelection(
-                intent.character
-            )
-            is ComparisonIntent.ClearSelection -> clearSelection()
-            is ComparisonIntent.StartComparison -> startComparison()
-            is ComparisonIntent.ExitComparison -> exitComparison()
-            is ComparisonIntent.SwitchCharacter -> switchCharacter(
-                intent.oldCharacter,
-                intent.newCharacter
-            )
-        }
-    }
-
-    private fun enterSelectionMode() {
-        _state.update { it.copy(isSelectionMode = true) }
-    }
-
-    private fun exitSelectionMode() {
-        _state.update {
-            it.copy(
-                isSelectionMode = false,
-                selectedCharacters = emptyList()
-            )
-        }
-    }
-
-    private fun toggleCharacterSelection(character: Character) {
-        _state.update { currentState ->
-            val currentSelection = currentState.selectedCharacters
-            val isSelected = currentSelection.any { it.id == character.id }
-
-            val newSelection = if (isSelected) {
-                analyticsService.logEvent(
-                    AnalyticsEvents.COMPARISON_CHARACTER_REMOVED,
-                    mapOf(
-                        AnalyticsParams.CHARACTER_ID to character.id,
-                        AnalyticsParams.CHARACTER_NAME to
-                            (character.name.takeIf { it.isNotBlank() } ?: "Unknown")
-                    )
-                )
-                currentSelection.filter { it.id != character.id }
-            } else {
-                if (currentSelection.size < ComparisonState.MAX_SELECTION_SIZE) {
-                    analyticsService.logEvent(
-                        AnalyticsEvents.COMPARISON_CHARACTER_ADDED,
-                        mapOf(
-                            AnalyticsParams.CHARACTER_ID to character.id,
-                            AnalyticsParams.CHARACTER_NAME to
-                                (character.name.takeIf { it.isNotBlank() } ?: "Unknown")
-                        )
-                    )
-                    currentSelection + character
-                } else {
-                    currentSelection
-                }
-            }
-
-            currentState.copy(selectedCharacters = newSelection)
-        }
-    }
-
-    private fun clearSelection() {
-        _state.update { it.copy(selectedCharacters = emptyList()) }
-        analyticsService.logEvent(AnalyticsEvents.COMPARISON_CLEARED)
-    }
-
-    private fun startComparison() {
-        viewModelScope.launch {
-            val selectedCharacters = _state.value.selectedCharacters
-
-            if (selectedCharacters.size != ComparisonState.MAX_SELECTION_SIZE) {
-                _state.update {
-                    it.copy(error = "Please select 2 characters to compare")
-                }
-                return@launch
-            }
-
             _state.update { it.copy(isLoading = true, error = null) }
 
             try {
-                val result = diffCalculator.calculate(selectedCharacters)
-                _state.update {
-                    it.copy(
-                        comparisonResult = result,
-                        isLoading = false
-                    )
+                combine(
+                    getCharacterByIdUseCase(characterId1),
+                    getCharacterByIdUseCase(characterId2)
+                ) { char1, char2 ->
+                    Pair(char1, char2)
+                }.collect { (char1, char2) ->
+                    if (char1 != null && char2 != null) {
+                        val characters = listOf(char1, char2)
+                        val result = diffCalculator.calculate(characters)
+                        _state.update {
+                            it.copy(
+                                comparisonResult = result,
+                                selectedCharacters = characters,
+                                isLoading = false,
+                                error = null
+                            )
+                        }
+                        analyticsService.logEvent(
+                            AnalyticsEvents.COMPARISON_STARTED,
+                            mapOf(AnalyticsParams.COMPARISON_COUNT to 2)
+                        )
+                    } else {
+                        _state.update {
+                            it.copy(
+                                error = "Could not load characters for comparison",
+                                isLoading = false
+                            )
+                        }
+                    }
                 }
-                analyticsService.logEvent(
-                    AnalyticsEvents.COMPARISON_STARTED,
-                    mapOf(AnalyticsParams.COMPARISON_COUNT to selectedCharacters.size)
-                )
             } catch (e: IllegalArgumentException) {
                 _state.update {
                     it.copy(
-                        error = e.message ?: "Invalid comparison parameters",
+                        error = e.message ?: "Invalid character comparison",
+                        isLoading = false
+                    )
+                }
+            } catch (e: IllegalStateException) {
+                _state.update {
+                    it.copy(
+                        error = e.message ?: "Failed to compare characters",
                         isLoading = false
                     )
                 }
             }
         }
-    }
-
-    private fun exitComparison() {
-        _state.update {
-            it.copy(
-                comparisonResult = null,
-                selectedCharacters = emptyList()
-            )
-        }
-        analyticsService.logEvent(AnalyticsEvents.COMPARISON_CLEARED)
-    }
-
-    private fun switchCharacter(oldCharacter: Character, newCharacter: Character) {
-        _state.update { currentState ->
-            val updatedSelection = currentState.selectedCharacters.map {
-                if (it.id == oldCharacter.id) newCharacter else it
-            }
-            currentState.copy(selectedCharacters = updatedSelection)
-        }
-
-        // Recalculate comparison with new character
-        startComparison()
     }
 }
