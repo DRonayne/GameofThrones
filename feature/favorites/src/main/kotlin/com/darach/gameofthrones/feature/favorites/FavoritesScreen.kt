@@ -21,8 +21,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Compare
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
@@ -91,11 +91,14 @@ fun FavoritesScreen(
                 state = state,
                 callbacks = FavoritesTopBarCallbacks(
                     onCompareClick = {
-                        viewModel.handleIntent(FavoritesIntent.CompareSelected)
-                        if (state.selectedIds.size == 2) {
-                            val selectedList = state.selectedIds.toList()
-                            onCharacterClick("compare/${selectedList[0]}/${selectedList[1]}")
-                            viewModel.handleIntent(FavoritesIntent.ExitSelectionMode)
+                        when (state.selectedIds.size) {
+                            0, 1 -> viewModel.handleIntent(FavoritesIntent.CompareSelected)
+                            2 -> {
+                                val selectedList = state.selectedIds.toList()
+                                onCharacterClick("compare/${selectedList[0]}/${selectedList[1]}")
+                                viewModel.handleIntent(FavoritesIntent.ExitSelectionMode)
+                            }
+                            else -> viewModel.handleIntent(FavoritesIntent.CompareSelected)
                         }
                     },
                     onDeleteClick = { viewModel.handleIntent(FavoritesIntent.RemoveSelected) },
@@ -168,7 +171,7 @@ private fun TopBarActions(state: FavoritesState, callbacks: FavoritesTopBarCallb
             }
         ) {
             Icon(
-                imageVector = Icons.Default.Compare,
+                imageVector = Icons.AutoMirrored.Filled.CompareArrows,
                 contentDescription = null,
                 tint = if (state.selectedIds.size == 2) {
                     MaterialTheme.colorScheme.primary

@@ -296,7 +296,7 @@ class FavoritesViewModelTest {
 
         viewModel.state.test {
             val state = awaitItem()
-            assertEquals("Select 2 characters to compare", state.snackbarMessage)
+            assertEquals("Please select at least 2 characters to compare", state.snackbarMessage)
         }
     }
 
@@ -311,7 +311,7 @@ class FavoritesViewModelTest {
 
         viewModel.state.test {
             val state = awaitItem()
-            assertEquals("Select 2 characters to compare", state.snackbarMessage)
+            assertEquals("Please select one more character to compare", state.snackbarMessage)
         }
     }
 
@@ -364,7 +364,7 @@ class FavoritesViewModelTest {
 
         viewModel.state.test {
             val state = awaitItem()
-            assertEquals("You can only select 2 characters to compare", state.snackbarMessage)
+            assertEquals("You can only compare 2 characters at a time", state.snackbarMessage)
         }
     }
 
@@ -377,7 +377,7 @@ class FavoritesViewModelTest {
         viewModel.handleIntent(FavoritesIntent.CompareSelected)
         viewModel.state.test {
             val state = awaitItem()
-            assertEquals("Select 2 characters to compare", state.snackbarMessage)
+            assertEquals("Please select at least 2 characters to compare", state.snackbarMessage)
         }
 
         viewModel.handleIntent(FavoritesIntent.ClearSnackbar)

@@ -110,32 +110,36 @@ private fun FavoriteCardImage(
     )
 
     Box(
-        modifier = modifier
-            .size(96.dp)
-            .shadow(
-                elevation = elevation,
-                shape = CircleShape
-            )
-            .border(
-                width = borderWidth,
-                color = borderColor,
-                shape = CircleShape
-            )
-            .padding(2.dp)
+        modifier = modifier.size(96.dp)
     ) {
-        PortraitImage(
-            imageUrl = character.characterImageUrl,
-            contentDescription = character.name,
+        Box(
             modifier = Modifier
-                .size(92.dp)
-                .clip(CircleShape)
-        )
+                .size(96.dp)
+                .shadow(
+                    elevation = elevation,
+                    shape = CircleShape
+                )
+                .border(
+                    width = borderWidth,
+                    color = borderColor,
+                    shape = CircleShape
+                )
+                .padding(2.dp)
+        ) {
+            PortraitImage(
+                imageUrl = character.characterImageUrl,
+                contentDescription = character.name,
+                modifier = Modifier
+                    .size(92.dp)
+                    .clip(CircleShape)
+            )
+        }
 
         SelectionCheckmark(
             isSelected = isSelected,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .zIndex(1f)
+                .padding(4.dp)
         )
     }
 }

@@ -116,12 +116,12 @@ class FavoritesViewModel @Inject constructor(
 
     private fun validateAndPrepareComparison() {
         when (selectedIds.value.size) {
-            0 -> snackbarMessage.value = "Select 2 characters to compare"
-            1 -> snackbarMessage.value = "Select 2 characters to compare"
+            0 -> snackbarMessage.value = "Please select at least 2 characters to compare"
+            1 -> snackbarMessage.value = "Please select one more character to compare"
             2 -> {
                 // Validation passed, navigation will be handled by the UI
             }
-            else -> snackbarMessage.value = "You can only select 2 characters to compare"
+            else -> snackbarMessage.value = "You can only compare 2 characters at a time"
         }
     }
 
