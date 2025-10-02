@@ -76,7 +76,7 @@ Room ⟷ Retrofit
 **Testing & Quality**
 
 - **44 test files**: Unit, integration, UI, and architectural tests
-- **Konsist 0.17.3** - 26 architectural compliance rules
+- **Konsist 0.17.3** - 22 architectural compliance rules
 - **Detekt 1.23.7** + Compose rules - Static analysis
 - **Spotless 8.0.0** + ktlint - Consistent formatting
 - **Kover 0.9.2** - Code coverage tracking
