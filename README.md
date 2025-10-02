@@ -45,7 +45,7 @@ An Android app showcasing enterprise-level architecture and 2025 best practices.
 
 ## 📱 Screenshots
 
-<div align="center"> <table> <tr> <td><img src="screenshots/phone_search.png" width="200"/><br/><strong>Search & Filter</strong></td> <td><img src="screenshots/phone_details.png" width="200"/><br/><strong>Character Details</strong></td> <td><img src="screenshots/phone_favorites.png" width="200"/><br/><strong>Favourites</strong></td> <td><img src="screenshots/phone_comparison.png" width="200"/><br/><strong>Comparison</strong></td> </tr> </table> </div>
+<div align="center"> <table> <tr> <td><img src="screenshots/phone_search.png" width="200"/><br/><strong>Search & Filter</strong></td> <td><img src="screenshots/phone_details.png" width="200"/><br/><strong>Character Details</strong></td> <td><img src="screenshots/phone_favorites.png" width="200"/><br/><strong>Favourites</strong></td> <td><img src="screenshots/phone_comparison.png" width="200"/><br/><strong>Comparison</strong></td> <td><img src="screenshots/phone_settings.png" width="200"/><br/><strong>Settings</strong></td> </tr> </table> </div>
 
 ### Tablet Layout
 
