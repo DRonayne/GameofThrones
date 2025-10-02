@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -182,6 +183,15 @@ private fun SearchAndFilterControls(
             SortChip(
                 currentSortOption = state.sortOption,
                 onSortOptionChange = { onIntent(CharactersIntent.SortCharacters(it)) }
+            )
+            RecentSearchChips(
+                searchHistory = state.searchHistory,
+                onSearchHistoryItemClick = { query ->
+                    onIntent(CharactersIntent.SearchCharacters(query))
+                },
+                onRemoveSearchHistoryItem = { query ->
+                    onIntent(CharactersIntent.RemoveSearchHistoryItem(query))
+                }
             )
         }
     }
@@ -395,6 +405,57 @@ private fun AllFiltersChip(onOpenFilterSheet: () -> Unit) {
             contentDescription = "Filter options"
         }
     )
+}
+
+@Composable
+private fun RecentSearchChips(
+    searchHistory: List<String>,
+    onSearchHistoryItemClick: (String) -> Unit,
+    onRemoveSearchHistoryItem: (String) -> Unit
+) {
+    val haptic = LocalHapticFeedback.current
+
+    searchHistory.forEach { query ->
+        AnimatedVisibility(
+            visible = true,
+            enter = expandHorizontally() + fadeIn(),
+            exit = shrinkHorizontally() + fadeOut()
+        ) {
+            androidx.compose.material3.FilterChip(
+                selected = false,
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    onSearchHistoryItemClick(query)
+                },
+                label = { Text(query, style = MaterialTheme.typography.labelMedium) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.History,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            onRemoveSearchHistoryItem(query)
+                        },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove search: $query",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                },
+                modifier = Modifier.semantics {
+                    contentDescription = "Recent search: $query"
+                }
+            )
+        }
+    }
 }
 
 // Previews

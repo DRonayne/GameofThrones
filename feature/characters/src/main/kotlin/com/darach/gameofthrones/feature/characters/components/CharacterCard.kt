@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
@@ -238,8 +239,8 @@ private fun GridCardSeasonBadges(seasons: List<Int>, modifier: Modifier = Modifi
     ) {
         seasons.sorted().take(8).forEach { season ->
             Surface(
-                shape = AssistChipDefaults.shape,
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                 modifier = Modifier
                     .padding(horizontal = 2.dp)
                     .semantics {
@@ -249,6 +250,7 @@ private fun GridCardSeasonBadges(seasons: List<Int>, modifier: Modifier = Modifi
                 Text(
                     text = RomanNumeralConverter.toRomanNumeral(season),
                     style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }

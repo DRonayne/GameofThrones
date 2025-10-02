@@ -62,6 +62,13 @@ class SettingsViewModel @Inject constructor(
         )
     )
 
+    init {
+        analyticsService.logScreenView(
+            screenName = "Settings",
+            screenClass = "SettingsScreen"
+        )
+    }
+
     fun handleIntent(intent: SettingsIntent) {
         when (intent) {
             is SettingsIntent.UpdateThemeMode -> updateThemeMode(intent.themeMode)

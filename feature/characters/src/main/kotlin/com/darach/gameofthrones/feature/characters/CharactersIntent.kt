@@ -12,4 +12,6 @@ sealed interface CharactersIntent {
     data class SortCharacters(val sortOption: SortOption) : CharactersIntent
     data class ToggleFavorite(val characterId: String) : CharactersIntent
     data object RetryLoad : CharactersIntent
+    data class RemoveSearchHistoryItem(val query: String) : CharactersIntent
+    data object ClearSearchHistory : CharactersIntent
 }

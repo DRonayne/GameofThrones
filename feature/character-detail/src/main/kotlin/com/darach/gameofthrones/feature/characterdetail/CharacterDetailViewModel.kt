@@ -42,6 +42,10 @@ class CharacterDetailViewModel @Inject constructor(
     )
 
     init {
+        analyticsService.logScreenView(
+            screenName = "Character Detail",
+            screenClass = "CharacterDetailScreen"
+        )
         if (characterId.isNotEmpty()) {
             loadCharacter(characterId)
         } else {

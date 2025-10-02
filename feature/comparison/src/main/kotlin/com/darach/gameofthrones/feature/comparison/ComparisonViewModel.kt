@@ -33,6 +33,10 @@ class ComparisonViewModel @Inject constructor(
     val state: StateFlow<ComparisonState> = _state.asStateFlow()
 
     init {
+        analyticsService.logScreenView(
+            screenName = "Comparison",
+            screenClass = "ComparisonScreen"
+        )
         loadFavoriteCharacters()
     }
 

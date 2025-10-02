@@ -1,6 +1,7 @@
 package com.darach.gameofthrones.feature.favorites
 
 import app.cash.turbine.test
+import com.darach.gameofthrones.core.analytics.AnalyticsService
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
 import com.darach.gameofthrones.core.model.Character
@@ -30,6 +31,7 @@ class FavoritesViewModelTest {
     private lateinit var viewModel: FavoritesViewModel
     private lateinit var getFavoritesUseCase: GetFavoritesUseCase
     private lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
+    private lateinit var analyticsService: AnalyticsService
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -82,6 +84,7 @@ class FavoritesViewModelTest {
 
         getFavoritesUseCase = mockk()
         toggleFavoriteUseCase = mockk(relaxed = true)
+        analyticsService = mockk(relaxed = true)
     }
 
     @After
@@ -93,7 +96,7 @@ class FavoritesViewModelTest {
     fun `initial state is correct with empty favorites`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(emptyList())
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         viewModel.state.test {
             val state = awaitItem()
@@ -110,7 +113,7 @@ class FavoritesViewModelTest {
     fun `initial state is correct with favorites loaded`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         viewModel.state.test {
             val state = awaitItem()
@@ -125,7 +128,7 @@ class FavoritesViewModelTest {
     fun `toggleViewMode switches between GRID and LIST`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         // Initial view mode is GRID
         viewModel.state.test {
@@ -154,7 +157,7 @@ class FavoritesViewModelTest {
     fun `toggleSelectionMode enables and disables selection mode`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         viewModel.state.test {
             val state = awaitItem()
@@ -182,7 +185,7 @@ class FavoritesViewModelTest {
     fun `toggling selection mode off clears selections`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         // Enable selection mode and select items
         viewModel.handleIntent(FavoritesIntent.ToggleSelectionMode)
@@ -206,7 +209,7 @@ class FavoritesViewModelTest {
     fun `toggleSelection adds and removes items from selection`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         // Select first item
         viewModel.handleIntent(FavoritesIntent.ToggleSelection("1"))
@@ -242,7 +245,7 @@ class FavoritesViewModelTest {
     fun `selectAll selects all favorites`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         viewModel.state.test {
             var state = awaitItem()
@@ -262,7 +265,7 @@ class FavoritesViewModelTest {
     fun `deselectAll clears all selections`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         viewModel.state.test {
             var state = awaitItem()
@@ -287,7 +290,7 @@ class FavoritesViewModelTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
         coEvery { toggleFavoriteUseCase(any(), any()) } returns Unit
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         viewModel.handleIntent(FavoritesIntent.RemoveFavorite("1"))
 
@@ -299,7 +302,7 @@ class FavoritesViewModelTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
         coEvery { toggleFavoriteUseCase(any(), any()) } returns Unit
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         // Select items
         viewModel.handleIntent(FavoritesIntent.ToggleSelection("1"))
@@ -323,7 +326,7 @@ class FavoritesViewModelTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
         coEvery { toggleFavoriteUseCase(any(), any()) } returns Unit
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         // Enable selection mode and select items
         viewModel.handleIntent(FavoritesIntent.ToggleSelectionMode)
@@ -352,7 +355,7 @@ class FavoritesViewModelTest {
             throw IllegalStateException(errorMessage)
         }
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         // ViewModel should still initialize but handle error
         viewModel.state.test {
@@ -367,7 +370,7 @@ class FavoritesViewModelTest {
     fun `loadFavorites intent sets loading to false`() = runTest {
         every { getFavoritesUseCase() } returns flowOf(testFavorites)
 
-        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase)
+        viewModel = FavoritesViewModel(getFavoritesUseCase, toggleFavoriteUseCase, analyticsService)
 
         viewModel.handleIntent(FavoritesIntent.LoadFavorites)
 

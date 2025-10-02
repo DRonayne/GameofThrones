@@ -2,6 +2,7 @@ package com.darach.gameofthrones.feature.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darach.gameofthrones.core.analytics.AnalyticsService
 import com.darach.gameofthrones.core.domain.usecase.GetFavoritesUseCase
 import com.darach.gameofthrones.core.domain.usecase.ToggleFavoriteUseCase
 import com.darach.gameofthrones.core.model.Character
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val getFavoritesUseCase: GetFavoritesUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val analyticsService: AnalyticsService
 ) : ViewModel() {
 
     private val viewMode = MutableStateFlow(ViewMode.GRID)
@@ -67,6 +69,10 @@ class FavoritesViewModel @Inject constructor(
     )
 
     init {
+        analyticsService.logScreenView(
+            screenName = "Favorites",
+            screenClass = "FavoritesScreen"
+        )
         loadFavorites()
     }
 

@@ -144,6 +144,10 @@ class CharactersViewModel @Inject constructor(
     private data class Quartet<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
     init {
+        analyticsService.logScreenView(
+            screenName = "Characters",
+            screenClass = "CharactersScreen"
+        )
         loadCharacters()
         setupSearchDebounce()
     }
@@ -158,6 +162,8 @@ class CharactersViewModel @Inject constructor(
             is CharactersIntent.SortCharacters -> sortCharacters(intent.sortOption)
             is CharactersIntent.ToggleFavorite -> toggleFavorite(intent.characterId)
             is CharactersIntent.RetryLoad -> loadCharacters()
+            is CharactersIntent.RemoveSearchHistoryItem -> removeSearchHistoryItem(intent.query)
+            is CharactersIntent.ClearSearchHistory -> clearSearchHistory()
         }
     }
 
@@ -218,6 +224,7 @@ class CharactersViewModel @Inject constructor(
     }
 
     private fun setupSearchDebounce() {
+        // Search execution with short debounce
         searchQuerySharedFlow
             .debounce(SEARCH_DEBOUNCE_MS)
             .distinctUntilChanged()
@@ -231,17 +238,24 @@ class CharactersViewModel @Inject constructor(
                 }
             }
             .onEach { searchResults ->
-                val query = searchQueryStateFlow.value
                 if (isSearchActive.value) {
                     searchResultCharacters.value = searchResults
-                    if (query.isNotBlank()) {
-                        searchHistory.value = addToSearchHistory(query)
-                    }
                 }
             }
             .catch { error ->
                 errorMessage.value = error.message ?: "Search failed"
                 Log.e(TAG, "Search error", error)
+            }
+            .launchIn(viewModelScope)
+
+        // Search history saving with longer debounce and minimum length check
+        searchQuerySharedFlow
+            .debounce(SEARCH_HISTORY_DEBOUNCE_MS)
+            .distinctUntilChanged()
+            .onEach { query ->
+                if (query.length >= MIN_SEARCH_HISTORY_LENGTH) {
+                    searchHistory.value = addToSearchHistory(query)
+                }
             }
             .launchIn(viewModelScope)
     }
@@ -325,6 +339,25 @@ class CharactersViewModel @Inject constructor(
         return currentHistory
     }
 
+    private fun removeSearchHistoryItem(query: String) {
+        val updatedHistory = searchHistory.value.filter { it != query }
+        searchHistory.value = updatedHistory
+
+        analyticsService.logEvent(
+            AnalyticsEvents.SEARCH_HISTORY_ITEM_REMOVED,
+            mapOf(AnalyticsParams.SEARCH_QUERY to query)
+        )
+    }
+
+    private fun clearSearchHistory() {
+        searchHistory.value = emptyList()
+
+        analyticsService.logEvent(
+            AnalyticsEvents.SEARCH_HISTORY_CLEARED,
+            emptyMap()
+        )
+    }
+
     private fun extractUniqueCultures(characters: List<Character>): List<String> =
         characters.mapNotNull {
             it.culture.takeIf { culture -> culture.isNotBlank() }
@@ -336,6 +369,8 @@ class CharactersViewModel @Inject constructor(
     companion object {
         private const val TAG = "CharactersViewModel"
         private const val SEARCH_DEBOUNCE_MS = 300L
+        private const val SEARCH_HISTORY_DEBOUNCE_MS = 3000L
+        private const val MIN_SEARCH_HISTORY_LENGTH = 3
         private const val MAX_SEARCH_HISTORY = 10
     }
 }

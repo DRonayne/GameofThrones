@@ -52,6 +52,8 @@ object AnalyticsEvents {
     // Search events
     const val SEARCH_QUERY = "search_query"
     const val SEARCH_CLEARED = "search_cleared"
+    const val SEARCH_HISTORY_ITEM_REMOVED = "search_history_item_removed"
+    const val SEARCH_HISTORY_CLEARED = "search_history_cleared"
 
     // Filter events
     const val FILTER_APPLIED = "filter_applied"
@@ -84,6 +86,7 @@ object AnalyticsParams {
 
     // Search params
     const val SEARCH_TERM = "search_term"
+    const val SEARCH_QUERY = "search_query"
     const val SEARCH_RESULTS_COUNT = "results_count"
 
     // Filter params
