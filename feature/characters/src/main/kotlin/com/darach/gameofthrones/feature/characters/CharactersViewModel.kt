@@ -79,7 +79,7 @@ class CharactersViewModel @Inject constructor(
         filterFlow,
         sortOptionFlow
     ) { baseChars, searchChars, searchActive, filter, sortOption ->
-        val sourceChars = if (searchActive && searchChars.isNotEmpty()) searchChars else baseChars
+        val sourceChars = if (searchActive) searchChars else baseChars
         val filtered = filterCharactersUseCase(sourceChars, filter)
         sortCharactersUseCase(filtered, sortOption)
     }.stateIn(
@@ -369,7 +369,7 @@ class CharactersViewModel @Inject constructor(
     companion object {
         private const val TAG = "CharactersViewModel"
         private const val SEARCH_DEBOUNCE_MS = 300L
-        private const val SEARCH_HISTORY_DEBOUNCE_MS = 3000L
+        private const val SEARCH_HISTORY_DEBOUNCE_MS = 1000L
         private const val MIN_SEARCH_HISTORY_LENGTH = 3
         private const val MAX_SEARCH_HISTORY = 10
     }

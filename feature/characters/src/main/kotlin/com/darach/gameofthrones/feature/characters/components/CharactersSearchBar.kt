@@ -12,6 +12,8 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,6 +23,9 @@ fun CharactersSearchBar(
     callbacks: SearchBarCallbacks,
     modifier: Modifier = Modifier
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
     SearchBar(
         inputField = {
             SearchBarDefaults.InputField(
@@ -28,6 +33,8 @@ fun CharactersSearchBar(
                 onQueryChange = callbacks.onQueryChange,
                 onSearch = {
                     callbacks.onSearch(query)
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
                 },
                 expanded = false,
                 onExpandedChange = {},

@@ -330,9 +330,7 @@ private fun GridCardDeathBadge(deathDate: String, modifier: Modifier = Modifier)
             Text(
                 text = deathDate.ifBlank { "Deceased" },
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onErrorContainer,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                color = MaterialTheme.colorScheme.onErrorContainer
             )
         }
     }

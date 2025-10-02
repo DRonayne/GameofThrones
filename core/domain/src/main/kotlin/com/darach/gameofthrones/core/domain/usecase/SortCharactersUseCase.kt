@@ -27,15 +27,21 @@ class SortCharactersUseCase @Inject constructor() {
         SortOption.DEATH_DATE_ASC -> characters.sortedWith(
             compareBy(
                 { it.died.isEmpty() },
-                { it.died }
+                { extractYearFromDate(it.died) }
             )
         )
         SortOption.DEATH_DATE_DESC -> characters.sortedWith(
             compareByDescending<Character> { it.died.isNotEmpty() }
-                .thenByDescending { it.died }
+                .thenByDescending { extractYearFromDate(it.died) }
         )
         SortOption.SEASONS_COUNT_ASC -> characters.sortedBy { it.tvSeriesSeasons.size }
         SortOption.SEASONS_COUNT_DESC -> characters.sortedByDescending { it.tvSeriesSeasons.size }
         SortOption.FAVORITE_FIRST -> characters.sortedByDescending { it.isFavorite }
+    }
+
+    private fun extractYearFromDate(date: String): Int {
+        // Extract numeric value from strings like "299 AC", "300AC", or "8000 BC"
+        val numericPart = date.trim().takeWhile { it.isDigit() }
+        return numericPart.toIntOrNull() ?: 0
     }
 }

@@ -618,9 +618,16 @@ private fun CharactersBody(
                 onRetry = { onIntent(CharactersIntent.RetryLoad) }
             )
         }
-        state.isEmpty && state.characters.isEmpty() -> EmptyState("No characters found")
         state.filteredCharacters.isEmpty() && state.characters.isNotEmpty() -> {
-            EmptyState("No characters match your filters")
+            val message = if (state.searchQuery.isNotBlank()) {
+                "No characters match your search/filters"
+            } else {
+                "No characters match your filters"
+            }
+            EmptyState(message)
+        }
+        state.characters.isEmpty() -> {
+            // Blank screen when no data yet (not loading, no error, but also no data)
         }
         else -> {
             CharactersList(
@@ -663,7 +670,7 @@ private fun CharactersList(
         ) {
             items(
                 items = state.filteredCharacters,
-                key = { it.id }
+                key = { "${it.id}-${it.isFavorite}" }
             ) { character ->
                 CharacterGridCard(
                     character = character,
