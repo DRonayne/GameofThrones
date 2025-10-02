@@ -90,60 +90,63 @@ internal fun SettingsContent(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .testTag(TestTags.SETTINGS_CONTENT)
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Settings",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        SettingsSection(title = "Theme", icon = Icons.Default.Palette) {
-            ThemeSettingsContent(
-                themeMode = state.themeMode,
-                useDynamicColors = state.useDynamicColors,
-                onThemeModeChange = { onIntent(SettingsIntent.UpdateThemeMode(it)) },
-                onDynamicColorsChange = { onIntent(SettingsIntent.UpdateDynamicColors(it)) }
+    androidx.compose.material3.Scaffold(
+        modifier = modifier,
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(TestTags.SETTINGS_CONTENT)
+                .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Settings",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold
             )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            SettingsSection(title = "Theme", icon = Icons.Default.Palette) {
+                ThemeSettingsContent(
+                    themeMode = state.themeMode,
+                    useDynamicColors = state.useDynamicColors,
+                    onThemeModeChange = { onIntent(SettingsIntent.UpdateThemeMode(it)) },
+                    onDynamicColorsChange = { onIntent(SettingsIntent.UpdateDynamicColors(it)) }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsSection(title = "Cache Management", icon = Icons.Default.Storage) {
+                CacheSettingsContent(
+                    cacheExpirationHours = state.cacheExpirationHours,
+                    onClearCache = { onIntent(SettingsIntent.ClearCache) },
+                    isLoading = state.isLoading
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsSection(title = "Data Sync", icon = Icons.Default.Sync) {
+                DataSyncContent(
+                    searchHistorySize = state.searchHistorySize,
+                    onSyncData = { onIntent(SettingsIntent.SyncData) },
+                    onClearSearchHistory = { onIntent(SettingsIntent.ClearSearchHistory) },
+                    onClearAllData = { onIntent(SettingsIntent.ClearAllData) },
+                    isSyncing = state.isSyncing
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsSection(title = "About", icon = Icons.Default.Info) {
+                AboutContent(appVersion = state.appVersion, buildNumber = state.buildNumber)
+            }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SettingsSection(title = "Cache Management", icon = Icons.Default.Storage) {
-            CacheSettingsContent(
-                cacheExpirationHours = state.cacheExpirationHours,
-                onClearCache = { onIntent(SettingsIntent.ClearCache) },
-                isLoading = state.isLoading
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SettingsSection(title = "Data Sync", icon = Icons.Default.Sync) {
-            DataSyncContent(
-                searchHistorySize = state.searchHistorySize,
-                onSyncData = { onIntent(SettingsIntent.SyncData) },
-                onClearSearchHistory = { onIntent(SettingsIntent.ClearSearchHistory) },
-                onClearAllData = { onIntent(SettingsIntent.ClearAllData) },
-                isSyncing = state.isSyncing
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SettingsSection(title = "About", icon = Icons.Default.Info) {
-            AboutContent(appVersion = state.appVersion, buildNumber = state.buildNumber)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        SnackbarHost(hostState = snackbarHostState)
     }
 }
 

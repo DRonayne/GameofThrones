@@ -78,7 +78,6 @@ private fun FilterContent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(bottom = 88.dp)
             .verticalScroll(scrollState)
     ) {
         FilterHeader(currentFilter = state.currentFilter, onFilterChange = onFilterChange)

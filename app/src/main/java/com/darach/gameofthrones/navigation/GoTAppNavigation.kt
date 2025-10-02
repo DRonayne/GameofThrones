@@ -82,6 +82,7 @@ fun GoTApp(
                 navController = navController,
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(paddingValues)
             )
         }
     }

@@ -664,7 +664,7 @@ private fun CharactersList(
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(minSize = 160.dp),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp, bottom = 88.dp),
+            contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalItemSpacing = 12.dp
         ) {
