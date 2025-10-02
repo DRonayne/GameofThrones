@@ -1,5 +1,5 @@
 <div align="center">
-<img src="app/src/main/1024.png" width="200" alt="Game of Thrones App Icon"/>
+<img src="app/src/main/1024.png" width="200" alt="Game of Thrones App Icon" style="border-radius: 20px;"/>
 
 # Game of Thrones App
 
