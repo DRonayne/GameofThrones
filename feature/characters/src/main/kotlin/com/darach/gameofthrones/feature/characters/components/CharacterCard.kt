@@ -298,7 +298,7 @@ private fun GridCardFavoriteIcon(isFavorite: Boolean, modifier: Modifier = Modif
                 "Add to favorites"
             },
             tint = if (isFavorite) {
-                MaterialTheme.colorScheme.primary
+                MaterialTheme.colorScheme.error
             } else {
                 MaterialTheme.colorScheme.onSurface
             },
@@ -442,7 +442,7 @@ private fun CharacterInfo(character: Character, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Text(
             text = character.name.ifBlank { "Unknown" },
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -546,7 +546,7 @@ private fun FavoriteButton(
                 "Add to favorites"
             },
             tint = if (character.isFavorite) {
-                MaterialTheme.colorScheme.primary
+                MaterialTheme.colorScheme.error
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant
             }

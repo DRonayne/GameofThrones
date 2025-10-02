@@ -278,10 +278,7 @@ private fun BackNavigationIcon(onBackClick: () -> Unit) {
 }
 
 @Composable
-private fun FavoriteActionButton(
-    isFavorite: Boolean,
-    onFavoriteClick: () -> Unit
-) {
+private fun FavoriteActionButton(isFavorite: Boolean, onFavoriteClick: () -> Unit) {
     val favoriteScale by animateFloatAsState(
         targetValue = if (isFavorite) 1.2f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
