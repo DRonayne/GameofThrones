@@ -56,25 +56,29 @@ fun GoTNavHost(
                 ComparisonRouteContent(
                     characterId1 = route.characterId1,
                     characterId2 = route.characterId2,
-                    onBackClick = { navController.navigateUp() }
+                    onBackClick = { navController.navigateUp() },
+                    sharedTransitionData = SharedTransitionData(
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
                 )
             }
 
             composable<FavoritesRoute> {
                 FavoritesScreen(
                     onBackClick = { navController.navigateUp() },
-                    onBrowseCharactersClick = {
-                        navController.navigate(CharactersRoute)
-                    },
+                    onBrowseCharactersClick = { navController.navigate(CharactersRoute) },
                     onCompareCharacters = { char1Id, char2Id ->
                         navController.navigate(ComparisonRoute(char1Id, char2Id))
-                    }
+                    },
+                    sharedTransitionData = SharedTransitionData(
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        animatedVisibilityScope = this@composable
+                    )
                 )
             }
 
-            composable<SettingsRoute> {
-                SettingsScreen()
-            }
+            composable<SettingsRoute> { SettingsScreen() }
 
             composable<CharacterDetailRoute> { backStackEntry ->
                 val route = backStackEntry.toRoute<CharacterDetailRoute>()
@@ -91,12 +95,14 @@ fun GoTNavHost(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ComparisonRouteContent(
     characterId1: String,
     characterId2: String,
     onBackClick: () -> Unit,
-    viewModel: ComparisonViewModel = hiltViewModel()
+    viewModel: ComparisonViewModel = hiltViewModel(),
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -108,6 +114,7 @@ private fun ComparisonRouteContent(
         comparisonResult = state.comparisonResult,
         isLoading = state.isLoading,
         error = state.error,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        sharedTransitionData = sharedTransitionData
     )
 }

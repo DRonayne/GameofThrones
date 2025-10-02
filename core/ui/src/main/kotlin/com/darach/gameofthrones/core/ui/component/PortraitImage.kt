@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
@@ -35,18 +36,15 @@ import coil3.compose.SubcomposeAsyncImage
  */
 @Composable
 fun PortraitImage(imageUrl: String?, contentDescription: String?, modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier
-            .aspectRatio(3f / 4f)
-            .clip(RoundedCornerShape(8.dp)),
-        color = MaterialTheme.colorScheme.surfaceVariant
+    Box(
+        modifier = modifier.aspectRatio(3f / 4f)
     ) {
         if (imageUrl != null) {
             SubcomposeAsyncImage(
                 model = imageUrl,
                 contentDescription = contentDescription,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 loading = { ImagePlaceholder() },
                 error = { ErrorPlaceholder() }
             )

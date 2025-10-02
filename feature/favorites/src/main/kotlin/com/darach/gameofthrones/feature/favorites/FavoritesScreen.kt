@@ -65,6 +65,7 @@ import com.darach.gameofthrones.feature.favorites.components.FavoriteCard
 import com.darach.gameofthrones.feature.favorites.components.FavoriteCardCallbacks
 import com.darach.gameofthrones.feature.favorites.components.FavoritesTopBarCallbacks
 
+@Suppress("LongParameterList") // Compose screens require multiple callbacks and state parameters
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
@@ -72,6 +73,7 @@ fun FavoritesScreen(
     onBrowseCharactersClick: () -> Unit,
     modifier: Modifier = Modifier,
     onCompareCharacters: (String, String) -> Unit = { _, _ -> },
+    sharedTransitionData: com.darach.gameofthrones.core.ui.transition.SharedTransitionData? = null,
     viewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -116,7 +118,8 @@ fun FavoritesScreen(
                 viewModel.handleIntent(FavoritesIntent.OnCardClick(id))
             },
             onBrowseCharactersClick = onBrowseCharactersClick,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            sharedTransitionData = sharedTransitionData
         )
     }
 }
@@ -239,7 +242,8 @@ internal fun FavoritesContent(
     state: FavoritesState,
     onCardClick: (String) -> Unit,
     onBrowseCharactersClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: com.darach.gameofthrones.core.ui.transition.SharedTransitionData? = null
 ) {
     Box(
         modifier = modifier.fillMaxSize()
@@ -270,7 +274,8 @@ internal fun FavoritesContent(
                 FavoritesGrid(
                     favorites = state.favorites,
                     selectedIds = state.selectedIds,
-                    onCardClick = onCardClick
+                    onCardClick = onCardClick,
+                    sharedTransitionData = sharedTransitionData
                 )
             }
         }
@@ -282,7 +287,8 @@ private fun FavoritesGrid(
     favorites: List<Character>,
     selectedIds: Set<String>,
     onCardClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: com.darach.gameofthrones.core.ui.transition.SharedTransitionData? = null
 ) {
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
     val columns = calculateGridColumns(windowAdaptiveInfo)
@@ -307,7 +313,8 @@ private fun FavoritesGrid(
                 isSelected = selectedIds.contains(character.id),
                 callbacks = FavoriteCardCallbacks(
                     onToggleSelection = { onCardClick(character.id) }
-                )
+                ),
+                sharedTransitionData = sharedTransitionData
             )
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
@@ -42,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
@@ -138,7 +140,7 @@ private fun GridCardPortrait(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(0.75f)
+            .aspectRatio(0.75f).clip(RoundedCornerShape(8.dp))
     ) {
         val imageModifier = if (sharedTransitionData != null) {
             with(sharedTransitionData.sharedTransitionScope) {

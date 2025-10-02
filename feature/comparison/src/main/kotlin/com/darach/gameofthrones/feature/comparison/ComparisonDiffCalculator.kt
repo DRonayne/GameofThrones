@@ -19,7 +19,7 @@ class ComparisonDiffCalculator @Inject constructor() {
             "Comparison requires 2-3 characters, got ${characters.size}"
         }
 
-        val attributes = buildList {
+        val allAttributes = buildList {
             add(createAttribute("Name", characters.map { it.name }))
             add(createAttribute("Gender", characters.map { it.gender }))
             add(createAttribute("Culture", characters.map { it.culture }))
@@ -39,19 +39,23 @@ class ComparisonDiffCalculator @Inject constructor() {
             add(createListAttribute("Allegiances", characters.map { it.allegiances }))
             add(createListAttribute("Books", characters.map { it.books }))
             add(createListAttribute("POV Books", characters.map { it.povBooks }))
-            add(createListAttribute("TV Series", characters.map { it.tvSeries }))
             add(
                 createAttribute(
-                    "TV Seasons",
+                    "Seasons",
                     characters.map { formatSeasons(it.tvSeriesSeasons) }
                 )
             )
-            add(createListAttribute("Played By", characters.map { it.playedBy }))
+            add(createActorAttribute("Played By", characters))
+        }
+
+        // Filter out attributes where all values are empty/null/Unknown
+        val filteredAttributes = allAttributes.filter { attribute ->
+            attribute.values.any { !it.isEmpty }
         }
 
         return ComparisonResult(
             characters = characters,
-            attributes = attributes
+            attributes = filteredAttributes
         )
     }
 
@@ -89,6 +93,40 @@ class ComparisonDiffCalculator @Inject constructor() {
                     value = value,
                     isDifferent = hasDifference && !isEmpty,
                     isEmpty = isEmpty
+                )
+            },
+            hasDifference = hasDifference
+        )
+    }
+
+    private fun createActorAttribute(
+        name: String,
+        characters: List<Character>
+    ): ComparisonAttribute {
+        val actorLists = characters.map { character ->
+            character.playedBy.map { actorName ->
+                ActorInfo(
+                    name = actorName,
+                    imageUrl = character.actorImageUrls[actorName]
+                )
+            }
+        }
+
+        val formattedValues = actorLists.map { actors ->
+            if (actors.isEmpty()) "None" else actors.joinToString(", ") { it.name }
+        }
+
+        val hasDifference = actorLists.map { it.toSet() }.toSet().size > 1
+
+        return ComparisonAttribute(
+            name = name,
+            values = formattedValues.mapIndexed { index, value ->
+                val isEmpty = actorLists[index].isEmpty()
+                AttributeValue(
+                    value = value,
+                    isDifferent = hasDifference && !isEmpty,
+                    isEmpty = isEmpty,
+                    actorData = actorLists[index]
                 )
             },
             hasDifference = hasDifference

@@ -1,8 +1,11 @@
 package com.darach.gameofthrones.feature.favorites.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -44,14 +47,16 @@ import androidx.compose.ui.zIndex
 import com.darach.gameofthrones.core.model.Character
 import com.darach.gameofthrones.core.ui.component.PortraitImage
 import com.darach.gameofthrones.core.ui.test.TestTags
+import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun FavoriteCard(
     character: Character,
     isSelected: Boolean,
     callbacks: FavoriteCardCallbacks,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val haptics = LocalHapticFeedback.current
 
@@ -75,20 +80,27 @@ fun FavoriteCard(
     ) {
         FavoriteCardImage(
             character = character,
-            isSelected = isSelected
+            isSelected = isSelected,
+            sharedTransitionData = sharedTransitionData
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        FavoriteCardName(name = character.name)
+        FavoriteCardName(
+            name = character.name,
+            sharedTransitionData = sharedTransitionData,
+            characterId = character.id
+        )
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun FavoriteCardImage(
     character: Character,
     isSelected: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null
 ) {
     val borderWidth by animateDpAsState(
         targetValue = if (isSelected) 4.dp else 1.5.dp,
@@ -109,31 +121,14 @@ private fun FavoriteCardImage(
         label = "elevation"
     )
 
-    Box(
-        modifier = modifier.size(96.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(96.dp)
-                .shadow(
-                    elevation = elevation,
-                    shape = CircleShape
-                )
-                .border(
-                    width = borderWidth,
-                    color = borderColor,
-                    shape = CircleShape
-                )
-                .padding(2.dp)
-        ) {
-            PortraitImage(
-                imageUrl = character.characterImageUrl,
-                contentDescription = character.name,
-                modifier = Modifier
-                    .size(92.dp)
-                    .clip(CircleShape)
-            )
-        }
+    Box(modifier = modifier.size(96.dp)) {
+        FavoriteCardImageContainer(
+            character = character,
+            borderWidth = borderWidth,
+            borderColor = borderColor,
+            elevation = elevation,
+            sharedTransitionData = sharedTransitionData
+        )
 
         SelectionCheckmark(
             isSelected = isSelected,
@@ -142,6 +137,99 @@ private fun FavoriteCardImage(
                 .padding(4.dp)
         )
     }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun FavoriteCardImageContainer(
+    character: Character,
+    borderWidth: androidx.compose.ui.unit.Dp,
+    borderColor: androidx.compose.ui.graphics.Color,
+    elevation: androidx.compose.ui.unit.Dp,
+    sharedTransitionData: SharedTransitionData?
+) {
+    val containerModifier = createContainerModifier(
+        borderWidth = borderWidth,
+        borderColor = borderColor,
+        elevation = elevation,
+        characterId = character.id,
+        sharedTransitionData = sharedTransitionData
+    )
+
+    Box(modifier = containerModifier) {
+        val portraitModifier = createPortraitModifier(
+            characterId = character.id,
+            sharedTransitionData = sharedTransitionData
+        )
+
+        PortraitImage(
+            imageUrl = character.characterImageUrl,
+            contentDescription = character.name,
+            modifier = portraitModifier
+        )
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun createContainerModifier(
+    borderWidth: androidx.compose.ui.unit.Dp,
+    borderColor: androidx.compose.ui.graphics.Color,
+    elevation: androidx.compose.ui.unit.Dp,
+    characterId: String,
+    sharedTransitionData: SharedTransitionData?
+): Modifier {
+    val baseModifier = Modifier
+        .size(96.dp)
+        .shadow(elevation = elevation, shape = CircleShape)
+        .border(width = borderWidth, color = borderColor, shape = CircleShape)
+        .padding(2.dp)
+
+    return if (sharedTransitionData != null) {
+        with(sharedTransitionData.sharedTransitionScope) {
+            baseModifier.sharedBounds(
+                rememberSharedContentState(key = "character-container-$characterId"),
+                animatedVisibilityScope = sharedTransitionData.animatedVisibilityScope,
+                boundsTransform = { _, _ ->
+                    spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMedium
+                    )
+                }
+            )
+        }
+    } else {
+        baseModifier
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun createPortraitModifier(
+    characterId: String,
+    sharedTransitionData: SharedTransitionData?
+): Modifier = if (sharedTransitionData != null) {
+    with(sharedTransitionData.sharedTransitionScope) {
+        Modifier
+            .size(92.dp)
+            .sharedBounds(
+                rememberSharedContentState(key = "character-image-$characterId"),
+                animatedVisibilityScope = sharedTransitionData.animatedVisibilityScope,
+                boundsTransform = { _, _ ->
+                    spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessMediumLow
+                    )
+                },
+                enter = fadeIn(),
+                exit = fadeOut(),
+                resizeMode =
+                androidx.compose.animation.SharedTransitionScope.ResizeMode.ScaleToBounds()
+            )
+            .clip(CircleShape)
+    }
+} else {
+    Modifier.size(92.dp).clip(CircleShape)
 }
 
 @Composable
@@ -167,8 +255,42 @@ private fun SelectionCheckmark(isSelected: Boolean, modifier: Modifier = Modifie
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun FavoriteCardName(name: String, modifier: Modifier = Modifier) {
+private fun FavoriteCardName(
+    name: String,
+    modifier: Modifier = Modifier,
+    sharedTransitionData: SharedTransitionData? = null,
+    characterId: String = ""
+) {
+    val nameModifier = if (sharedTransitionData != null) {
+        with(sharedTransitionData.sharedTransitionScope) {
+            modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(horizontal = 10.dp, vertical = 6.dp)
+                .sharedElement(
+                    rememberSharedContentState(key = "character-name-$characterId"),
+                    animatedVisibilityScope = sharedTransitionData.animatedVisibilityScope,
+                    boundsTransform = { _, _ ->
+                        spring(
+                            dampingRatio = Spring.DampingRatioNoBouncy,
+                            stiffness = Spring.StiffnessMediumLow
+                        )
+                    }
+                )
+        }
+    } else {
+        modifier
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+    }
+
     Text(
         text = name.ifBlank { "Unknown" },
         style = MaterialTheme.typography.bodySmall,
@@ -176,12 +298,7 @@ private fun FavoriteCardName(name: String, modifier: Modifier = Modifier) {
         overflow = TextOverflow.Ellipsis,
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier
-            .background(
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(horizontal = 10.dp, vertical = 6.dp)
+        modifier = nameModifier
     )
 }
 

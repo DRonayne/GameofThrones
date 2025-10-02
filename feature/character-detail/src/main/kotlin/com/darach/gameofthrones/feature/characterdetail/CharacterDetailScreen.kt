@@ -505,8 +505,7 @@ private fun HeroPortraitImage(character: Character, sharedTransitionData: Shared
                 .fillMaxWidth(0.6f)
                 .padding(bottom = 20.dp)
                 .shadow(12.dp, RoundedCornerShape(20.dp))
-                .clip(RoundedCornerShape(20.dp))
-                .sharedElement(
+                .sharedBounds(
                     rememberSharedContentState(key = "character-image-${character.id}"),
                     animatedVisibilityScope = sharedTransitionData.animatedVisibilityScope,
                     boundsTransform = { _, _ ->
@@ -514,8 +513,13 @@ private fun HeroPortraitImage(character: Character, sharedTransitionData: Shared
                             dampingRatio = Spring.DampingRatioNoBouncy,
                             stiffness = Spring.StiffnessMediumLow
                         )
-                    }
+                    },
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    resizeMode =
+                    androidx.compose.animation.SharedTransitionScope.ResizeMode.ScaleToBounds()
                 )
+                .clip(RoundedCornerShape(20.dp))
         }
     } else {
         Modifier

@@ -38,9 +38,18 @@ data class ComparisonAttribute(
  * @param value The display value (can be a single value or comma-separated list)
  * @param isDifferent Whether this value differs from other characters
  * @param isEmpty Whether this value is empty/unknown
+ * @param actorData Optional list of actor data with names and image URLs (for "Played By" attribute)
  */
 data class AttributeValue(
     val value: String,
     val isDifferent: Boolean = false,
-    val isEmpty: Boolean = false
+    val isEmpty: Boolean = false,
+    val actorData: List<ActorInfo> = emptyList()
 )
+
+/**
+ * Information about an actor who played a character.
+ * @param name The actor's name
+ * @param imageUrl The URL of the actor's image (null if not available)
+ */
+data class ActorInfo(val name: String, val imageUrl: String?)

@@ -138,11 +138,14 @@ class ComparisonDiffCalculatorTest {
 
     @Test
     fun `handles empty values as Unknown`() {
-        val result = calculator.calculate(listOf(jonSnow, aryaStark))
+        val result = calculator.calculate(listOf(jonSnow, cerseiLannister))
         val motherAttribute = result.attributes.find { it.name == "Mother" }
 
+        // Jon Snow has no mother (Unknown), but Cersei does, so attribute should be present
         assertEquals("Unknown", motherAttribute!!.values[0].value)
         assertTrue(motherAttribute.values[0].isEmpty)
+        assertEquals("Joanna Lannister", motherAttribute.values[1].value)
+        assertFalse(motherAttribute.values[1].isEmpty)
     }
 
     @Test
@@ -175,7 +178,7 @@ class ComparisonDiffCalculatorTest {
     @Test
     fun `formats TV seasons as comma-separated`() {
         val result = calculator.calculate(listOf(jonSnow, aryaStark))
-        val seasonsAttribute = result.attributes.find { it.name == "TV Seasons" }
+        val seasonsAttribute = result.attributes.find { it.name == "Seasons" }
 
         assertEquals("1, 2, 3", seasonsAttribute!!.values[0].value)
         assertEquals("1, 2, 3", seasonsAttribute.values[1].value)
@@ -190,18 +193,19 @@ class ComparisonDiffCalculatorTest {
         assertTrue(attributeNames.contains("Gender"))
         assertTrue(attributeNames.contains("Culture"))
         assertTrue(attributeNames.contains("Born"))
-        assertTrue(attributeNames.contains("Died"))
         assertTrue(attributeNames.contains("Status"))
         assertTrue(attributeNames.contains("Titles"))
         assertTrue(attributeNames.contains("Aliases"))
         assertTrue(attributeNames.contains("Father"))
         assertTrue(attributeNames.contains("Mother"))
-        assertTrue(attributeNames.contains("Spouse"))
         assertTrue(attributeNames.contains("Allegiances"))
         assertTrue(attributeNames.contains("Books"))
         assertTrue(attributeNames.contains("POV Books"))
-        assertTrue(attributeNames.contains("TV Series"))
-        assertTrue(attributeNames.contains("TV Seasons"))
+        assertTrue(attributeNames.contains("Seasons"))
         assertTrue(attributeNames.contains("Played By"))
+
+        // Attributes filtered out because both values are empty
+        assertFalse(attributeNames.contains("Died"))
+        assertFalse(attributeNames.contains("Spouse"))
     }
 }
