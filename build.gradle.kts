@@ -24,16 +24,16 @@ moduleGraphConfig {
         dev.iurysouza.modulegraph.Theme.BASE(
             mapOf(
                 "primaryTextColor" to "#fff",
-                "primaryColor" to "#5a4f7c",
-                "primaryBorderColor" to "#5a4f7c",
-                "lineColor" to "#f5a623",
-                "tertiaryColor" to "#40375c",
+                "primaryColor" to "#6D5E0F",
+                "primaryBorderColor" to "#DBC66E",
+                "lineColor" to "#F8E287",
+                "tertiaryColor" to "#665E40",
                 "fontSize" to "12px",
             ),
-            focusColor = "#FA8140",
+            focusColor = "#DBC66E",
             moduleTypes = listOf(
-                dev.iurysouza.modulegraph.ModuleType.AndroidApp("#3CD483"),
-                dev.iurysouza.modulegraph.ModuleType.AndroidLibrary("#292B2B"),
+                dev.iurysouza.modulegraph.ModuleType.AndroidApp("#43664E"),
+                dev.iurysouza.modulegraph.ModuleType.AndroidLibrary("#534600"),
             )
         )
     )
