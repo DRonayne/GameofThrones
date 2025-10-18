@@ -58,7 +58,7 @@ firebaseBom = "34.3.0"
 leakcanary = "2.14"
 
 # Baseline Profile
-baselineProfile = "1.4.0"
+baselineProfile = "1.4.1"
 
 # Code Quality
 spotless = "8.0.0"
