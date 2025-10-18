@@ -40,7 +40,7 @@ okhttp = "5.1.0"
 kotlinxSerializationJson = "1.8.1"
 
 # Coil
-coil = "3.0.4"
+coil = "3.3.0"
 
 # Room
 room = "2.8.1"
