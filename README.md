@@ -5,7 +5,20 @@
 
 **Modern Android showcase: MVI architecture, multi-module design, offline-first with 100% Jetpack Compose**
 
-[![API Level](https://img.shields.io/badge/API-30+-blue?style=for-the-badge&logo=android&labelColor=1a1a1a)](https://developer.android.com/) [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-purple?style=for-the-badge&logo=kotlin&labelColor=1a1a1a)](https://kotlinlang.org/) [![Compose](https://img.shields.io/badge/Jetpack%20Compose-2025.09.01-green?style=for-the-badge&logo=jetpackcompose&labelColor=1a1a1a)](https://developer.android.com/jetpack/compose)
+<img alt="API 30+" src="https://img.shields.io/badge/Api%2030+-50f270?logo=android&logoColor=black&style=for-the-badge" />
+<img alt="Kotlin" src="https://img.shields.io/badge/Kotlin%202-a503fc?logo=kotlin&logoColor=white&style=for-the-badge" />
+<img alt="Jetpack Compose" src="https://img.shields.io/static/v1?style=for-the-badge&message=Jetpack+Compose&color=4285F4&logo=Jetpack+Compose&logoColor=FFFFFF&label=" />
+<img alt="Material 3" src="https://custom-icon-badges.demolab.com/badge/material%203-lightblue?style=for-the-badge&logoColor=333&logo=material-you" />
+
+<img alt="Hilt" src="https://img.shields.io/badge/Hilt-FFA500?logo=dagger&logoColor=white&style=for-the-badge" />
+<img alt="Room" src="https://img.shields.io/badge/Room-4285F4?logo=sqlite&logoColor=white&style=for-the-badge" />
+<img alt="Retrofit" src="https://img.shields.io/badge/Retrofit-48B983?logo=square&logoColor=white&style=for-the-badge" />
+<img alt="Firebase" src="https://img.shields.io/badge/Firebase-FFCA28?logo=firebase&logoColor=black&style=for-the-badge" />
+
+<img alt="MVI" src="https://img.shields.io/badge/MVI-671DEF?logoColor=white&style=for-the-badge" />
+<img alt="Multi-Module" src="https://img.shields.io/badge/Multi--Module-00897B?logo=gradle&logoColor=white&style=for-the-badge" />
+<img alt="Offline First" src="https://img.shields.io/badge/Offline%20First-00C853?logo=databricks&logoColor=white&style=for-the-badge" />
+<img alt="Coroutines" src="https://img.shields.io/badge/Coroutines-7F52FF?logo=kotlin&logoColor=white&style=for-the-badge" />
 
 </div>
 
@@ -71,21 +84,21 @@ Room ⟷ Retrofit
 
 **Tech Stack**
 
-- **Kotlin 2.2.20** with Coroutines, Flow, sealed classes
-- **Compose BOM 2025.09.01** - 100% declarative UI, zero XML
-- **Room 2.8.1** - Offline-first reactive queries
-- **Retrofit 3.0** + **OkHttp 5.1** - Type-safe API client
-- **Hilt 2.57.1** - Compile-time dependency injection
-- **Firebase BOM 34.3.0** - Analytics, Crashlytics, Performance
-- **Coil 3.0.4** - Image loading with Compose integration
+- **Kotlin 2** with Coroutines, Flow, sealed classes
+- **Jetpack Compose** - 100% declarative UI, zero XML
+- **Room** - Offline-first reactive queries
+- **Retrofit 3** + **OkHttp** - Type-safe API client
+- **Hilt** - Compile-time dependency injection
+- **Firebase** - Analytics, Crashlytics, Performance
+- **Coil** - Image loading with Compose integration
 
 **Testing & Quality**
 
 - **44 test files**: Unit, integration, UI, and architectural tests
-- **Konsist 0.17.3** - 22 architectural compliance rules
-- **Detekt 1.23.7** + Compose rules - Static analysis
-- **Spotless 8.0.0** + ktlint - Consistent formatting
-- **Kover 0.9.2** - Code coverage tracking
+- **Konsist** - 22 architectural compliance rules
+- **Detekt** + Compose rules - Static analysis
+- **Spotless** + ktlint - Consistent formatting
+- **Kover** - Code coverage tracking
 - **Mockk, Turbine, Truth** - Robust test utilities
 
 ---
@@ -124,50 +137,43 @@ core/                   # Shared modules
 %%{
   init: {
     'theme': 'base',
-    'themeVariables': {"primaryTextColor":"#fff","primaryColor":"#6D5E0F","primaryBorderColor":"#DBC66E","lineColor":"#F8E287","tertiaryColor":"#665E40","fontSize":"12px"}
+    'themeVariables': {"primaryTextColor":"#000000","textColor":"#000000","mainBkg":"#F8E287","secondBkg":"#EEE2BC","primaryColor":"#F4EDDF","primaryBorderColor":"#6D5E0F","lineColor":"#6D5E0F","tertiaryColor":"#FFF9EE","fontSize":"12px"}
   }
 }%%
 
 graph LR
   subgraph :core
-    :core:domain["domain"]
-    :core:common["common"]
-    :core:model["model"]
-    :core:analytics["analytics"]
-    :core:ui["ui"]
-    :core:data["data"]
     :core:network["network"]
+    :core:common["common"]
+    :core:data["data"]
+    :core:model["model"]
     :core:database["database"]
+    :core:domain["domain"]
+    :core:ui["ui"]
+    :core:analytics["analytics"]
   end
   subgraph :feature
     :feature:settings["settings"]
-    :feature:comparison["comparison"]
     :feature:characters["characters"]
     :feature:character-detail["character-detail"]
     :feature:favorites["favorites"]
+    :feature:comparison["comparison"]
   end
-  :core:domain --> :core:common
-  :core:domain --> :core:model
-  :feature:settings --> :core:model
-  :feature:settings --> :core:common
-  :feature:settings --> :core:analytics
-  :feature:settings --> :core:domain
-  :feature:settings --> :core:ui
-  :feature:settings --> :core:data
+  :core:network --> :core:common
   :core:data --> :core:model
   :core:data --> :core:common
   :core:data --> :core:network
   :core:data --> :core:database
   :core:data --> :core:domain
   :core:data --> :core:ui
-  :core:ui --> :core:common
-  :core:ui --> :core:domain
-  :core:database --> :core:common
-  :feature:comparison --> :core:model
-  :feature:comparison --> :core:common
-  :feature:comparison --> :core:analytics
-  :feature:comparison --> :core:domain
-  :feature:comparison --> :core:ui
+  :feature:settings --> :core:model
+  :feature:settings --> :core:common
+  :feature:settings --> :core:analytics
+  :feature:settings --> :core:domain
+  :feature:settings --> :core:ui
+  :feature:settings --> :core:data
+  :core:domain --> :core:common
+  :core:domain --> :core:model
   :app --> :feature:characters
   :app --> :feature:character-detail
   :app --> :feature:favorites
@@ -177,7 +183,9 @@ graph LR
   :app --> :core:data
   :app --> :core:domain
   :app --> :core:ui
-  :core:network --> :core:common
+  :core:ui --> :core:common
+  :core:ui --> :core:domain
+  :core:database --> :core:common
   :feature:favorites --> :core:model
   :feature:favorites --> :core:common
   :feature:favorites --> :core:analytics
@@ -190,28 +198,33 @@ graph LR
   :feature:characters --> :core:ui
   :feature:characters --> :core:data
   :feature:characters --> :core:network
+  :feature:comparison --> :core:model
+  :feature:comparison --> :core:common
+  :feature:comparison --> :core:analytics
+  :feature:comparison --> :core:domain
+  :feature:comparison --> :core:ui
   :feature:character-detail --> :core:model
   :feature:character-detail --> :core:common
   :feature:character-detail --> :core:analytics
   :feature:character-detail --> :core:domain
   :feature:character-detail --> :core:ui
 
-classDef android-library fill:#534600,stroke:#fff,stroke-width:2px,color:#fff;
-classDef android-application fill:#43664E,stroke:#fff,stroke-width:2px,color:#fff;
-class :core:domain android-library
+classDef android-library fill:#EEE2BC,stroke:#fff,stroke-width:2px,color:#000;
+classDef android-application fill:#F8E287,stroke:#fff,stroke-width:2px,color:#000;
+class :core:network android-library
 class :core:common android-library
+class :core:data android-library
 class :core:model android-library
+class :core:database android-library
+class :core:domain android-library
+class :core:ui android-library
 class :feature:settings android-library
 class :core:analytics android-library
-class :core:ui android-library
-class :core:data android-library
-class :core:network android-library
-class :core:database android-library
-class :feature:comparison android-library
 class :app android-application
 class :feature:characters android-library
 class :feature:character-detail android-library
 class :feature:favorites android-library
+class :feature:comparison android-library
 
 ```
 ## 🧪 Testing
