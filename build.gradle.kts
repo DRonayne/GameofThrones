@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.kover) apply false
-    id("dev.iurysouza.modulegraph") version "0.12.1"
+    id("dev.iurysouza.modulegraph") version "0.13.0"
 }
 
 moduleGraphConfig {
