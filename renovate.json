@@ -4,10 +4,6 @@
     "config:recommended"
   ],
   "timezone": "Europe/Dublin",
-  "schedule": [
-    "after 10pm on saturday",
-    "before 6am on monday"
-  ],
   "labels": [
     "dependencies",
     "renovate"
@@ -15,11 +11,15 @@
   "semanticCommits": "enabled",
   "separateMajorMinor": true,
   "separateMultipleMajor": true,
-  "prConcurrentLimit": 10,
-  "prHourlyLimit": 5,
+  "prConcurrentLimit": 20,
+  "prHourlyLimit": 10,
   "gradle": {
     "enabled": true
   },
+  "platformAutomerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "ignoreTests": false,
   "packageRules": [
     {
       "groupName": "Kotlin Ecosystem",
@@ -39,7 +39,7 @@
       "matchUpdateTypes": [
         "major"
       ],
-      "automerge": false,
+      "automerge": true,
       "matchPackageNames": [
         "/^org\\.jetbrains\\.kotlin/",
         "/^com\\.google\\.devtools\\.ksp/"
@@ -62,7 +62,7 @@
       "matchUpdateTypes": [
         "major"
       ],
-      "automerge": false,
+      "automerge": true,
       "matchPackageNames": [
         "/^androidx\\.compose/"
       ]
@@ -232,7 +232,7 @@
         "minor",
         "patch"
       ],
-      "automerge": false,
+      "automerge": true,
       "reviewers": [],
       "matchPackageNames": [
         "/^com\\.android\\.tools\\.build/"
@@ -255,13 +255,10 @@
     "labels": [
       "security"
     ],
-    "automerge": false
+    "automerge": true
   },
   "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": [
-      "before 6am on monday"
-    ]
+    "enabled": true
   },
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Dependency Updates Dashboard"
