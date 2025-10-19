@@ -3,7 +3,7 @@
 
 # Game of Thrones App
 
-**Modern Android showcase: MVI architecture, multi-module design, offline-first with 100% Jetpack Compose**
+**Modern Android showcase: MVI architecture, multi-module design, offline-first with Jetpack Compose**
 
 <img alt="API 30+" src="https://img.shields.io/badge/Api%2030+-50f270?logo=android&logoColor=black&style=for-the-badge" />
 <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin%202-a503fc?logo=kotlin&logoColor=white&style=for-the-badge" />
@@ -85,7 +85,7 @@ Room ⟷ Retrofit
 **Tech Stack**
 
 - **Kotlin 2** with Coroutines, Flow, sealed classes
-- **Jetpack Compose** - 100% declarative UI, zero XML
+- **Jetpack Compose** - Declarative UI, zero XML
 - **Room** - Offline-first reactive queries
 - **Retrofit 3** + **OkHttp** - Type-safe API client
 - **Hilt** - Compile-time dependency injection
