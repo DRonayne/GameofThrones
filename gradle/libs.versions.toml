@@ -50,7 +50,7 @@ room = "2.8.2"
 datastore = "1.1.7"
 
 # WorkManager
-workManager = "2.10.5"
+workManager = "2.11.0"
 
 # Firebase
 firebaseBom = "34.4.0"
