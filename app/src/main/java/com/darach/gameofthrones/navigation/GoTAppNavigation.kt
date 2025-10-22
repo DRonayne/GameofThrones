@@ -1,20 +1,9 @@
 package com.darach.gameofthrones.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -23,7 +12,6 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.window.core.layout.WindowSizeClass
 import com.darach.gameofthrones.GoTNavHost
 
 @Composable
@@ -31,138 +19,43 @@ fun GoTApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
-    val adaptiveInfo = currentWindowAdaptiveInfo()
-    val useNavigationRail = adaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(
-        WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND
-    )
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     val topLevelDestinations = TopLevelDestination.entries
 
-    val showBottomNav = currentDestination?.let { destination ->
-        topLevelDestinations.any { destination.hasRoute(it.toRoute()::class) }
-    } ?: true
+    // NavigationSuiteScaffold automatically adapts the navigation UI based on window size:
+    // - Compact screens (phones): Bottom navigation bar
+    // - Medium screens (unfolded foldables, small tablets): Navigation rail
+    // - Expanded screens (large tablets, desktops): Navigation drawer
+    NavigationSuiteScaffold(
+        modifier = modifier,
+        navigationSuiteItems = {
+            topLevelDestinations.forEach { destination ->
+                val selected = currentDestination?.hasRoute(destination.toRoute()::class) == true
 
-    if (useNavigationRail && showBottomNav) {
-        Row(modifier = modifier.fillMaxSize()) {
-            GoTNavigationRail(
-                destinations = topLevelDestinations,
-                onNavigateToDestination = { destination ->
-                    navController.navigateToTopLevelDestination(destination)
-                },
-                currentDestination = currentDestination
-            )
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-            ) {
-                GoTNavHost(
-                    navController = navController,
-                    modifier = Modifier.fillMaxSize()
+                item(
+                    selected = selected,
+                    onClick = { navController.navigateToTopLevelDestination(destination) },
+                    icon = {
+                        Icon(
+                            imageVector = if (selected) {
+                                destination.selectedIcon
+                            } else {
+                                destination.unselectedIcon
+                            },
+                            contentDescription = stringResource(destination.contentDescriptionRes)
+                        )
+                    },
+                    label = { Text(stringResource(destination.labelRes)) }
                 )
             }
         }
-    } else {
-        Scaffold(
-            modifier = modifier,
-            bottomBar = {
-                if (showBottomNav) {
-                    GoTBottomNavigationBar(
-                        destinations = topLevelDestinations,
-                        onNavigateToDestination = { destination ->
-                            navController.navigateToTopLevelDestination(destination)
-                        },
-                        currentDestination = currentDestination
-                    )
-                }
-            }
-        ) { paddingValues ->
-            GoTNavHost(
-                navController = navController,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            )
-        }
-    }
-}
-
-@Composable
-private fun GoTBottomNavigationBar(
-    destinations: List<TopLevelDestination>,
-    onNavigateToDestination: (TopLevelDestination) -> Unit,
-    currentDestination: androidx.navigation.NavDestination?,
-    modifier: Modifier = Modifier
-) {
-    NavigationBar(
-        modifier = modifier.fillMaxWidth(),
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
-        destinations.forEach { destination ->
-            val selected = currentDestination?.hasRoute(destination.toRoute()::class) == true
-            val contentDescriptionText = stringResource(destination.contentDescriptionRes)
-            val labelText = stringResource(destination.labelRes)
-
-            NavigationBarItem(
-                selected = selected,
-                onClick = { onNavigateToDestination(destination) },
-                icon = {
-                    Icon(
-                        imageVector = if (selected) {
-                            destination.selectedIcon
-                        } else {
-                            destination.unselectedIcon
-                        },
-                        contentDescription = contentDescriptionText
-                    )
-                },
-                label = { Text(labelText) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun GoTNavigationRail(
-    destinations: List<TopLevelDestination>,
-    onNavigateToDestination: (TopLevelDestination) -> Unit,
-    currentDestination: androidx.navigation.NavDestination?,
-    modifier: Modifier = Modifier
-) {
-    NavigationRail(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        header = {
-            Spacer(modifier = Modifier.weight(0.3f))
-        }
-    ) {
-        destinations.forEach { destination ->
-            val selected = currentDestination?.hasRoute(destination.toRoute()::class) == true
-            val contentDescriptionText = stringResource(destination.contentDescriptionRes)
-            val labelText = stringResource(destination.labelRes)
-
-            NavigationRailItem(
-                selected = selected,
-                onClick = { onNavigateToDestination(destination) },
-                icon = {
-                    Icon(
-                        imageVector = if (selected) {
-                            destination.selectedIcon
-                        } else {
-                            destination.unselectedIcon
-                        },
-                        contentDescription = contentDescriptionText
-                    )
-                },
-                label = { Text(labelText) }
-            )
-        }
-        Spacer(modifier = Modifier.weight(0.7f))
+        GoTNavHost(
+            navController = navController,
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 

@@ -803,3 +803,13 @@ private fun SettingsContentTabletPreview() {
         )
     }
 }
+
+@Suppress("UnusedPrivateMember")
+@com.darach.gameofthrones.core.ui.preview.PreviewPhoneThemes
+@com.darach.gameofthrones.core.ui.preview.PreviewTablet
+@Composable
+private fun SettingsScreenAdaptivePreview() {
+    GameOfThronesTheme {
+        SettingsScreen()
+    }
+}

@@ -1001,3 +1001,15 @@ private fun ErrorContentPreview() {
         )
     }
 }
+
+@Suppress("UnusedPrivateMember")
+@com.darach.gameofthrones.core.ui.preview.PreviewAdaptiveLayout
+@Composable
+private fun CharacterDetailScreenAdaptivePreview() {
+    GameOfThronesTheme {
+        CharacterDetailScreen(
+            characterId = "1",
+            onBackClick = {}
+        )
+    }
+}

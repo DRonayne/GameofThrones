@@ -854,3 +854,17 @@ private fun ComparisonScreenTabletPreview() {
         )
     }
 }
+
+@Suppress("UnusedPrivateMember")
+@com.darach.gameofthrones.core.ui.preview.PreviewAllDevices
+@Composable
+private fun ComparisonScreenAdaptivePreview() {
+    GameOfThronesTheme {
+        ComparisonScreen(
+            comparisonResult = null,
+            isLoading = false,
+            error = null,
+            onBackClick = {}
+        )
+    }
+}

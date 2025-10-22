@@ -618,3 +618,16 @@ private fun generateSampleCharacters(): List<Character> = List(12) { index ->
         playedBy = listOf("Actor $index")
     )
 }
+
+@Suppress("UnusedPrivateMember")
+@com.darach.gameofthrones.core.ui.preview.PreviewAdaptiveLayout
+@Composable
+private fun FavoritesScreenAdaptivePreview() {
+    GameOfThronesTheme {
+        FavoritesScreen(
+            onBackClick = {},
+            onBrowseCharactersClick = {},
+            onCompareCharacters = { _, _ -> }
+        )
+    }
+}

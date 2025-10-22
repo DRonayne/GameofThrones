@@ -854,3 +854,15 @@ private fun ErrorStateTabletPreview() {
         )
     }
 }
+
+@Suppress("UnusedPrivateMember")
+@com.darach.gameofthrones.core.ui.preview.PreviewAllDevices
+@Composable
+private fun CharactersScreenAdaptivePreview() {
+    GameOfThronesTheme {
+        CharactersScreen(
+            onCharacterClick = {},
+            viewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+        )
+    }
+}
