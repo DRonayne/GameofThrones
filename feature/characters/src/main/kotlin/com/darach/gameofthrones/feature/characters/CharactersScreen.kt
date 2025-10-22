@@ -74,7 +74,8 @@ fun CharactersScreen(
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CharactersViewModel = hiltViewModel(),
-    sharedTransitionData: SharedTransitionData? = null
+    sharedTransitionData: SharedTransitionData? = null,
+    gridMinSize: androidx.compose.ui.unit.Dp = 160.dp
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
@@ -105,7 +106,8 @@ fun CharactersScreen(
                 onIntent = viewModel::handleIntent
             ),
             paddingValues = paddingValues,
-            sharedTransitionData = sharedTransitionData
+            sharedTransitionData = sharedTransitionData,
+            gridMinSize = gridMinSize
         )
 
         if (showFilterSheet) {
@@ -133,14 +135,16 @@ data class CharactersContentState(
 private fun CharactersContent(
     contentState: CharactersContentState,
     paddingValues: PaddingValues,
-    sharedTransitionData: SharedTransitionData? = null
+    sharedTransitionData: SharedTransitionData? = null,
+    gridMinSize: androidx.compose.ui.unit.Dp = 160.dp
 ) {
     Box(modifier = Modifier.padding(paddingValues)) {
         CharactersBody(
             state = contentState.state,
             onCharacterClick = contentState.onCharacterClick,
             onIntent = contentState.onIntent,
-            sharedTransitionData = sharedTransitionData
+            sharedTransitionData = sharedTransitionData,
+            gridMinSize = gridMinSize
         )
 
         OfflineIndicator(
@@ -638,7 +642,8 @@ private fun CharactersBody(
     state: CharactersState,
     onCharacterClick: (String) -> Unit,
     onIntent: (CharactersIntent) -> Unit,
-    sharedTransitionData: SharedTransitionData? = null
+    sharedTransitionData: SharedTransitionData? = null,
+    gridMinSize: androidx.compose.ui.unit.Dp = 160.dp
 ) {
     when {
         state.isLoading && state.characters.isEmpty() -> LoadingState()
@@ -664,7 +669,8 @@ private fun CharactersBody(
                 state = state,
                 onCharacterClick = onCharacterClick,
                 onIntent = onIntent,
-                sharedTransitionData = sharedTransitionData
+                sharedTransitionData = sharedTransitionData,
+                gridMinSize = gridMinSize
             )
         }
     }
@@ -676,7 +682,8 @@ private fun CharactersList(
     state: CharactersState,
     onCharacterClick: (String) -> Unit,
     onIntent: (CharactersIntent) -> Unit,
-    sharedTransitionData: SharedTransitionData? = null
+    sharedTransitionData: SharedTransitionData? = null,
+    gridMinSize: androidx.compose.ui.unit.Dp = 160.dp
 ) {
     val performHaptic = com.darach.gameofthrones.core.ui.haptics.rememberHapticFeedback()
     val onRefresh = remember(onIntent, performHaptic) {
@@ -692,7 +699,7 @@ private fun CharactersList(
         modifier = Modifier.fillMaxSize()
     ) {
         LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(minSize = 160.dp),
+            columns = StaggeredGridCells.Adaptive(minSize = gridMinSize),
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),

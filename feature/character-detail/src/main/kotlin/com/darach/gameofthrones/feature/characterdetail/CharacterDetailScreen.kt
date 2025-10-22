@@ -13,6 +13,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -29,6 +30,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Favorite
@@ -278,7 +280,7 @@ private fun BackNavigationIcon(onBackClick: () -> Unit) {
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            imageVector = Icons.Filled.Close,
             contentDescription = stringResource(
                 com.darach.gameofthrones.core.ui.R.string.navigate_back
             )
@@ -434,13 +436,14 @@ private fun CharacterDetails(
     paddingValues: PaddingValues,
     sharedTransitionData: SharedTransitionData? = null
 ) {
-    val configuration = androidx.compose.ui.platform.LocalConfiguration.current
-    val isTablet = configuration.screenWidthDp >= 600
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val useTabletLayout = maxWidth >= 700.dp
 
-    if (isTablet) {
-        TabletCharacterDetails(character, paddingValues, sharedTransitionData)
-    } else {
-        PhoneCharacterDetails(character, paddingValues, sharedTransitionData)
+        if (useTabletLayout) {
+            TabletCharacterDetails(character, paddingValues, sharedTransitionData)
+        } else {
+            PhoneCharacterDetails(character, paddingValues, sharedTransitionData)
+        }
     }
 }
 

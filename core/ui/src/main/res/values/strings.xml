@@ -96,6 +96,8 @@
     <string name="removed_from_favorites">Removed from favorites</string>
     <string name="loading_character_details">Loading character details</string>
     <string name="loading_character">Loading character…</string>
+    <string name="select_character">Select a Character</string>
+    <string name="select_character_description">Choose a character from the list to view their details</string>
 
     <!-- Character Detail Sections -->
     <string name="basic_information">Basic Information</string>

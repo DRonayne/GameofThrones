@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.darach.gameofthrones.core.ui.transition.SharedTransitionData
 import com.darach.gameofthrones.feature.characterdetail.CharacterDetailScreen
-import com.darach.gameofthrones.feature.characters.CharactersScreen
+import com.darach.gameofthrones.feature.characters.AdaptiveCharactersScreen
 import com.darach.gameofthrones.feature.comparison.ComparisonScreen
 import com.darach.gameofthrones.feature.comparison.ComparisonViewModel
 import com.darach.gameofthrones.feature.favorites.FavoritesScreen
@@ -40,10 +40,7 @@ fun GoTNavHost(
             modifier = modifier
         ) {
             composable<CharactersRoute> {
-                CharactersScreen(
-                    onCharacterClick = { characterId ->
-                        navController.navigate(CharacterDetailRoute(characterId))
-                    },
+                AdaptiveCharactersScreen(
                     sharedTransitionData = SharedTransitionData(
                         sharedTransitionScope = this@SharedTransitionLayout,
                         animatedVisibilityScope = this@composable
